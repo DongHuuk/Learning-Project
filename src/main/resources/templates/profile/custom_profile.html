@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/profile-bar.css">
+    <link rel="stylesheet" href="/css/profile-settings.css">
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
+</head>
+
+<body class="container">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="d-flex">
+        <div th:replace="fragment.html :: profile-bar"></div>
+
+        <div class="col-md-10 mt-md-5">
+            <div class="col-md-12 mb-2">
+                <div style="opacity: 0.7; font-size: 13px">설정/프로필 관리</div>
+                <span style="font-size: 17px; font-weight: bold">설정/프로필 관리</span>
+            </div>
+
+            <div class="col">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item active" role="presentation">
+                        <a class="nav-link custom-profiles active" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">내 프로필</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link custom-profiles" href="#notification" role="tab" aria-controls="notification" data-toggle="tab">내 알림 설정</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content d-flex justify-content-start">
+                    <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
+                        <div class="d-flex justify-content-center">
+                            <div id="current-profile-image" class="mt-3">
+                                <svg th:data-jdenticon-value="${#authentication.name}" th:if="${#strings.isEmpty(account?.profileImage)}"
+                                     width="200" height="200" class="rounded border bg-light"></svg>
+                                <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
+                                         width="200" height="200" class="rounded border"/>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="align-items-center profile-content d-flex justify-content-center">
+                            <form class="needs-validation justify-content-start profile-content-input" action="#" method="post"
+                                  novalidate th:action="@{'/update/' + ${#authentication.name}}" th:object="${accountUpdateForm}">
+                                <div class="card-body form-group">
+                                    <label for="nickname">닉네임</label>
+                                    <input type="text" class="form-control" id="nickname" required minlength="2" maxlength="20" th:value="*{nickname}">
+                                    <small class="invalid-feedback">닉네임을 다시 입력해주세요</small>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">nickname duplication Exception</small>
+                                </div>
+                                <button type="submit" class="btn btn-success mt-md-3 mb-md-3">닉네임 확인하기</button>
+                                <div>
+                                    <label for="summernote">자기소개</label>
+                                    <textarea id="summernote" type="textarea" required> </textarea>
+
+                                    <small class="invalid-feedback">모임 설명을 입력하세요.</small>
+                                </div>
+
+                                <button type="submit" class="btn btn-success mt-md-3 mb-md-3">저장하기</button>
+                            </form>
+                        </div>
+
+                        <hr/>
+
+                        <div class="align-items-center profile-content d-flex justify-content-center">
+                            <form class="needs-validation justify-content-start profile-content-input" action="#" method="post" novalidate>
+                                <div class="card-body form-group">
+                                    <label for="password">비밀번호</label>
+                                    <input type="password" class="form-control" id="password" placeholder="현재 비밀번호" required minlength="1" maxlength="50">
+                                    <small class="invalid-feedback">비밀번호를 다시 입력해주세요</small>
+<!--                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</small>-->
+                                </div>
+                                <div class="card-body form-group">
+                                    <input type="password" class="form-control mt-sm-0" placeholder="새 비밀번호" required minlength="1" maxlength="50">
+                                    <small class="invalid-feedback">비밀번호를 다시 입력해주세요</small>
+<!--                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</small>-->
+                                </div>
+                                <div class="card-body form-group">
+                                    <input type="password" class="form-control" placeholder="새 비밀번호 재입력" required minlength="1" maxlength="50">
+                                    <small class="invalid-feedback">비밀번호를 다시 입력해주세요</small>
+<!--                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</small>-->
+                                </div>
+
+                                <button type="submit" class="btn btn-success mt-md-3 mb-md-3">수정하기</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--내프로필 div-->
+
+                    <div class="tab-pane fade notification-setting" id="notification" role="tabpanel">
+                        <form class="profile-body" method="post" action="#" novalidate>
+                            <div class="mt-md-3 justify-content-start">
+                                <p><strong style="font-size: 18px">메일 알림 설정</strong></p>
+                                <div class="align-items-center d-flex notification-setting-mail">
+                                    <div class="notification-setting-notifi">
+                                        <strong>Learing Mail 알림</strong><br>
+                                        Learning 사이트의 새로운 정보들을 메일로 받아보고 싶으신가요 ?
+                                    </div>
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input type="checkbox" class="custom-control-input" id="webMailNotification">
+                                        <label class="custom-control-label" for="webMailNotification"></label>
+                                    </div>
+                                </div>
+                                <div class="align-items-center d-flex notification-setting-mail">
+                                    <div class="notification-setting-notifi">
+                                        <strong>수강중인 강의 Mail 알림</strong><br>
+                                        현재 수강중인 강의들의 알람을 메일로 받아보고 싶으신가요?
+                                    </div>
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input type="checkbox" class="custom-control-input" id="learingMailNotification">
+                                        <label class="custom-control-label" for="learingMailNotification"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-md-3 justify-content-start">
+                                <p class="mt-md-4"><strong style="font-size: 18px">웹 알림 설정</strong></p>
+                                <div class="align-items-center d-flex notification-setting-mail">
+                                    <div class="notification-setting-notifi">
+                                        <strong>Learing Web 알림</strong><br>
+                                        Learning 사이트의 새로운 정보들을 웹에서 받아보고 싶으신가요 ?
+                                    </div>
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input type="checkbox" class="custom-control-input" id="webNotification">
+                                        <label class="custom-control-label" for="webNotification"></label>
+                                    </div>
+                                </div>
+                                <div class="align-items-center d-flex notification-setting-mail">
+                                    <div class="notification-setting-notifi">
+                                        <strong>수강중인 강의 Web 알림</strong><br>
+                                        현재 수강중인 강의들의 알람을 웹에서 받아보고 싶으신가요?
+                                    </div>
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input type="checkbox" class="custom-control-input" id="learingWebNotification">
+                                        <label class="custom-control-label" for="learingWebNotification"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--notification settings web-->
+                            <button type="submit" class="btn btn-success mt-md-3 mb-md-3">수정하기</button>
+                        </form>
+                        <!--notification settings body-->
+                        <div style="height: 160px"></div>
+                    </div>
+                    <!--notification settings-->
+                </div>
+                <!--profile main data - body-->
+            </div>
+            <!--profile main data-->
+        </div>
+        <!--profile body-->
+    </div>
+    <!--page body-->
+
+    <div th:replace="fragment.html :: footer"></div>
+
+    <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+    <script type="application/javascript">
+        $("#summernote").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
+            placeholder: '자기소개를 입력해주세요',
+            tabSize: 2,
+            lang: "ko-KR",
+            height: 220,
+            minHeight: 220,
+            maxHeight: 220,
+            focus: true
+        });
+    </script>
+
+    <div th:replace="fragment.html::form-validation"></div>
+</body>
+
+</html>

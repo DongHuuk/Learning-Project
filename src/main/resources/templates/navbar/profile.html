@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+
+<body class="container">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="d-flex">
+        <div th:replace="fragment.html :: profile-bar"></div>
+
+        <div class="row mt-md-5">
+            <div class="col-md-12 mb-2">
+                <span style="font-size: 20px">대시보드</span>
+            </div>
+
+            <!--프로필 부분-->
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <p class="card-title">내 프로필</p>
+                    <div class="row card-body">
+                        <div class="card-body-image">
+                            <a href="#" th:href="@{'/profile/' + ${account.id} + '/custom'}" class="nav-link">
+                                <svg th:data-jdenticon-value="${#authentication.name}" th:if="${#strings.isEmpty(account?.profileImage)}"
+                                     width="100" height="100" class="rounded border bg-light" preserveAspectRatio="xMidYMid slice"
+                                     focusable="false" role="img" aria-label="account_profile"></svg>
+                                <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
+                                     width="100" height="100" class="rounded border"/>
+                            </a>
+                        </div>
+                        <div class="card-body card-body-profile-inner">
+                            <p class="card-body-profile-inner-name"><span th:text="${account.nickname}" style="font-weight: bold">운영자</span>님, 즐거운 하루!!</p>
+                            <p>닉네임: <span th:text="${account.nickname}">운영자</span></p>
+                            <p>이메일: <span th:text="${account.email}">kuroneko2@gmail.com</span></p>
+                        </div>
+                    </div>
+                        <form class="d-flex justify-content-end jump-site" method="get" action="#" th:action="@{'/profile/' + ${account.id} + '/custom'}">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">프로필 수정하기</button>
+                        </form>
+                </div>
+            </div>
+
+            <!--최근 학습 강의-->
+            <!--TODO JS이용하여 그래프 만들기-->
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <p class="card-title">최근 학습 강의</p>
+                    <div class="row card-body">
+                        <div class="card-body card-body-learning-inner">
+                            <p>강의 내용</p>
+                            <p>진도율</p>
+                            <p>진행상황에 따른 그래프</p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <form class="jump-site" method="get" action="#">
+                            <button type="submit" class="btn btn-sm btn-success">내 모든 강의</button>
+                        </form>
+                        <form class="jump-site" method="get" action="#">
+                            <button type="submit" class="btn btn-sm btn-info">이어서 학습하기</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--내 통계-->
+            <!--TODO 강의 수에 맞추어 값 입력되도록, 버튼 매핑-->
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <p class="card-title">내 통계</p>
+                    <div class="row card-body card-body-log-inner align-content-center justify-content-between">
+                        <div class="align-content-center">
+                            <div class="card-body-log-inner-big-font text-center"> 3 </div>
+                            <p>보유 강의 수</p>
+                        </div>
+                        <div class="align-content-center">
+                            <div class="card-body-log-inner-big-font text-center"> 3 </div>
+                            <p>완료 강의 수</p>
+                        </div>
+                        <div class="align-content-center">
+                            <div class="card-body-log-inner-big-font text-center"> 3 </div>
+                            <p>완료 수업 수</p>
+                        </div>
+                    </div>
+
+                    <form class="jump-site d-flex justify-content-end" method="get" action="#">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">내 강의 모아보기</button>
+                    </form>
+                </div>
+            </div>
+
+            <!--최근 학습중인 강의들-->
+            <!--TODO 날짜 형식 포맷에 맞추어서 표시되게끔(JS) + link로 해당 강의로 이동하게끔-->
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <p class="card-title">최근 학습중인 강의들</p>
+                    <div class="row card-body card-body-list-inner">
+                        <ul class="d-flex flex-column mb-3 align-items-start">
+                            <a class="list-group-item-action d-flex justify-content-between align-items-center custom-list-group" href="#">
+                                <div class="course-title">학습중 1번fdsafdsafafdsafdsafewqrewqtreqyreqyreqjrfewqlk;jfel;wqjfoiewqjoip;rewqrewq</div>
+                                <div class="list-daytime"> 날짜 형식들</div>
+                            </a>
+                            <a class="list-group-item-action d-flex justify-content-between align-items-center custom-list-group" href="#">
+                                <div class="course-title">학습중 2번fdsafdsafafdsafdsafewqrewqtreqyreqyreqjrfewqlk;jfel;wqjfoiewqjoip;rewqrewq</div>
+                                <div class="list-daytime"> 날짜 형식들</div>
+                            </a>
+                            <a class="list-group-item-action d-flex justify-content-between align-items-center custom-list-group" href="#">
+                                <div class="course-title">학습중 3번 </div>
+                                <div class="list-daytime"> 날짜 형식들</div>
+                            </a>
+                        </ul>
+                    </div>
+                    <form class="jump-site d-flex justify-content-end" method="get" action="#">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">내 강의 모아보기</button>
+                    </form>
+                </div>
+            </div>
+
+            <!--My Skills-->
+            <!--TODO 내가 완료한(수료한) 강의에 따라서 해당 분야의 스킬을 증가시킴-->
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <p class="card-title">My Skills</p>
+                    <div class="row card-body">
+
+                    </div>
+                </div>
+            </div>
+
+            <!--내 질문들-->
+            <!--TODO 내가 질문한 그 질문 글로 이동하도록 + 날짜포맷 구현-->
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <p class="card-title">내 통계</p>
+                    <div class="row card-body card-body-list-inner">
+                        <ul class="d-flex flex-column mb-3 align-items-start">
+                            <a class="list-group-item-action d-flex justify-content-between align-items-center custom-list-group" href="#">
+                                <div class="course-title">~~~~ 과 ~~~에 대하여</div>
+                                <div class="list-daytime"> 날짜 형식들</div>
+                            </a>
+                            <a class="list-group-item-action d-flex justify-content-between align-items-center custom-list-group" href="#">
+                                <div class="course-title">~~~~ 과 ~~~에 대하여2</div>
+                                <div class="list-daytime"> 날짜 형식들</div>
+                            </a>
+                            <a class="list-group-item-action d-flex justify-content-between align-items-center custom-list-group" href="#">
+                                <div class="course-title">~~~~ 과 ~~~에 대하여3 </div>
+                                <div class="list-daytime"> 날짜 형식들</div>
+                            </a>
+                        </ul>
+                    </div>
+                    <form class="jump-site d-flex justify-content-end" method="get" action="#">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">내 질문 모아보기</button>
+                    </form>
+                </div>
+            </div>
+
+            <!--관심 분야-->
+            <!--TODO 프로필 수정 뷰에서 관심 분야를 추가할 수 있도록-->
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <p class="card-title">관심 분야</p>
+                    <div class="row card-body">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--대시보드 div-->
+    </div>
+    <!--list & 대시보드-->
+
+    <div th:replace="fragment.html :: footer"></div>
+</body>
+</html>

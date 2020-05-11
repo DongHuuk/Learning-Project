@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script th:replace="fragment.html :: links"></script>
+    <link rel="stylesheet" href="/css/login.css"/>
+</head>
+<body class="container align-items-center justify-content-center">
+<div th:replace="fragment.html :: navbar"></div>
+    <div class="inner-div">
+        <div class="logo-div">
+            <a class="login-logo d-flex justify-content-center" href="#" th:href="@{/}">
+                <img src="/images/rogo.png" width="70" height="70" class="d-inline-block align-top" alt="">
+                <span class="login-logo-font">Learning</span>
+            </a>
+        </div>
+
+        <div class="input-div d-flex justify-content-center">
+            <div class="col-lg-3"></div>
+            <form class="needs-validation col-lg-6" action="#" th:action="@{/login}" method="post" novalidate>
+                <div class="form-group">
+                    <label for="username">이메일</label>
+                    <input id="username" type="email" name="username" class="form-control"
+                           placeholder="kuroneko2@gmail.com" aria-describedby="emailHelp" required>
+                    <small id="emailHelp" class="form-text text-muted">
+                        가입하실때 입력하신 이메일을 입력해주세요.
+                    </small>
+                    <small class="invalid-feedback">이메일을 입력하세요.</small>
+                </div>
+                <div class="form-group">
+                    <label for="password">패스워드</label>
+                    <input id="password" type="password" name="password" class="form-control"
+                           aria-describedby="passwordHelp" required>
+                    <small class="invalid-feedback">패스워드를 입력하세요.</small>
+                </div>
+
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe" name="remember-me">
+                    <label class="form-check-label" for="rememberMe" aria-describedby="rememberMeHelp">로그인 유지</label>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-success btn-block" type="submit"
+                            aria-describedby="submitHelp">로그인</button>
+                </div>
+            </form>
+
+            <div class="col-lg-3"></div>
+        </div>
+    </div>
+<div th:replace="fragment.html :: form-validation"></div>
+</body>
+</html>
+

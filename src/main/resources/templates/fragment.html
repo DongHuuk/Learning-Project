@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="links">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+
+<div th:fragment="navbar">
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <nav class="navbar navbar navbar-expand-lg navbar-light bg-light box-style-shadow">
+        <a class="navbar-brand" href="#" th:href="@{/}">
+            <img src="/images/rogo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            Learning
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_first" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        강의들
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbanavbarDropdownMenuLink_first">
+                        <a class="dropdown-item" href="#">강의 1</a>
+                        <a class="dropdown-item" href="#">강의 2</a>
+                        <a class="dropdown-item" href="#">강의 3</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_second" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        커뮤니티
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_second">
+                        <a class="dropdown-item" href="#">커뮤니티 1</a>
+                        <a class="dropdown-item" href="#">커뮤니티 2</a>
+                        <a class="dropdown-item" href="#">커뮤니티 3</a>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">로드맵 <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" width="180">
+            </form>
+            <form class="form-inline ml-3 mr-1" action="#" th:action="@{'/profile/' + authentication.name}">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">대시보드</button>
+            </form>
+            <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="#" th:href="@{/create-sign}">회원가입</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="#" th:href="@{/login}" >로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">장바구니</a>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg th:data-jdenticon-value="${#authentication.name}" th:if="${#strings.isEmpty(account?.profileImage)}"
+                             width="24" height="24" class="rounded border bg-light"></svg>
+                        <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
+                             width="24" height="24" class="rounded border"/>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-sm-right" aria-labelledby="userDropdown" id="userDropdown">
+                        <h6 class="dropdown-header">
+                            <span sec:authentication="name">Username</span>
+                        </h6>
+                        <a class="dropdown-item" href="#" th:href="@{'/profile/' + ${#authentication.name}}">프로필</a>
+                        <a class="dropdown-item" href="#">스터디</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">설정</a>
+                        <form class="form-inline my-2 my-lg-0" action="#" th:action="@{/logout}" method="post">
+                            <button class="dropdown-item" type="submit">로그아웃</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="row col-md-2 mt-md-5 list-group" th:fragment="profile-bar">
+    <form action="#" th:action="@{'/profile/' + ${#authentication.name}}"><button type="submit" class="list-group-item list-group-item-action">대시보드</button></form>
+    <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">알람</button></form>
+    <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 학습</button></form>
+    <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 결제</button></form>
+    <form action="#" th:action="@{/}" method="get"><button type="submit" class="list-group-item list-group-item-action">설정</button></form>
+</div>
+
+
+<script type="application/javascript" th:fragment="form-validation">
+    (function (){
+        'use strict';
+
+        window.addEventListener('load', function(){
+            const forms = document.getElementsByClassName('needs-validation');
+
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if(form.checkValidity() === false){
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false)
+            })
+        },false)
+    }())
+</script>
+<div th:fragment="footer">
+    <div style="height: 100px"></div>
+    <footer class="footer_custom">
+        <link rel="stylesheet" href="/css/footer.css"/>
+        <div class="footer_custom_bg bg-dark text-white">
+            <span> Test </span>
+        </div>
+    </footer>
+</div>
+
+</html>

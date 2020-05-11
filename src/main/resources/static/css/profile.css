@@ -1,0 +1,91 @@
+@import "/css/profile-bar.css";
+
+li{
+    all: unset;
+}
+
+a:link{
+    color: black;
+    text-decoration: none;
+}
+a:visited {
+    color: black;
+    text-decoration: none;
+}
+a:hover{
+    color: black;
+    text-decoration: none;
+}
+
+.card{
+    height: 200px;
+}
+
+.card-title{
+    font-weight: bold;
+    margin-top: 15px;
+    margin-left: 20px;
+    margin-bottom: 3px;
+}
+.card-body{
+    padding: 0;
+}
+
+.card-body-image{
+    margin-left: 20px;
+}
+
+.jump-site{
+    bottom: 7px;
+    margin-bottom: 10px;
+    margin-right: 9px;
+}
+
+.card-body-profile-inner-name{
+    margin-top: 7px;
+    font-size: 18px;
+}
+
+.card-body-profile-inner > p{
+    margin-left: 16px;
+    margin-bottom: 9px;
+}
+
+.card-body-learning-inner{
+    margin: 0 15px;
+    padding-left: 20px;
+}
+.card-body-log-inner{
+    margin: 0 25px;
+    padding: 0 25px;
+
+}
+
+.card-body-log-inner-big-font{
+    font-weight: bold;
+    font-size: 33px;
+}
+
+.card-body-list-inner{
+    margin-left: 20px;
+}
+
+.card-body-list-inner > ul {
+    width: 100%;
+    padding-left: 0;
+}
+
+.custom-list-group{
+    max-width: 95%;
+}
+.course-title{
+    max-width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
+
+.list-daytime{
+    margin-right: 5px !important;
+}

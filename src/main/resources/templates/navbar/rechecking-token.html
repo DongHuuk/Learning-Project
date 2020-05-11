@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script th:replace="fragment.html :: links"></script>
+    <link rel="stylesheet" href="/css/login.css"/>
+</head>
+<body class="container align-items-center justify-content-center">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="inner-div">
+        <div class="alert alert-info alert-dismissible fade show mt-3 alert-custom" role="alert" th:if="${message}">
+            <p th:text="${message}">flush message</p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="logo-div">
+            <a class="login-logo d-flex justify-content-center" href="#">
+                <img src="/images/rogo.png" width="70" height="70" class="d-inline-block align-top" alt="">
+                <span class="login-logo-font">  Learning</span>
+            </a>
+        </div>
+
+        <div class="row input-div justify-content-center">
+            <div class="col-lg-3"></div>
+            <form class="col-lg-6" method="post" action="#" th:action="@{/recheck-mail-token}" th:object="${reEmailToken}">
+                <label for="email">이메일</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required
+                       placeholder="kuroneko2@gmail.com" th:value="${email}" th:field="*{email}">
+                <small id="emailHelp" class="form-text text-muted">
+                    회원 가입 신청시 입력하셨던 이메일을 입력해주세요. <br>
+                    인증번호 재발송은 1시간에 한번만 가능합니다.
+                </small>
+                <button type="submit" class="btn btn-secondary mt-4">인증 다시 받기</button>
+            </form>
+            <div class="col-lg-3"></div>
+
+            <div class="mt-4 mb-3 text-muted">
+                © 2020-2021
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

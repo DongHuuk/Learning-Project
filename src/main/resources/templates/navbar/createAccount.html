@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <div th:replace="fragment.html :: links"></div>
+
+    <link rel="stylesheet" href="/css/login.css"/>
+</head>
+<body class="container">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="inner-div">
+        <div class="logo-div text-center" style="font-size: 24px">
+            <p class="create-title">회원가입</p>
+        </div>
+
+        <div class="row input-div justify-content-center" >
+            <div class="col-lg-2"></div>
+            <form class="needs-validation col-lg-4" action="#" th:object="${accountForm}" th:action="@{/create-sign}" method="post" novalidate>
+                <div class="form-group">
+                    <label for="nickname">이름</label>
+                    <input type="text" class="form-control" id="nickname" th:field="*{nickname}" placeholder="흑우냥이"
+                           aria-describedby="nicknameHelp" required minlength="2" maxlength="20">
+                    <small id="nicknameHelp" class="form-text text-muted">
+                        ※ 닉네임으로 사용됩니다. 2자에서 20자이내로 입력해주세요.
+                    </small>
+                    <small class="invalid-feedback">닉네임을 다시 입력해주세요.</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">Nickname Error</small>
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required
+                           placeholder="kuroneko2@gmail.com" th:field="*{email}">
+                    <small id="emailHelp" class="form-text text-muted">
+                        ※ 스터디올래는 사용자의 이메일을 공개하지 않습니다.
+                    </small>
+                    <small class="invalid-feedback">이메일을 다시 입력해주세요.</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</small>
+                </div>
+<!--                minlength="10" maxlength="50"-->
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" required
+                        aria-describedby="passwordHelp" th:field="*{password}">
+                    <small id="passwordHelp" class="form-text text-muted">
+                        10자 이상 50자 이내로 입력해주세요. 영문자, 숫자, 특수기호(_!@#$)를 사용할 수 있으며 공백은 사용할 수 없습니다.
+                    </small>
+                    <small class="invalid-feedback">비밀번호를 다시 입력해주세요.</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</small>
+                </div>
+                <div class="form-group">
+                    <label for="passwordCheck">비밀번호 확인</label>
+                    <input type="password" class="form-control" id="passwordCheck" required
+                           aria-describedby="passwordHelp" th:field="*{passwordcheck}">
+                    <small class="invalid-feedback">비밀번호를 다시 입력해주세요.</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</small>
+                </div>
+                <button type="submit" class="btn btn-success btn-block mt-4" th:action="@{/}">회원가입</button>
+                <div class="form-group form-check mt-4 text-center">
+                    <input type="checkbox" class="form-check-input position-static" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">다양한 소식을 받아보시겠어요?</label>
+                </div>
+                <hr/>
+                <div class="mt-4 mb-3 text-muted text-center">
+                    © 2020-2021
+                </div>
+            </form>
+            <div class="col-lg-3">
+                <div class="form-group form-check mt-4 text-center">
+                    <input type="checkbox" class="form-check-input position-static" id="exampleCheck2">
+                    <label class="form-check-label" for="exampleCheck2">github로 로그인 하기</label>
+                </div>
+                <div class="form-group form-check mt-4 text-center">
+                    <input type="checkbox" class="form-check-input position-static" id="exampleCheck3">
+                    <label class="form-check-label" for="exampleCheck3">Google로 로그인 하기</label>
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+
+
+        </div>
+    </div>
+    <div th:replace="fragment.html::form-validation"></div>
+</body>
+</html>
