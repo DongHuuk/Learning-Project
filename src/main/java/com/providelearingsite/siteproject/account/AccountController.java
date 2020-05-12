@@ -63,7 +63,7 @@ public class AccountController {
 
         accountService.createAccountToken(account);
 
-//        model.addAttribute(account);
+        model.addAttribute(account);
         attributes.addFlashAttribute("success", "인증이 완료되었습니다.");
         return "index";
     }

@@ -1,8 +1,10 @@
 package com.providelearingsite.siteproject.profile.validator;
 
+import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountRepository;
 import com.providelearingsite.siteproject.profile.form.AccountUpdateForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

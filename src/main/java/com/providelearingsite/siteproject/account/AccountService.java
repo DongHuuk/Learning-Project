@@ -1,6 +1,8 @@
 package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.mail.LocalJavaMailService;
+import com.providelearingsite.siteproject.profile.form.AccountUpdateForm;
+import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -86,5 +88,16 @@ public class AccountService implements UserDetailsService {
 
     public Optional<Account> findAccount(Account account) {
         return accountRepository.findById(account.getId());
+    }
+
+    public void updateNicknameAndDescription(AccountUpdateForm accountUpdateForm, Account account) {
+        account.setNickname(accountUpdateForm.getNickname());
+        account.setDescription(accountUpdateForm.getDescription());
+        accountRepository.save(account);
+    }
+
+    public void updatePassword(PasswordUpdateForm passwordUpdateForm, Account account) {
+        account.setPassword(passwordEncoder.encode(passwordUpdateForm.getNewPassword()));
+        accountRepository.save(account);
     }
 }
