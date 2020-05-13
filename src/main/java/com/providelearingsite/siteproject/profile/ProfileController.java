@@ -1,10 +1,9 @@
 package com.providelearingsite.siteproject.profile;
 
 import com.providelearingsite.siteproject.account.Account;
-import com.providelearingsite.siteproject.account.AccountRepository;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
-import com.providelearingsite.siteproject.profile.form.AccountUpdateForm;
+import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import com.providelearingsite.siteproject.profile.validator.ProfileNicknameValidator;
 import com.providelearingsite.siteproject.profile.validator.ProfilePasswordValidator;
@@ -56,7 +55,7 @@ public class ProfileController {
         }
 
         model.addAttribute(account);
-        model.addAttribute(new AccountUpdateForm());
+        model.addAttribute(new ProfileUpdateForm());
         model.addAttribute(new PasswordUpdateForm());
 
         return "profile/custom_profile";
@@ -64,7 +63,7 @@ public class ProfileController {
 
     @PostMapping("/update/nickname/{id}")
     public String updateNicknameForm(@CurrentAccount Account account, @PathVariable Long id,
-                                    @Valid AccountUpdateForm accountUpdateForm, Errors errors, Model model) {
+                                     @Valid ProfileUpdateForm profileUpdateForm, Errors errors, Model model) {
         if (account == null) {
             return "index";
         }
@@ -75,7 +74,7 @@ public class ProfileController {
             return "profile/custom_profile";
         }
 
-        accountService.updateNicknameAndDescription(accountUpdateForm, account);
+        accountService.updateNicknameAndDescription(profileUpdateForm, account);
 
         model.addAttribute(account);
         model.addAttribute("message", "프로필이 수정되었습니다.");
@@ -91,7 +90,7 @@ public class ProfileController {
 
         if (errors.hasErrors()) {
             model.addAttribute(account);
-            model.addAttribute(new AccountUpdateForm());
+            model.addAttribute(new ProfileUpdateForm());
             return "profile/custom_profile";
         }
 

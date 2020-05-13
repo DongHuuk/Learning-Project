@@ -19,7 +19,7 @@
 
         <div class="row input-div justify-content-center" >
             <div class="col-lg-2"></div>
-            <form class="needs-validation col-lg-4" action="#" th:object="${accountForm}" th:action="@{/create-sign}" method="post">
+            <form class="needs-validation col-lg-4" action="#" th:object="${accountForm}" th:action="@{/create}" method="post">
                 <div class="form-group">
                     <label for="nickname">이름</label>
                     <input type="text" class="form-control" id="nickname" th:field="*{nickname}" placeholder="흑우냥이"

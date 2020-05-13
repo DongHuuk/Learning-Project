@@ -55,7 +55,7 @@
 
                         <div class="align-items-center profile-content d-flex justify-content-center">
                             <form class="justify-content-start profile-content-input" action="#" method="post" novalidate
-                                  th:action="@{'/update/nickname/' + ${account.id}}" th:object="${accountUpdateForm}">
+                                  th:action="@{'/update/nickname/' + ${account.id}}" th:object="${profileUpdateForm}">
                                 <div class="card-body form-group">
                                     <label for="nickname">닉네임</label>
                                     <input type="text" class="form-control" id="nickname" required minlength="2" maxlength="20" th:field="*{nickname}">
@@ -65,8 +65,7 @@
 
                                 <div>
                                     <label for="summernote">자기소개</label>
-                                    <textarea id="summernote" type="textarea" required> </textarea>
-
+                                    <textarea id="summernote" type="textarea" required th:field="*{description}"> </textarea>
                                     <small class="invalid-feedback">모임 설명을 입력하세요.</small>
                                 </div>
 

@@ -1,10 +1,8 @@
 package com.providelearingsite.siteproject.profile.validator;
 
-import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountRepository;
-import com.providelearingsite.siteproject.profile.form.AccountUpdateForm;
+import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -16,14 +14,14 @@ public class ProfileNicknameValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(AccountUpdateForm.class);
+        return clazz.isAssignableFrom(ProfileUpdateForm.class);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        AccountUpdateForm accountUpdateForm = (AccountUpdateForm) target;
+        ProfileUpdateForm profileUpdateForm = (ProfileUpdateForm) target;
 
-        if (accountRepository.existsByNickname(accountUpdateForm.getNickname())) {
+        if (accountRepository.existsByNickname(profileUpdateForm.getNickname())) {
             errors.rejectValue("nickname", "wrong.nickname", "닉네임을 사용할 수 없습니다.");
         }
     }

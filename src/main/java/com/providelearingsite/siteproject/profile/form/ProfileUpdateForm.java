@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class AccountUpdateForm {
+public class ProfileUpdateForm {
 
     @NotBlank
     @Length(min = 2, max = 20)

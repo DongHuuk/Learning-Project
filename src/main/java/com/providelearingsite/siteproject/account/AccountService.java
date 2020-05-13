@@ -1,7 +1,7 @@
 package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.mail.LocalJavaMailService;
-import com.providelearingsite.siteproject.profile.form.AccountUpdateForm;
+import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +52,13 @@ public class AccountService implements UserDetailsService {
         return new AccountUser(account);
     }// security가 DB에 access해서 값을 가져올 수 있게 해주는 adapter
 
-    public void createAccount(Account account) {
+    public Account createAccount(Account account) {
         account.setCreateAccount(LocalDateTime.now());
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setTokenChecked(false);
         sendEmailToken(account);
 
-        accountRepository.save(account);
+        return accountRepository.save(account);
     }
 
     private void sendEmailToken(Account account) {
@@ -66,9 +66,9 @@ public class AccountService implements UserDetailsService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(account.getEmail());
         mailMessage.setSubject("회원 가입 안내 메일");
-        mailMessage.setText("/check-mail-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail());
+        mailMessage.setText("/check-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail());
         localJavaMailService.send(mailMessage);
-        log.info("/check-mail-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail());
+        log.info("/check-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail());
     }
 
     public void createAccountToken(Account account) {
@@ -77,12 +77,10 @@ public class AccountService implements UserDetailsService {
     }
 
     public Account findAccountByEmailWithNotChecking(String email) {
-        Account account = accountRepository.findByEmailAndTokenChecked(email, false);
-        return account;
+        return accountRepository.findByEmailAndTokenChecked(email, false);
     }
 
-    public void reCheckingEmailToken(String email) {
-        Account account = accountRepository.findByEmailAndTokenChecked(email, false);
+    public void reCheckingEmailToken(Account account) {
         sendEmailToken(account);
     }
 
@@ -90,9 +88,9 @@ public class AccountService implements UserDetailsService {
         return accountRepository.findById(account.getId());
     }
 
-    public void updateNicknameAndDescription(AccountUpdateForm accountUpdateForm, Account account) {
-        account.setNickname(accountUpdateForm.getNickname());
-        account.setDescription(accountUpdateForm.getDescription());
+    public void updateNicknameAndDescription(ProfileUpdateForm profileUpdateForm, Account account) {
+        account.setNickname(profileUpdateForm.getNickname());
+        account.setDescription(profileUpdateForm.getDescription());
         accountRepository.save(account);
     }
 
