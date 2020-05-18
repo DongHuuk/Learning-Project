@@ -13,7 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -53,7 +56,7 @@ class AccountControllerTest {
                 .param("nickname", "Test")
                 .with(csrf()))
                 .andExpect(model().hasNoErrors())
-                .andExpect(model().attributeExists("reEmailToken"))
+                .andExpect(model().attributeExists("emailToken"))
                 .andExpect(model().attributeExists("message"))
                 .andExpect(view().name("navbar/token_validation"))
                 .andExpect(status().isOk());
@@ -184,7 +187,7 @@ class AccountControllerTest {
                 .param("email", account.getEmail()))
                 .andExpect(model().attributeExists("message"))
                 .andExpect(model().attributeExists("email"))
-                .andExpect(model().attributeExists("reEmailToken"))
+                .andExpect(model().attributeExists("emailToken"))
                 .andExpect(view().name("navbar/token_validation"))
                 .andExpect(status().isOk());
 
@@ -209,7 +212,7 @@ class AccountControllerTest {
                 .param("email", "kuroneko2@naver.com"))
                 .andExpect(model().attributeExists("message"))
                 .andExpect(model().attributeExists("email"))
-                .andExpect(model().attributeExists("reEmailToken"))
+                .andExpect(model().attributeExists("emailToken"))
                 .andExpect(view().name("navbar/token_validation"))
                 .andExpect(status().isOk());
 

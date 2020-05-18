@@ -22,11 +22,11 @@ public class AccountForm {
     private String email;
 
     @NotBlank
-    @Length(min = 10, max = 50)
+//    @Length(min = 10, max = 50)
     private String password;
 
     @NotBlank
-    @Length(min = 10, max = 50)
+//    @Length(min = 10, max = 50)
     private String passwordcheck;
 
     public boolean checkingPassword() {

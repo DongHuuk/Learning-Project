@@ -31,8 +31,13 @@ public class Account {
     private LocalDateTime createEmailToken;
 
     private String emailCheckToken;
-
     private boolean tokenChecked = false;
+
+    //notifications
+    private boolean siteMailNotification;
+    private boolean siteWebNotification;
+    private boolean learningMailNotification;
+    private boolean learningWebNotification;
 
     public void createEmailCheckToken(){
         this.emailCheckToken = UUID.randomUUID().toString();
@@ -42,6 +47,5 @@ public class Account {
     public Boolean canCheckingEmailToken() {
         return this.createEmailToken.isBefore(LocalDateTime.now().minusHours(1));
     }
-
 
 }

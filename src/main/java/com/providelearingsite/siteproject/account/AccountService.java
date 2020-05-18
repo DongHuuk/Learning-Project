@@ -1,9 +1,11 @@
 package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.mail.LocalJavaMailService;
+import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +31,7 @@ public class AccountService implements UserDetailsService {
     @Autowired private AccountRepository accountRepository;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private LocalJavaMailService localJavaMailService;
+    @Autowired private ModelMapper modelMapper;
 
     public void login(Account account){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -84,18 +87,18 @@ public class AccountService implements UserDetailsService {
         sendEmailToken(account);
     }
 
-    public Optional<Account> findAccount(Account account) {
-        return accountRepository.findById(account.getId());
+    public Account updateNicknameAndDescription(ProfileUpdateForm profileUpdateForm, Account account) {
+        modelMapper.map(profileUpdateForm, account);
+        return accountRepository.save(account);
     }
 
-    public void updateNicknameAndDescription(ProfileUpdateForm profileUpdateForm, Account account) {
-        account.setNickname(profileUpdateForm.getNickname());
-        account.setDescription(profileUpdateForm.getDescription());
-        accountRepository.save(account);
-    }
-
-    public void updatePassword(PasswordUpdateForm passwordUpdateForm, Account account) {
+    public Account updatePassword(PasswordUpdateForm passwordUpdateForm, Account account) {
         account.setPassword(passwordEncoder.encode(passwordUpdateForm.getNewPassword()));
-        accountRepository.save(account);
+        return accountRepository.save(account);
+    }
+
+    public Account updateNotifications(NotificationUpdateForm notificationUpdateForm, Account account) {
+        modelMapper.map(notificationUpdateForm, account);
+        return accountRepository.save(account);
     }
 }

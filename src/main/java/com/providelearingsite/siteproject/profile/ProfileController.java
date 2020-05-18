@@ -3,6 +3,7 @@ package com.providelearingsite.siteproject.profile;
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
+import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import com.providelearingsite.siteproject.profile.validator.ProfileNicknameValidator;
@@ -28,35 +29,32 @@ public class ProfileController {
     @Autowired private ModelMapper modelMapper;
     @Autowired private ProfilePasswordValidator profilePasswordValidator;
 
+    private void addForms(@CurrentAccount Account account, Model model) {
+        model.addAttribute(new ProfileUpdateForm());
+        model.addAttribute(new PasswordUpdateForm());
+        model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
+    }
+
     @InitBinder("accountUpdateForm")
     public void nicknameUpdate(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(profileNicknameValidator);
     }
+
     @InitBinder("passwordUpdateForm")
     public void passwordUpdate(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(profilePasswordValidator);
     }
 
-
     @GetMapping("/profile/{id}")
     public String viewProfile(@CurrentAccount Account account, @PathVariable Long id, Model model){
-        if(account == null){
-            return "index";
-        }
-
         model.addAttribute(account);
         return "navbar/profile";
     }
 
     @GetMapping("/profile/{id}/custom")
     public String viewRevise(@CurrentAccount Account account, @PathVariable Long id, Model model) {
-        if(account == null){
-            return "index";
-        }
-
         model.addAttribute(account);
-        model.addAttribute(new ProfileUpdateForm());
-        model.addAttribute(new PasswordUpdateForm());
+        addForms(account, model);
 
         return "profile/custom_profile";
     }
@@ -64,19 +62,17 @@ public class ProfileController {
     @PostMapping("/update/nickname/{id}")
     public String updateNicknameForm(@CurrentAccount Account account, @PathVariable Long id,
                                      @Valid ProfileUpdateForm profileUpdateForm, Errors errors, Model model) {
-        if (account == null) {
-            return "index";
-        }
-
         if (errors.hasErrors()) {
             model.addAttribute(account);
             model.addAttribute(new PasswordUpdateForm());
+            model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
             return "profile/custom_profile";
         }
 
-        accountService.updateNicknameAndDescription(profileUpdateForm, account);
+        Account newAccount = accountService.updateNicknameAndDescription(profileUpdateForm, account);
 
-        model.addAttribute(account);
+        model.addAttribute(newAccount);
+        addForms(account, model);
         model.addAttribute("message", "프로필이 수정되었습니다.");
         return "redirect:/profile/" + account.getId() + "/custom";
     }
@@ -84,20 +80,29 @@ public class ProfileController {
     @PostMapping("/update/password/{id}")
     public String updatePasswordForm(@CurrentAccount Account account, @PathVariable Long id,
                                     @Valid PasswordUpdateForm passwordUpdateForm, Errors errors, Model model) {
-        if (account == null) {
-            return "index";
-        }
-
         if (errors.hasErrors()) {
             model.addAttribute(account);
             model.addAttribute(new ProfileUpdateForm());
+            model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
             return "profile/custom_profile";
         }
 
-        accountService.updatePassword(passwordUpdateForm, account);
+        final Account newAccount = accountService.updatePassword(passwordUpdateForm, account);
 
-        model.addAttribute(account);
+        model.addAttribute(newAccount);
         model.addAttribute("message", "비밀번호가 수정되었습니다.");
+        addForms(account, model);
+        return "redirect:/profile/" + account.getId() + "/custom";
+    }
+
+    @PostMapping("/update/noti/{id}")
+    public String updateNotificationForm(@CurrentAccount Account account, @PathVariable Long id, Model model,
+                                         NotificationUpdateForm notificationUpdateForm) {
+        Account newAccount = accountService.updateNotifications(notificationUpdateForm, account);
+
+        model.addAttribute(newAccount);
+        model.addAttribute("message", "알림 설정이 완료되었습니다.");
+        addForms(account, model);
         return "redirect:/profile/" + account.getId() + "/custom";
     }
 
