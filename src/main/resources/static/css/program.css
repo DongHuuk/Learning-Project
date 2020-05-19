@@ -12,6 +12,7 @@ a:hover{
 }
 .accordion-list{
     padding: 0;
+    max-width: 170px;
 }
 .btn{
     padding: 0;
@@ -34,8 +35,28 @@ a:hover{
 .void-line{
     margin-top: 13px;
     margin-bottom: 7px;
+    margin-right: 0;
+}
+.header-nav{
+    margin: 0;
 }
 .header-nav-navbar{
     margin: 0;
     padding: 0;
+}
+.list-viewer{
+    margin-top: 11px;
+}
+.list-viewer-icon{
+    padding: 2px 7px;
+}
+.list-selector{
+    margin-left: 10px;
+}
+.list-selector-button{
+    padding: 0 10px;
+}
+.inner-container{
+    padding-right: 28px;
+    padding-left: 38px;
 }
