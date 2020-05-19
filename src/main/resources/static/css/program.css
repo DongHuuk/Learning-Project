@@ -1,0 +1,41 @@
+a:link{
+    color: black;
+    text-decoration: none;
+}
+a:visited {
+    color: black;
+    text-decoration: none;
+}
+a:hover{
+    color: black;
+    text-decoration: none;
+}
+.accordion-list{
+    padding: 0;
+}
+.btn{
+    padding: 0;
+}
+.card-header{
+    padding: 10px;
+}
+.card-body{
+    padding: 10px;
+}
+.div-bottom-line{
+    border-bottom: #DFDFDF 1px solid;
+}
+.search-bar{
+    max-width: 25%;
+}
+.search-button{
+    padding: 0 8px;
+}
+.void-line{
+    margin-top: 13px;
+    margin-bottom: 7px;
+}
+.header-nav-navbar{
+    margin: 0;
+    padding: 0;
+}

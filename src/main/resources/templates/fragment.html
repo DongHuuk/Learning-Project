@@ -4,9 +4,10 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <div th:fragment="links">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap"/>
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
+
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </div>
@@ -29,9 +30,8 @@
                         강의들
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbanavbarDropdownMenuLink_first">
-                        <a class="dropdown-item" href="#">강의 1</a>
-                        <a class="dropdown-item" href="#">강의 2</a>
-                        <a class="dropdown-item" href="#">강의 3</a>
+                        <a class="dropdown-item" href="#" th:href="@{/learning/program}">프로그래밍</a>
+                        <a class="dropdown-item" href="#" th:href="@{/learning/algorithm}">알고리즘</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
