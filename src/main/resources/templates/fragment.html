@@ -30,7 +30,7 @@
                         강의들
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbanavbarDropdownMenuLink_first">
-                        <a class="dropdown-item" href="#" th:href="@{/learning/program}">프로그래밍</a>
+                        <a class="dropdown-item" href="#" th:href="@{/learning/program}">웹 개발</a>
                         <a class="dropdown-item" href="#" th:href="@{/learning/algorithm}">알고리즘</a>
                     </div>
                 </li>
@@ -96,6 +96,7 @@
     <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 학습</button></form>
     <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 결제</button></form>
     <form action="#" th:action="@{'/profile/' + ${account.id} + '/custom'}" method="get"><button type="submit" class="list-group-item list-group-item-action">설정</button></form>
+    <form action="#" th:action="@{'/profile/' + ${account.id} + '/upload'}" method="get" ><button type="submit" class="list-group-item list-group-item-action" th:disabled="${!account.uploader}">업로더</button></form>
 </div>
 
 <script type="application/javascript" th:fragment="form-validation">

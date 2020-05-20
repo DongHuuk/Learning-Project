@@ -16,6 +16,6 @@ public class LearningConroller {
     @GetMapping("/learning/algorithm")
     public String viewSelf(Model model){
 
-        return "index";
+        return "learning/program";
     }
 }

@@ -36,7 +36,7 @@
                     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
                         <a href="#">
                             <div class="card-body div-bottom-line">
-                                모든 강의
+                                All
                             </div>
                         </a>
                         <a href="#">
@@ -51,7 +51,7 @@
                         </a>
                         <a href="#">
                             <div class="card-body div-bottom-line">
-                                Css HTML
+                                CSS HTML
                             </div>
                         </a>
                     </div>
@@ -65,7 +65,7 @@
                     <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo">
                         <a href="#">
                             <div class="card-body div-bottom-line">
-                                모든 강의
+                                All
                             </div>
                         </a>
                         <a href="#">
@@ -113,13 +113,15 @@
                         </div>
                     </nav>
                     <div class="list-viewer d-flex align-content-center">
-                        <div>
-                            <button type="button" class="btn btn-outline-info list-viewer-icon">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-info active list-viewer-icon">
+                                <input type="radio" name="options" id="option1" checked>
                                 <i class="fas fa-list-ul"></i>
-                            </button>
-                            <button type="button" class="btn btn-outline-info list-viewer-icon">
+                            </label>
+                            <label class="btn btn-info list-viewer-icon">
+                                <input type="radio" name="options" id="option2">
                                 <i class="fas fa-th"></i>
-                            </button>
+                            </label>
                         </div>
                         <div class="btn-group list-selector">
                             <button type="button" class="btn btn-info dropdown-toggle list-selector-button" data-toggle="dropdown"
@@ -133,8 +135,22 @@
                     </div>
                 </div>
             </header>
-            <main>
-
+            <main class="row mt-md-3">
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail" src="/images/view_1.jpg"/>
+                        <div class="card-body">
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                </div>
+                                <small class="text-muted">9 mins</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </main>

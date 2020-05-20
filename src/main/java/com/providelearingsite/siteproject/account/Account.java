@@ -39,6 +39,9 @@ public class Account {
     private boolean learningMailNotification;
     private boolean learningWebNotification;
 
+    //uploader
+    private boolean uploader = false;
+
     public void createEmailCheckToken(){
         this.emailCheckToken = UUID.randomUUID().toString();
         this.createEmailToken = LocalDateTime.now();

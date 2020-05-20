@@ -3,20 +3,25 @@ package com.providelearingsite.siteproject.account;
 import com.providelearingsite.siteproject.account.form.AccountForm;
 import com.providelearingsite.siteproject.account.form.EmailToken;
 import com.providelearingsite.siteproject.account.validator.AccountValidator;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Request;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.http.HttpRequest;
 
 @Controller
+@Slf4j
 public class AccountController {
 
     @Autowired private AccountValidator accountValidator;
@@ -45,9 +50,9 @@ public class AccountController {
 
         accountService.createAccount(modelMapper.map(accountForm, Account.class));
         //Repository에 저장 + token chekcing value = false, 이 값이 false일 경우 정상 작동하지 않도록
+
         model.addAttribute("message", "인증용 메일이 전송 되었습니다. 확인해주세요");
         model.addAttribute(new EmailToken());
-
         return "navbar/token_validation";
     }
 

@@ -3,6 +3,7 @@ package com.providelearingsite.siteproject.profile;
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
+import com.providelearingsite.siteproject.learning.form.VideoForm;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
@@ -104,6 +105,21 @@ public class ProfileController {
         model.addAttribute("message", "알림 설정이 완료되었습니다.");
         addForms(account, model);
         return "redirect:/profile/" + account.getId() + "/custom";
+    }
+
+    @GetMapping("/profile/{id}/upload")
+    public String viewUpload(@CurrentAccount Account account,@PathVariable Long id, Model model){
+        model.addAttribute(account);
+        model.addAttribute(new VideoForm());
+        return "profile/upload";
+    }
+
+    @PostMapping("/profile/{id}/upload")
+    public String updateVideo(@CurrentAccount Account account,@PathVariable Long id, Model model
+                    ,@Valid VideoForm videoForm, Errors errors){
+        model.addAttribute(account);
+        model.addAttribute(new VideoForm());
+        return "profile/upload";
     }
 
 }

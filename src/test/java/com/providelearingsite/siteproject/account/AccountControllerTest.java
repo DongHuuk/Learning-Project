@@ -266,4 +266,5 @@ class AccountControllerTest {
         Account account = accountRepository.findByEmailAndTokenChecked(accountForm.getEmail(), false);
         assertNotNull(account);
     }
+
 }
