@@ -9,6 +9,7 @@ import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import com.providelearingsite.siteproject.profile.validator.ProfileNicknameValidator;
 import com.providelearingsite.siteproject.profile.validator.ProfilePasswordValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,16 +20,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Controller
 public class ProfileController {
 
-    @Autowired private ProfileNicknameValidator profileNicknameValidator;
-    @Autowired private AccountService accountService;
-    @Autowired private ModelMapper modelMapper;
-    @Autowired private ProfilePasswordValidator profilePasswordValidator;
+    @Autowired
+    private ProfileNicknameValidator profileNicknameValidator;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private ProfilePasswordValidator profilePasswordValidator;
 
     private void addForms(@CurrentAccount Account account, Model model) {
         model.addAttribute(new ProfileUpdateForm());
@@ -47,7 +54,7 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/{id}")
-    public String viewProfile(@CurrentAccount Account account, @PathVariable Long id, Model model){
+    public String viewProfile(@CurrentAccount Account account, @PathVariable Long id, Model model) {
         model.addAttribute(account);
         return "navbar/profile";
     }
@@ -80,7 +87,7 @@ public class ProfileController {
 
     @PostMapping("/update/password/{id}")
     public String updatePasswordForm(@CurrentAccount Account account, @PathVariable Long id,
-                                    @Valid PasswordUpdateForm passwordUpdateForm, Errors errors, Model model) {
+                                     @Valid PasswordUpdateForm passwordUpdateForm, Errors errors, Model model) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             model.addAttribute(new ProfileUpdateForm());
@@ -108,18 +115,17 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/{id}/upload")
-    public String viewUpload(@CurrentAccount Account account,@PathVariable Long id, Model model){
+    public String viewUpload(@CurrentAccount Account account, @PathVariable Long id, Model model) {
         model.addAttribute(account);
         model.addAttribute(new VideoForm());
         return "profile/upload";
     }
 
     @PostMapping("/profile/{id}/upload")
-    public String updateVideo(@CurrentAccount Account account,@PathVariable Long id, Model model
-                    ,@Valid VideoForm videoForm, Errors errors){
+    public String updateVideo(@CurrentAccount Account account, @PathVariable Long id, Model model
+            , @Valid VideoForm videoForm, Errors errors) {
         model.addAttribute(account);
         model.addAttribute(new VideoForm());
         return "profile/upload";
     }
-
 }
