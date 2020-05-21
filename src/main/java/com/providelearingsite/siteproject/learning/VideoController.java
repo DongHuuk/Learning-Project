@@ -10,11 +10,11 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.validation.Valid;
-import java.io.IOException;
+import java.util.List;
 
 @Controller
 public class VideoController {
@@ -30,15 +30,14 @@ public class VideoController {
 
     @PostMapping("/profile/{id}/upload")
     public String updateVideo(@CurrentAccount Account account, @PathVariable Long id, Model model
-            , @RequestParam("file") MultipartFile file, @Valid VideoForm videoForm, Errors errors) throws IOException {
-
+            ,MultipartHttpServletRequest multipartHttpServletRequest, @Valid VideoForm videoForm, Errors errors) {
         if(errors.hasErrors()){
             model.addAttribute(account);
             model.addAttribute("message", "다시 입력해주세요.");
             return "profile/upload";
         }
-
-        videoService.saveVideo(videoForm, file);
+        List<MultipartFile> multipartFileList = multipartHttpServletRequest.getFiles("file");
+        videoService.saveVideo(videoForm, multipartFileList);
 
         model.addAttribute(account);
         model.addAttribute("message", "추가되었습니다");
