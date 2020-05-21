@@ -9,12 +9,11 @@ import java.util.Set;
 
 @Data
 public class VideoForm {
-    @NotBlank
-    private String address;
+
+//    private File file;
     @NotBlank
     private String title;
     private String subscription;
     private String banner;
-    @NotBlank
     private Set<Tag> tags = new HashSet<>();
 }

@@ -20,7 +20,7 @@ public class Video {
     @NotNull
     private String address;
     @NotNull
-    private String Title;
+    private String title;
     @NotNull
     private String subscription;
     @Nullable

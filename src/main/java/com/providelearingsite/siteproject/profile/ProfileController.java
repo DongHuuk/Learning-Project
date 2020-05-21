@@ -4,12 +4,14 @@ import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
 import com.providelearingsite.siteproject.learning.form.VideoForm;
+import com.providelearingsite.siteproject.learning.validator.VideoValidator;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import com.providelearingsite.siteproject.profile.validator.ProfileNicknameValidator;
 import com.providelearingsite.siteproject.profile.validator.ProfilePasswordValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @Controller
+@Slf4j
 public class ProfileController {
 
     @Autowired
@@ -36,6 +39,7 @@ public class ProfileController {
     private ModelMapper modelMapper;
     @Autowired
     private ProfilePasswordValidator profilePasswordValidator;
+    @Autowired private VideoValidator videoValidator;
 
     private void addForms(@CurrentAccount Account account, Model model) {
         model.addAttribute(new ProfileUpdateForm());
@@ -51,6 +55,11 @@ public class ProfileController {
     @InitBinder("passwordUpdateForm")
     public void passwordUpdate(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(profilePasswordValidator);
+    }
+
+    @InitBinder("videoForm")
+    public void uploadFiles(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(videoValidator);
     }
 
     @GetMapping("/profile/{id}")
@@ -112,20 +121,5 @@ public class ProfileController {
         model.addAttribute("message", "알림 설정이 완료되었습니다.");
         addForms(account, model);
         return "redirect:/profile/" + account.getId() + "/custom";
-    }
-
-    @GetMapping("/profile/{id}/upload")
-    public String viewUpload(@CurrentAccount Account account, @PathVariable Long id, Model model) {
-        model.addAttribute(account);
-        model.addAttribute(new VideoForm());
-        return "profile/upload";
-    }
-
-    @PostMapping("/profile/{id}/upload")
-    public String updateVideo(@CurrentAccount Account account, @PathVariable Long id, Model model
-            , @Valid VideoForm videoForm, Errors errors) {
-        model.addAttribute(account);
-        model.addAttribute(new VideoForm());
-        return "profile/upload";
     }
 }
