@@ -10,10 +10,8 @@ import java.util.Set;
 @Data
 public class VideoForm {
 
-//    private File file;
     @NotBlank
     private String title;
     private String subscription;
-    private String banner;
     private Set<Tag> tags = new HashSet<>();
 }

@@ -20,9 +20,6 @@ public class VideoValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         VideoForm videoForm = (VideoForm) o;
-//        if (videoForm.getFile() == null) {
-//            errors.rejectValue("file", "wrong.file", "파일을 다시 추가해주세요.");
-//        }
         if(videoRepository.existsByTitle(videoForm.getTitle())){
             errors.rejectValue("title", "wrong.title", "같은 제목의 강의가 존재합니다.");
         }

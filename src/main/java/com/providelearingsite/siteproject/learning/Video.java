@@ -1,10 +1,13 @@
 package com.providelearingsite.siteproject.learning;
 
 import lombok.*;
-import org.springframework.lang.Nullable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,14 +20,18 @@ public class Video {
     @GeneratedValue
     @Id
     private Long id;
-    @NotNull
-    private String address;
+    //video info
+    private Long videoSize;
+    private String videoPath;
+    private String videoTitle;
+    private LocalDateTime saveTime;
+    private String banner;
+
     @NotNull
     private String title;
     @NotNull
     private String subscription;
-    @Nullable
-    private String banner;
+
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
