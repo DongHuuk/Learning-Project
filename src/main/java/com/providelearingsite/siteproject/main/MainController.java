@@ -37,7 +37,7 @@ public class MainController {
     @PostMapping("/login")
     public String loginPost(Model model){
 
-        model.addAttribute("message", "로그인 정보가 없습니다. 계정을 확인 해주세요.")
+        model.addAttribute("message", "로그인 정보가 없습니다. 계정을 확인 해주세요.");
 
         return "login";
     }
