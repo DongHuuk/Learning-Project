@@ -40,7 +40,7 @@ public class Account {
     private boolean learningWebNotification;
 
     //uploader
-    private boolean uploader = false;
+    private boolean uploader = true;
 
     public void createEmailCheckToken(){
         this.emailCheckToken = UUID.randomUUID().toString();

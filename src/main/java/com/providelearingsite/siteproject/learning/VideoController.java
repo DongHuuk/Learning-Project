@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -33,7 +34,7 @@ public class VideoController {
     }
 
     @GetMapping("/profile/{id}/upload")
-    public String viewUpload(@CurrentAccount Account account, @PathVariable Long id, Model model) {
+    public String viewUpload(@CurrentAccount Account account, @PathVariable Long id, Model model) throws IOException {
         model.addAttribute(account);
         model.addAttribute(new VideoForm());
         return "profile/upload";
@@ -42,16 +43,19 @@ public class VideoController {
     @PostMapping("/profile/{id}/upload")
     public String updateVideo(@CurrentAccount Account account, @PathVariable Long id, Model model
             ,MultipartHttpServletRequest multipartHttpServletRequest, @Valid VideoForm videoForm, Errors errors) {
-        List<MultipartFile> multipartFileList = multipartHttpServletRequest.getFiles("file");
-        videoService.saveVideo(modelMapper.map(videoForm, Video.class), multipartFileList, account.getNickname());
+        List<MultipartFile> videoFileList = multipartHttpServletRequest.getFiles("file");
+        MultipartFile banner = multipartHttpServletRequest.getFile("banner");
 
-        if(errors.hasErrors()){
+        if(videoFileList.isEmpty() || banner == null || errors.hasErrors()){
             model.addAttribute(account);
             model.addAttribute("message", "다시 입력해주세요.");
             return "profile/upload";
         }
 
+        Video video = videoService.saveVideo(modelMapper.map(videoForm, Video.class), videoFileList, banner, account.getId());
+
         model.addAttribute(account);
+        model.addAttribute("imgePath", video.getBanner());
         model.addAttribute("message", "추가되었습니다");
         return "profile/upload";
     }

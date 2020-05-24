@@ -23,9 +23,9 @@ public class VideoService {
     @Autowired private VideoRepository videoRepository;
     @Autowired private ModelMapper modelMapper;
 
-    public Video saveVideo(Video video, List<MultipartFile> multipartFileList, String  nickname){
-        String folderPath = "C:/project/" + nickname;
-        for (MultipartFile file : multipartFileList){
+    public Video saveVideo(Video video, List<MultipartFile> videoFileList, MultipartFile banner, Long id){
+        String folderPath = "C:/project/" + id;
+        for (MultipartFile file : videoFileList){
             try{
                 File folder = new File(folderPath);
                 if(!folder.isDirectory()){
@@ -33,9 +33,9 @@ public class VideoService {
                 }
 
                 Resource resource = file.getResource();
-                video.setVideoPath(folderPath +"/" + resource.getFilename());
-                video.setVideoSize(resource.getFile().length());
-                video.setVideoTitle(resource.getFilename());
+                video.setVideoServerPath(folderPath +"/" + resource.getFilename());
+                video.setVideoSize(file.getSize() > 0 ? file.getSize() : 0);
+                video.setVideoTitle(file.getOriginalFilename());
 
                 BufferedInputStream inputStream = new BufferedInputStream(resource.getInputStream());
                 BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(folderPath + "/" + resource.getFilename()), 1024 * 500);
@@ -44,6 +44,17 @@ public class VideoService {
                 log.info(e.getMessage() + " is error code");
             }
         }//save the vide files in server folder
+
+        try{
+            Resource resource = banner.getResource();
+            BufferedInputStream inputStream = new BufferedInputStream(resource.getInputStream());
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(folderPath + "/" + resource.getFilename()), 1024 * 10);
+            IOUtils.copy(inputStream, outputStream);
+            File file = new File(folderPath + "/" + resource.getFilename());
+            video.setBanner(file.getPath());
+        } catch (IOException e) {
+            log.info(e.getMessage() + " is error code");
+        }
 
         video.setSaveTime(LocalDateTime.now());
         return videoRepository.save(video);

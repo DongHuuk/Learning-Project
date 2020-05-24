@@ -44,3 +44,7 @@ a:hover{
 .text-muted{
     font-size: 17px;
 }
+.alert-custom{
+    max-height: 52px;
+
+}

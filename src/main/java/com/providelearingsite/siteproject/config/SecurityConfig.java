@@ -32,8 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
             .loginPage("/login")
-            .successForwardUrl("/")
-                .failureForwardUrl("/login")
             .permitAll();
 
         http.logout()
@@ -42,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.rememberMe()
                 .userDetailsService(accountService)
                 .tokenRepository(tokenRepository());
-
     }
 
     @Bean

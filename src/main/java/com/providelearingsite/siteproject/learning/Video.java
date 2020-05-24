@@ -22,7 +22,7 @@ public class Video {
     private Long id;
     //video info
     private Long videoSize;
-    private String videoPath;
+    private String videoServerPath;
     private String videoTitle;
     private LocalDateTime saveTime;
     private String banner;
