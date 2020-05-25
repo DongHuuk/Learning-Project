@@ -17,6 +17,9 @@ a:hover{
 .btn{
     padding: 0;
 }
+.btn-outline-secondary{
+    padding: 4px 8px;
+}
 .card-header{
     padding: 10px;
 }

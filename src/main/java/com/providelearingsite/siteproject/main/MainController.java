@@ -48,13 +48,19 @@ public class MainController {
     }
 
     @GetMapping("/learning/program")
-    public String viewProgramming(Model model){
+    public String viewProgramming(@CurrentAccount Account account, Model model){
+        if(account != null){
+            model.addAttribute(account);
+        }
 
         return "learning/program";
     }
 
     @GetMapping("/learning/algorithm")
-    public String viewSelf(Model model){
+    public String viewSelf(@CurrentAccount Account account, Model model){
+        if(account != null){
+            model.addAttribute(account);
+        }
 
         return "learning/program";
     }
