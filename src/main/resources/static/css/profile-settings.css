@@ -58,3 +58,7 @@
 .notification-setting-notifi{
     width: 100%;
 }
+
+.card-body tags{
+    border: white;
+}
