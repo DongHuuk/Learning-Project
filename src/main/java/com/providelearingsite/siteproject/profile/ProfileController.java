@@ -1,5 +1,7 @@
 package com.providelearingsite.siteproject.profile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
@@ -10,36 +12,46 @@ import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import com.providelearingsite.siteproject.profile.validator.ProfileNicknameValidator;
 import com.providelearingsite.siteproject.profile.validator.ProfilePasswordValidator;
+import com.providelearingsite.siteproject.tag.Tag;
+import com.providelearingsite.siteproject.tag.TagForm;
+import com.providelearingsite.siteproject.tag.TagRepository;
+import com.providelearingsite.siteproject.tag.TagService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.aspectj.apache.bcel.classfile.annotation.TypeAnnotationGen;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
-@Slf4j
 public class ProfileController {
 
-    @Autowired
-    private ProfileNicknameValidator profileNicknameValidator;
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private ProfilePasswordValidator profilePasswordValidator;
+    @Autowired private ProfileNicknameValidator profileNicknameValidator;
+    @Autowired private AccountService accountService;
+    @Autowired private ModelMapper modelMapper;
+    @Autowired private ProfilePasswordValidator profilePasswordValidator;
     @Autowired private VideoValidator videoValidator;
+    @Autowired private TagRepository tagRepository;
+    @Autowired private ObjectMapper objectMapper;
+
+    private final static String CUSTOM_PROFILE = "profile/custom_profile";
+
+    private static String redirectPath_Custom(Long id){
+        return "redirect:/profile/" + id + "/custom";
+    }
 
     private void addForms(@CurrentAccount Account account, Model model) {
         model.addAttribute(new ProfileUpdateForm());
@@ -69,11 +81,16 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/{id}/custom")
-    public String viewRevise(@CurrentAccount Account account, @PathVariable Long id, Model model) {
+    public String viewRevise(@CurrentAccount Account account, @PathVariable Long id, Model model) throws JsonProcessingException {
+        Set<Tag> tags = accountService.getTags(account);
+        List<String> tagList = tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
+
         model.addAttribute(account);
+        model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
+        model.addAttribute("whiteList", objectMapper.writeValueAsString(tagList));
         addForms(account, model);
 
-        return "profile/custom_profile";
+        return CUSTOM_PROFILE;
     }
 
     @PostMapping("/update/nickname/{id}")
@@ -83,7 +100,7 @@ public class ProfileController {
             model.addAttribute(account);
             model.addAttribute(new PasswordUpdateForm());
             model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
-            return "profile/custom_profile";
+            return CUSTOM_PROFILE;
         }
 
         Account newAccount = accountService.updateNicknameAndDescription(profileUpdateForm, account);
@@ -91,7 +108,7 @@ public class ProfileController {
         model.addAttribute(newAccount);
         addForms(account, model);
         model.addAttribute("message", "프로필이 수정되었습니다.");
-        return "redirect:/profile/" + account.getId() + "/custom";
+        return redirectPath_Custom(account.getId());
     }
 
     @PostMapping("/update/password/{id}")
@@ -101,7 +118,7 @@ public class ProfileController {
             model.addAttribute(account);
             model.addAttribute(new ProfileUpdateForm());
             model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
-            return "profile/custom_profile";
+            return redirectPath_Custom(account.getId());
         }
 
         final Account newAccount = accountService.updatePassword(passwordUpdateForm, account);
@@ -109,7 +126,7 @@ public class ProfileController {
         model.addAttribute(newAccount);
         model.addAttribute("message", "비밀번호가 수정되었습니다.");
         addForms(account, model);
-        return "redirect:/profile/" + account.getId() + "/custom";
+        return redirectPath_Custom(account.getId());
     }
 
     @PostMapping("/update/noti/{id}")
@@ -120,6 +137,36 @@ public class ProfileController {
         model.addAttribute(newAccount);
         model.addAttribute("message", "알림 설정이 완료되었습니다.");
         addForms(account, model);
-        return "redirect:/profile/" + account.getId() + "/custom";
+        return redirectPath_Custom(account.getId());
     }
+
+    @PostMapping("/update/tags/add")
+    @ResponseBody
+    public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm){
+        String title = tagForm.getTitle();
+        Tag tag = tagRepository.findByTitle(title);
+        if(tag == null){
+            tag = tagRepository.save(Tag.builder()
+                    .title(tagForm.getTitle())
+                    .build());
+        }
+
+        accountService.addTag(account, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/update/tags/remove")
+    @ResponseBody
+    public ResponseEntity removeTag(@CurrentAccount Account account, @RequestBody TagForm tagForm){
+        String title = tagForm.getTitle();
+        Tag tag = tagRepository.findByTitle(title);
+
+        if(tag == null){
+            return ResponseEntity.badRequest().build();
+        }
+
+        accountService.deleteTag(account, tag);
+        return ResponseEntity.ok().build();
+    }
+
 }

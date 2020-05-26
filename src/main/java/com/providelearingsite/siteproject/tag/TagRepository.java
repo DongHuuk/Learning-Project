@@ -1,4 +1,9 @@
 package com.providelearingsite.siteproject.tag;
 
-public class TagRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+
+
+public interface TagRepository extends JpaRepository<Tag, Long> {
+    Tag findByTitle(String title);
 }

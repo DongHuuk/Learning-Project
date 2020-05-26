@@ -4,6 +4,7 @@ import com.providelearingsite.siteproject.mail.LocalJavaMailService;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
+import com.providelearingsite.siteproject.tag.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -100,5 +102,20 @@ public class AccountService implements UserDetailsService {
     public Account updateNotifications(NotificationUpdateForm notificationUpdateForm, Account account) {
         modelMapper.map(notificationUpdateForm, account);
         return accountRepository.save(account);
+    }
+
+    public void addTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getTags().add(tag));
+    }
+
+    public Set<Tag> getTags(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow().getTags();
+    }
+
+    public void deleteTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.orElseThrow().getTags().remove(tag);
     }
 }

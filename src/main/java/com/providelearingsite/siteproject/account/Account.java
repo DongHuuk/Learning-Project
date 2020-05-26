@@ -1,9 +1,12 @@
 package com.providelearingsite.siteproject.account;
 
+import com.providelearingsite.siteproject.tag.Tag;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -41,6 +44,9 @@ public class Account {
 
     //uploader
     private boolean uploader = true;
+
+    @ManyToMany
+    private Set<Tag> tags = new HashSet<>();
 
     public void createEmailCheckToken(){
         this.emailCheckToken = UUID.randomUUID().toString();

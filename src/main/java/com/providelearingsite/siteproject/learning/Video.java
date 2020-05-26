@@ -1,5 +1,6 @@
 package com.providelearingsite.siteproject.learning;
 
+import com.providelearingsite.siteproject.tag.Tag;
 import lombok.*;
 
 import javax.persistence.Entity;

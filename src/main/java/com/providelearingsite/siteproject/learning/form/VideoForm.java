@@ -1,6 +1,6 @@
 package com.providelearingsite.siteproject.learning.form;
 
-import com.providelearingsite.siteproject.learning.Tag;
+import com.providelearingsite.siteproject.tag.Tag;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
