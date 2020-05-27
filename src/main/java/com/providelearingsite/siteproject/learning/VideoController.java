@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +42,7 @@ public class VideoController {
     }
 
     @PostMapping("/profile/{id}/upload")
-    public String updateVideo(@CurrentAccount Account account, @PathVariable Long id, Model model
+    public String updateLearning(@CurrentAccount Account account, @PathVariable Long id, Model model
             ,MultipartHttpServletRequest multipartHttpServletRequest, @Valid VideoForm videoForm, Errors errors) {
         List<MultipartFile> videoFileList = multipartHttpServletRequest.getFiles("file");
         MultipartFile banner = multipartHttpServletRequest.getFile("banner");
@@ -55,7 +53,7 @@ public class VideoController {
             return "profile/upload";
         }
 
-        Video video = videoService.saveVideo(modelMapper.map(videoForm, Video.class), videoFileList, banner, account.getId());
+        Video video = videoService.saveVideo(videoFileList, account.getId());
 
         model.addAttribute(account);
         model.addAttribute("imgPath", video.getBanner());

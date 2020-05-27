@@ -32,27 +32,27 @@
                 <span style="font-size: 17px; font-weight: bold">설정/업로드</span>
             </div>
 
+            <div class="align-items-center profile-content d-flex justify-content-center">
+                <form class="justify-content-start profile-content-input" action="#" method="post" novalidate id="videoForm"
+                      th:action="@{'/profile/' + ${account.id} + '/upload/video'}" enctype="multipart/form-data">
+                    <div class="d-flex justify-content-center mb-md-2">
+                        <div class="mt-3 input-video">
+                            <input type="file" id="videoFile" class="fileUpload" name="videofile" accept="video/*,.mkv" multiple>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <div class="col">
                 <div class="tab-content d-flex justify-content-start">
                     <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
                         <div class="align-items-center profile-content d-flex justify-content-center">
                             <form class="justify-content-start profile-content-input" action="#" method="post" novalidate
-                                  th:action="@{'/profile/' + ${account.id} + '/upload'}" th:object="${videoForm}" enctype="multipart/form-data">
-                                <div class="d-flex justify-content-center mb-md-2">
-                                    <div class="mt-3">
-                                        <input type="file" id="videoFile" class="fileUpload" name="file" accept="video/*,.mkv" multiple>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-center mb-md-2">
-                                    <ul class="mt-3" id="video-title-list">
-
-                                    </ul>
-                                </div>
+                                  th:action="@{'/profile/' + ${account.id} + '/upload'}" th:object="${videoForm}">
 
                                 <div class="card-body form-group">
-                                    <label for="nickname">강의 제목</label>
-                                    <input type="text" class="form-control" id="nickname" required minlength="2" maxlength="20" th:field="*{title}">
+                                    <label for="title">강의 제목</label>
+                                    <input type="text" class="form-control" id="title" required minlength="2" maxlength="20" th:field="*{title}">
                                     <small class="invalid-feedback">강의명을 입력해주세요</small>
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">강의명 미입력</small>
                                 </div>
@@ -66,11 +66,6 @@
                                     <div class="mt-3">
                                         <input type="file" class="fileUpload" name="banner" accept="image/*">
                                     </div>
-                                </div>
-
-                                <div>
-                                    <p>imaTest</p>
-                                    <img th:src="${imgPath}" alt="default" src="#">
                                 </div>
 
                                 <div>
@@ -91,7 +86,7 @@
     <!--page body-->
 
     <div th:replace="fragment.html :: footer"></div>
-
+    <script th:replace="fragment.html :: csrf-code"></script>
     <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
     <script type="application/javascript">
         $("#summernote").summernote({
@@ -105,17 +100,6 @@
             focus: true
         });
     </script>
-
-    <script type="application/javascript">
-        const fileList = document.getElementById('videoFile').files;
-        for (const file in fileList) {
-            let li = document.createElement('li');
-            let ul = document.getElementById('video-title-list')
-            li.appendChild(document.createTextNode(file.name));
-            ul.appendChild(li);
-        }
-    </script>
-
     <div th:replace="fragment.html::form-validation"></div>
 </body>
 
