@@ -8,4 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public interface VideoRepository extends JpaRepository<Video, Long> {
     boolean existsByTitle(String title);
+
+    Video findByTitle(String test);
 }

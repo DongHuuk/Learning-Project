@@ -35,8 +35,10 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public String loginPost(Model model){
-
+    public String loginPost(@CurrentAccount Account account, Model model){
+        if(account != null){
+            return "redirect:/";
+        }
         model.addAttribute("message", "로그인 정보가 없습니다. 계정을 확인 해주세요.");
 
         return "login";

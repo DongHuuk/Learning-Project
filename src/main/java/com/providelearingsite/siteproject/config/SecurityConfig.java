@@ -2,7 +2,9 @@ package com.providelearingsite.siteproject.config;
 
 import com.providelearingsite.siteproject.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.StaticResourceLocation;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,6 +16,8 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
             .loginPage("/login")
+                .successForwardUrl("/")
+                .failureForwardUrl("/login")
             .permitAll();
 
         http.logout()

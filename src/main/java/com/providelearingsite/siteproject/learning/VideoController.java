@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +29,7 @@ public class VideoController {
     @Autowired private VideoService videoService;
     @Autowired private ModelMapper modelMapper;
     @Autowired private VideoValidator videoValidator;
+    @Autowired private VideoRepository videoRepository;
 
     @InitBinder("videoForm")
     private void initVideoForm(WebDataBinder webDataBinder){
@@ -55,8 +58,9 @@ public class VideoController {
         Video video = videoService.saveVideo(modelMapper.map(videoForm, Video.class), videoFileList, banner, account.getId());
 
         model.addAttribute(account);
-        model.addAttribute("imgePath", video.getBanner());
+        model.addAttribute("imgPath", video.getBanner());
         model.addAttribute("message", "추가되었습니다");
         return "profile/upload";
     }
+
 }
