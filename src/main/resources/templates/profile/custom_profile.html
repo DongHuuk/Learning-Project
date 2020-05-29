@@ -56,8 +56,8 @@
                         <hr/>
 
                         <div class="align-items-center profile-content d-flex justify-content-center">
-                            <form class="justify-content-start profile-content-input" action="#" method="post" novalidate
-                                  th:action="@{'/update/nickname/' + ${account.id}}" th:object="${profileUpdateForm}">
+                            <form class="needs-validation justify-content-start profile-content-input" action="#" method="post"
+                                  th:action="@{'/update/nickname/' + ${account.id}}" th:object="${profileUpdateForm}" >
                                 <div class="card-body form-group">
                                     <label for="nickname">닉네임</label>
                                     <input type="text" class="form-control" id="nickname" required minlength="2" maxlength="20" th:field="*{nickname}">
@@ -67,7 +67,7 @@
 
                                 <div>
                                     <label for="summernote">자기소개</label>
-                                    <textarea id="summernote" type="textarea" required th:field="*{description}"> </textarea>
+                                    <textarea id="summernote" type="textarea" required th:field="*{description}"> 잘 부탁드립니다. </textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-success mt-md-3 mb-md-3">저장하기</button>
@@ -184,6 +184,7 @@
 
     <div th:replace="fragment.html :: footer"></div>
     <script th:replace="fragment.html :: csrf-code"></script>
+    <script th:replace="fragment.html :: csrf-code"></script>
     <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
     <script type="application/javascript">
         $(function(){
@@ -232,7 +233,7 @@
     <script type="application/javascript">
         $("#summernote").summernote({
             fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
-            placeholder: '자기소개를 입력해주세요',
+            placeholder: '자기소개를 반드시 입력해주세요!',
             tabSize: 2,
             lang: "ko-KR",
             height: 220,

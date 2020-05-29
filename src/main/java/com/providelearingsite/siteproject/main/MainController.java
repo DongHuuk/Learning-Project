@@ -2,14 +2,19 @@ package com.providelearingsite.siteproject.main;
 
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.CurrentAccount;
+import com.providelearingsite.siteproject.learning.Learning;
+import com.providelearingsite.siteproject.learning.LearningRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class MainController {
+
+    @Autowired
+    private LearningRepository learningRepository;
 
     @GetMapping("/")
     public String indexGet(@CurrentAccount Account account, Model model){

@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
-import com.providelearingsite.siteproject.learning.form.VideoForm;
-import com.providelearingsite.siteproject.learning.validator.VideoValidator;
+import com.providelearingsite.siteproject.learning.validator.LearningValidator;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
@@ -15,10 +14,6 @@ import com.providelearingsite.siteproject.profile.validator.ProfilePasswordValid
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
-import com.providelearingsite.siteproject.tag.TagService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.aspectj.apache.bcel.classfile.annotation.TypeAnnotationGen;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +22,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,7 +35,7 @@ public class ProfileController {
     @Autowired private AccountService accountService;
     @Autowired private ModelMapper modelMapper;
     @Autowired private ProfilePasswordValidator profilePasswordValidator;
-    @Autowired private VideoValidator videoValidator;
+    @Autowired private LearningValidator learningValidator;
     @Autowired private TagRepository tagRepository;
     @Autowired private ObjectMapper objectMapper;
 
@@ -71,7 +63,7 @@ public class ProfileController {
 
     @InitBinder("videoForm")
     public void uploadFiles(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(videoValidator);
+        webDataBinder.addValidators(learningValidator);
     }
 
     @GetMapping("/profile/{id}")

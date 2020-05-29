@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/", "/login", "/create", "/check-token", "/recheck-token"
-                            , "/learning/program", "/learning/algorithm").permitAll()
+                            , "/learning/program", "/learning/algorithm", "/imgTest").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/**").permitAll()
                 .anyRequest().authenticated();
 

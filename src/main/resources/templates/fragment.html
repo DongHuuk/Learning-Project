@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap"/>
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
-
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </div>
@@ -30,8 +29,8 @@
                         강의들
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbanavbarDropdownMenuLink_first">
-                        <a class="dropdown-item" href="#" th:href="@{/learning/program}">웹 개발</a>
-                        <a class="dropdown-item" href="#" th:href="@{/learning/algorithm}">알고리즘</a>
+                        <a class="dropdown-item" href="#" th:href="@{/learningForm/program}">웹 개발</a>
+                        <a class="dropdown-item" href="#" th:href="@{/learningForm/algorithm}">알고리즘</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -96,7 +95,8 @@
     <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 학습</button></form>
     <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 결제</button></form>
     <form action="#" th:action="@{'/profile/' + ${account.id} + '/custom'}" method="get"><button type="submit" class="list-group-item list-group-item-action">설정</button></form>
-    <form action="#" th:action="@{'/profile/' + ${account.id} + '/upload'}" method="get" ><button type="submit" class="list-group-item list-group-item-action" th:disabled="${!account.uploader}">업로더</button></form>
+    <form action="#" th:action="@{'/profile/upload'}" method="get" ><button type="submit" class="list-group-item list-group-item-action" th:disabled="${!account.uploader}">강의 개설</button></form>
+    <form action="#" th:action="@{'/profile/video/upload'}" method="get" ><button type="submit" class="list-group-item list-group-item-action" th:disabled="${!account.uploader}">강의 영상 업로드</button></form>
 </div>
 
 <script type="application/javascript" th:fragment="form-validation">

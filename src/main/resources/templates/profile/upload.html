@@ -18,62 +18,52 @@
     <div class="d-flex">
         <div th:replace="fragment.html :: profile-bar"></div>
 
-        <div class="alert alert-info alert-dismissible fade show mt-3 alert-custom" role="alert" th:if="${message}">
-            <p th:text="${message}">flush message</p>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-
         <div class="col-md-10 mt-md-5">
+            <div class="col alert alert-info alert-dismissible fade show mt-3 alert-custom message-content" role="alert" th:if="${message}">
+                <p th:text="${message}">flush message</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
             <div class="col-md-12 mb-2">
                 <div style="opacity: 0.7; font-size: 13px">설정/업로드</div>
                 <span style="font-size: 17px; font-weight: bold">설정/업로드</span>
             </div>
 
-            <div class="align-items-center profile-content d-flex justify-content-center">
-                <form class="justify-content-start profile-content-input" action="#" method="post" novalidate id="videoForm"
-                      th:action="@{'/profile/' + ${account.id} + '/upload/video'}" enctype="multipart/form-data">
-                    <div class="d-flex justify-content-center mb-md-2">
-                        <div class="mt-3 input-video">
-                            <input type="file" id="videoFile" class="fileUpload" name="videofile" accept="video/*,.mkv" multiple>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
             <div class="col">
                 <div class="tab-content d-flex justify-content-start">
                     <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
                         <div class="align-items-center profile-content d-flex justify-content-center">
-                            <form class="justify-content-start profile-content-input" action="#" method="post" novalidate
-                                  th:action="@{'/profile/' + ${account.id} + '/upload'}" th:object="${videoForm}">
+                            <form class="needs-validation justify-content-start profile-content-input" action="#" method="post" id="form-data" novalidate
+                                  th:action="@{'/profile/learning/upload'}" th:object="${learningForm}">
 
-                                <div class="card-body form-group">
+                                <div class="card-body form-group mt-lg-4">
                                     <label for="title">강의 제목</label>
-                                    <input type="text" class="form-control" id="title" required minlength="2" maxlength="20" th:field="*{title}">
+                                    <input type="text" class="form-control" id="title" required minlength="2" maxlength="20" th:field="*{title}" >
                                     <small class="invalid-feedback">강의명을 입력해주세요</small>
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">강의명 미입력</small>
                                 </div>
 
-                                <div>
+                                <div class="mt-lg-4 form-group">
                                     <label for="summernote">강의소개</label>
-                                    <textarea id="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
+                                    <textarea id="summernote" class="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
                                 </div>
 
-                                <div class="d-flex justify-content-center mb-md-2">
-                                    <div class="mt-3">
-                                        <input type="file" class="fileUpload" name="banner" accept="image/*">
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <span> 태그 추가</span>
-                                </div>
+<!--                                <div class="card-body form-group mt-md-2 tagify-custom-uploader mt-lg-4">-->
+<!--                                    <div th:text="${whiteList}" id="whitelist" hidden></div>-->
+<!--                                    <label for="tags">분야</label>-->
+<!--                                    <text type="text" class="tagify&#45;&#45;outside form-control input-tagify" id="tags" th:field="*{tags}" aria-describedby="tagHelp"-->
+<!--                                          hidden="hidden" placeholder="강의의 분야를 입력해주세요. 예) Java, Spring, 자바, 자바스크립트 etc..."></text>-->
+<!--                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}">강의의 분야를 입력해주세요</small>-->
+<!--                                </div>-->
 
                                 <button type="submit" class="btn btn-success mt-md-3 mb-md-3">저장하기</button>
+
                             </form>
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                                Tooltip on top
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -86,12 +76,11 @@
     <!--page body-->
 
     <div th:replace="fragment.html :: footer"></div>
-    <script th:replace="fragment.html :: csrf-code"></script>
     <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
     <script type="application/javascript">
         $("#summernote").summernote({
             fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
-            placeholder: '강의에 대한 설명을 입력해주세요.',
+            placeholder: '강의에 대한 설명을 반드시 입력해주세요.',
             tabSize: 2,
             lang: "ko-KR",
             height: 220,
@@ -101,6 +90,7 @@
         });
     </script>
     <div th:replace="fragment.html::form-validation"></div>
+<!--TODO summernote 사용시 empty 상태일 경우 console에서만 경고 이외에는 반응 없음.-->
 </body>
 
 </html>

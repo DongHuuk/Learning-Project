@@ -1,3 +1,11 @@
 .fileUpload{
     width: 744px;
 }
+
+.message-content{
+    height: 51px;
+}
+
+.tagify-custom-uploader > span{
+    margin-left: 0;
+}

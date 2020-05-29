@@ -1,5 +1,6 @@
 package com.providelearingsite.siteproject.account;
 
+import com.providelearingsite.siteproject.learning.Learning;
 import com.providelearingsite.siteproject.tag.Tag;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor @NoArgsConstructor
 public class Account {
 
-    @Id
+    @Id @Column(name = "account_id")
     @GeneratedValue
     private Long id;
 
@@ -48,6 +49,16 @@ public class Account {
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
+    @OneToMany(mappedBy = "account")
+    private Set<Learning> learningSet = new HashSet<>();
+
+    public void setLearningSet(Learning learning) {
+        this.learningSet.add(learning);
+        if(learning.getAccount() != this){
+            learning.setAccount(this);
+        }
+    }
+
     public void createEmailCheckToken(){
         this.emailCheckToken = UUID.randomUUID().toString();
         this.createEmailToken = LocalDateTime.now();
@@ -55,6 +66,9 @@ public class Account {
 
     public Boolean canCheckingEmailToken() {
         return this.createEmailToken.isBefore(LocalDateTime.now().minusHours(1));
+    }
+    public boolean canUploadVideo(){
+        return !this.learningSet.isEmpty();
     }
 
 }
