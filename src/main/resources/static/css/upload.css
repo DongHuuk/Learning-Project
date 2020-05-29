@@ -9,3 +9,9 @@
 .tagify-custom-uploader > span{
     margin-left: 0;
 }
+.tooltip.bs-tooltip-auto[x-placement^=top] .arrow::before, .tooltip.bs-tooltip-top .arrow::before {
+    margin-left: -3px;
+    content: "";
+    border-width: 5px 5px 0;
+    border-top-color: #000;
+}
