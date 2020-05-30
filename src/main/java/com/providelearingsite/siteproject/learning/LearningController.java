@@ -27,28 +27,28 @@ public class LearningController {
         webDataBinder.addValidators(learningValidator);
     }
 
-    @GetMapping("/profile/upload")
+    @GetMapping("/profile/create_learning")
     public String viewUpload(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(new LearningForm());
-        return "profile/upload";
+        return "profile/create_learning";
     }
 
-    @PostMapping("/profile/learning/upload")
+    @PostMapping("/profile/learning/create")
     public String updateLearning(@CurrentAccount Account account, Model model,
                                  @Valid LearningForm learningForm, Errors errors, RedirectAttributes attributes){
         if(errors.hasErrors()){
             model.addAttribute(account);
             model.addAttribute(new LearningForm());
             model.addAttribute("message", "잘못 입력 하셨습니다.");
-            return "profile/upload";
+            return "profile/create_learning";
         }
 
         Learning learning = learningService.saveLearning(learningForm, account);
 
         model.addAttribute(account);
         attributes.addFlashAttribute("message", learning.getTitle() + " 강의가 추가되었습니다");
-        return "redirect:/profile/upload";
+        return "redirect:/profile/create_learning";
     }
 
 }

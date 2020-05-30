@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
     <link rel="stylesheet" href="/css/profile-bar.css"/>
     <link rel="stylesheet" href="/css/profile-settings.css"/>
-    <link rel="stylesheet" href="/css/upload.css"/>
+    <link rel="stylesheet" href="/css/create-learning.css"/>
 </head>
 
 <body class="container">
@@ -31,12 +31,12 @@
                 <span style="font-size: 17px; font-weight: bold">설정/업로드</span>
             </div>
 
-            <div class="col">
+            <div class="col d-flex justify-content-start">
                 <div class="tab-content d-flex justify-content-start">
                     <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
                         <div class="align-items-center profile-content d-flex justify-content-center">
                             <form class="needs-validation justify-content-start profile-content-input" action="#" method="post" id="form-data" novalidate
-                                  th:action="@{'/profile/learning/upload'}" th:object="${learningForm}">
+                                  th:action="@{'/profile/learning/create'}" th:object="${learningForm}">
 
                                 <div class="card-body form-group mt-lg-4">
                                     <label for="title">강의 제목</label>
