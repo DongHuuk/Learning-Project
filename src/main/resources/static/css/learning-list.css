@@ -2,15 +2,23 @@
     width: 700px;
     padding: 10px 0 10px 7px;
 }
+
+.upload-div{
+    padding: 0;
+    margin: 0;
+}
+
+.upload-div > button:hover,
+.upload-div > button:focus {
+    background-color: whitesmoke;
+}
+
 .date-time{
     font-size: 0.8rem;
 }
-.list-body{
-    padding: 10px 0 10px 7px;
-}
 
 .upload-btn {
-    max-width: 80%;
+    max-width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -20,3 +28,16 @@
 .upload-date-time{
     width: 230px;
 }
+.upload-date-time-inner{
+    padding-left: 62px;
+}
+
+.upload-btn-inner{
+    border: 0;
+    padding: 10px 0 10px 7px;
+}
+
+.display-none{
+    visibility: hidden;
+}
+

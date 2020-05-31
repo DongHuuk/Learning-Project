@@ -42,6 +42,8 @@ public class Learning {
 
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
+    private LocalDateTime uploadVideo = null;
+    private LocalDateTime updateLearning = null;
 
     public void setVideos(Video video) {
         this.videos.add(video);
@@ -55,5 +57,12 @@ public class Learning {
         if(!account.getLearningSet().contains(this)){
             account.getLearningSet().add(this);
         }
+    }
+
+    public boolean checkUploadLearning(){
+        return !(this.uploadVideo instanceof LocalDateTime) || this.uploadVideo == null;
+    }
+    public boolean checkUpdateLearning(){
+        return !(this.updateLearning instanceof LocalDateTime) || this.updateLearning == null;
     }
 }

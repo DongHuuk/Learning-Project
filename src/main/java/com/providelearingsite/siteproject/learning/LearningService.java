@@ -112,7 +112,7 @@ public class LearningService {
             e.printStackTrace();
         } //save the banner img in server folder
 
-
+        learning.setUploadVideo(LocalDateTime.now());
         learningRepository.save(learning);
     }
 
