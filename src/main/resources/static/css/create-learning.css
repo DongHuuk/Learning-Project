@@ -5,9 +5,8 @@
 .message-content{
     height: 51px;
 }
-
-.tagify-custom-uploader > span{
-    margin-left: 0;
+.list-body{
+    background: #FFFFFF;
 }
 .tooltip.bs-tooltip-auto[x-placement^=top] .arrow::before, .tooltip.bs-tooltip-top .arrow::before {
     margin-left: -3px;

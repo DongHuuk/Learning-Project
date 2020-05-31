@@ -49,7 +49,7 @@ public class Account {
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Learning> learningSet = new HashSet<>();
 
     public void setLearningSet(Learning learning) {

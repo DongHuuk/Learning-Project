@@ -82,7 +82,8 @@
                                     <div class="card-body">
                                         <div th:text="${whiteList}" id="whitelist" hidden></div>
                                         <label for="skills">관심 분야</label>
-                                        <input class="tagify--outside" id="skills" type="text" th:value="${#strings.listJoin(tags, ',')}" aria-describedby="tagHelp"/>
+                                        <input class="tagify--outside" id="skills" type="text" th:value="${#strings.listJoin(tags, ',')}"
+                                               aria-describedby="tagHelp"/>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +171,6 @@
                             <button type="submit" class="btn btn-success mt-md-3 mb-md-3">수정하기</button>
                         </form>
                         <!--notification settings body-->
-                        <div style="height: 160px"></div>
                     </div>
                     <!--notification settings-->
                 </div>

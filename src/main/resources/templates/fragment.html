@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/popper.js/dist/popper.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </div>
 
@@ -100,24 +99,25 @@
         <div>
             <div class="list-group-item list-group-item-action list-header" id="headingOne" >
                 <h2 class="m-0">
-                    <button class="btn btn-block text-left list-btn" th:disabled="${!account.uploader}" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" >
+                    <button class="btn btn-block text-left list-btn" th:disabled="${!account.uploader}" type="button" data-toggle="collapse" data-target="#collapse" aria-expanded="true" aria-controls="collapseOne" >
                         업로더
                     </button>
                 </h2>
             </div>
-            <div id="collapseOne" class="collapse" aria-labelledby="headingOne">
-                <form action="#" th:action="@{'/profile/create_learning'}" method="get">
+            <div id="collapse" class="collapse" aria-labelledby="headingOne">
+                <form action="#" th:action="@{'/profile/learning/create'}" method="get">
                     <button class="list-group-item list-group-item-action list-body" th:disabled="${!account.uploader}" type="submit">
                             강의 개설
                     </button>
                 </form>
-                <form action="#" th:action="@{'/profile/video/upload'}" method="get">
+                <form action="#" th:action="@{'/profile/learning/list'}" method="get">
                     <button class="list-group-item list-group-item-action list-body" th:disabled="${!account.uploader}" type="submit">
                         강의 영상 업로드
                     </button>
                 </form>
             </div>
         </div>
+        <div style="height: 400px"></div>
     </div>
 <!--    <form action="#" th:action="" method="get" ><button type="submit" class="list-group-item list-group-item-action" th:disabled="${!account.uploader}">강의 개설</button></form>-->
 <!--    <form action="#" th:action="" method="get" ><button type="submit" class="list-group-item list-group-item-action" th:disabled="${!account.uploader}">강의 영상 업로드</button></form>-->

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/profile-bar.css"/>
+    <link rel="stylesheet" href="/css/profile-settings.css"/>
+    <link rel="stylesheet" href="/css/create-learning.css"/>
+    <link rel="stylesheet" href="/css/learning.css"/>
+    <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
+</head>
+
+<body class="container">
+<div th:replace="fragment.html :: navbar"></div>
+
+<div class="d-flex">
+    <div th:replace="fragment.html :: profile-bar"></div>
+
+    <div class="col-md-10 mt-md-5">
+        <div class="col alert alert-info alert-dismissible fade show mt-3 alert-custom message-content" role="alert" th:if="${message}">
+            <p th:text="${message}">flush message</p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="col-md-12 mb-2">
+            <div style="opacity: 0.7; font-size: 13px">업로더/강의 영상 업로드</div>
+            <span style="font-size: 17px; font-weight: bold">업로더/강의 영상 업로드</span>
+        </div>
+
+        <div class="col d-flex justify-content-start">
+            <div class="tab-content d-flex justify-content-start">
+                <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
+                    <div class="align-items-center profile-content ">
+                        <div class="card-body form-group mt-md-2 tagify-custom-uploader mt-lg-4">
+                            <div th:text="${whiteList}" id="whitelist" hidden></div>
+                            <label for="tags">분야</label>
+                            <input class="tagify--outside input-tagify" id="skills" type="tags" th:value="${#strings.listJoin(tags, ',')}"
+                                   aria-describedby="tagHelp" placeholder="강의의 분야를 입력해주세요. 예) Java, Spring, 자바, 자바스크립트 etc..."/>
+<!--                            <input type="text" class="tagify&#45;&#45;outside form-control " id="" aria-describedby="tagHelp" th:value="${#strings.listJoin(tags,',')}"-->
+                        </div>
+
+                        <form class="needs-validation justify-content-start profile-content-input" action="#" method="post" id="form-data" novalidate
+                              th:action="@{'/profile/learning/upload/' + ${learning.id}}" enctype="multipart/form-data">
+
+                            <div class="d-flex justify-content-center mb-md-2">
+                                <div class="mt-3 input-video">
+                                    <label for="videoFile">영상 업로드</label>
+                                    <input type="file" id="videoFile" class="fileUpload" name="videofile" accept="video/*,.mkv" aria-describedby="videoHelp" multiple>
+                                    <small id="videoHelp">
+                                        영상의 제목은 000 부터 999까지의 숫자를 입력해주세요.<br>
+                                        예) 자바_00_소개영상, 스프링_48_웹MVC
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center mb-md-2 mt-lg-4">
+                                <div class="mt-3">
+                                    <label for="banner">배너 이미지 업로드</label>
+                                    <input type="file" id="banner" class="fileUpload" name="banner" accept="image/*">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success mt-md-3 mb-md-3">저장하기</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--profile main data - body-->
+        </div>
+        <!--profile main data-->
+    </div>
+    <!--profile body-->
+</div>
+<!--page body-->
+
+    <div th:replace="fragment.html :: footer"></div>
+    <script th:replace="fragment.html :: csrf-code"></script>
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <script type="application/javascript">
+    $(function(){
+        var learningURL = window.location.pathname;
+        function tagRequest(url, learningURL, tagTitle) {
+            $.ajax({
+                dataType: "json",
+                autocomplete: {
+                    enabled: true,
+                    rightKey: true,
+                },
+                contentType: "application/json; charset=utf-8",
+                method: "POST",
+                url: learningURL + url,
+                data: JSON.stringify({'title': tagTitle})
+            });
+        }
+        function onAdd(e) {
+            tagRequest("/add", learningURL, e.detail.data.value);
+        }
+
+        function onRemove(e) {
+            tagRequest("/remove", learningURL, e.detail.data.value);
+        }
+
+        var input = document.querySelector('.input-tagify')
+        var tagify = new Tagify(input, {
+            whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
+            dropdown : {
+                position: "input",
+                enabled: 1 // suggest tags after a single character input
+            } // map tags
+        });
+        tagify.on("add", onAdd);
+        tagify.on("remove", onRemove);
+
+        // add a class to Tagify's input element
+        tagify.DOM.input.classList.add('form-control');
+        // re-place Tagify's input element outside of the  element (tagify.DOM.scope), just before it
+        tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+    });
+</script>
+</body>
+
+</html>

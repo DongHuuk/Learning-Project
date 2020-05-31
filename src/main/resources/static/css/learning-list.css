@@ -1,0 +1,22 @@
+.upload-list{
+    width: 700px;
+    padding: 10px 0 10px 7px;
+}
+.date-time{
+    font-size: 0.8rem;
+}
+.list-body{
+    padding: 10px 0 10px 7px;
+}
+
+.upload-btn {
+    max-width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
+
+.upload-date-time{
+    width: 230px;
+}
