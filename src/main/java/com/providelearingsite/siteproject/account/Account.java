@@ -28,7 +28,7 @@ public class Account {
 
     @Lob
     private String profileImage;
-
+    @Lob
     private String description;
 
     private LocalDateTime createAccount;

@@ -9,15 +9,12 @@ import javax.validation.constraints.Pattern;
 @Data
 public class ProfileUpdateForm {
 
-    @NotBlank
-    @Length(min = 2, max = 20)
-    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9_!@#$%-]{3,20}$")
+
+    @Length(max = 20)
+    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9_!@#$%-]{0,20}$")
     private String nickname;
-    @NotBlank
+
     private String description;
-
-
-
 
 
 }

@@ -90,7 +90,14 @@ public class AccountService implements UserDetailsService {
     }
 
     public Account updateNicknameAndDescription(ProfileUpdateForm profileUpdateForm, Account account) {
-        modelMapper.map(profileUpdateForm, account);
+        if (profileUpdateForm.getNickname() != null && !profileUpdateForm.getNickname().isEmpty()) {
+            account.setNickname(profileUpdateForm.getNickname());
+        }
+
+        if (profileUpdateForm.getDescription() != null) {
+            account.setDescription(profileUpdateForm.getDescription());
+        }
+
         return accountRepository.save(account);
     }
 

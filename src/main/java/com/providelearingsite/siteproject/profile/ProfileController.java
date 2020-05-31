@@ -22,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -86,8 +87,8 @@ public class ProfileController {
     }
 
     @PostMapping("/update/nickname/{id}")
-    public String updateNicknameForm(@CurrentAccount Account account, @PathVariable Long id,
-                                     @Valid ProfileUpdateForm profileUpdateForm, Errors errors, Model model) {
+    public String updateNicknameForm(@CurrentAccount Account account, @PathVariable Long id, Model model,
+                                     @Valid ProfileUpdateForm profileUpdateForm, Errors errors, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             model.addAttribute(new PasswordUpdateForm());
@@ -98,9 +99,9 @@ public class ProfileController {
         Account newAccount = accountService.updateNicknameAndDescription(profileUpdateForm, account);
 
         model.addAttribute(newAccount);
-        addForms(account, model);
-        model.addAttribute("message", "프로필이 수정되었습니다.");
-        return redirectPath_Custom(account.getId());
+        addForms(newAccount, model);
+        attributes.addFlashAttribute("message", "프로필이 수정되었습니다.");
+        return redirectPath_Custom(newAccount.getId());
     }
 
     @PostMapping("/update/password/{id}")

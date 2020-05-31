@@ -30,8 +30,11 @@
     margin-top: 30px;
     width: 744px;
 }
+.alert-custom{
+    height: 52px;
+}
 
-.form-control{
+.form-control-custom{
     width: 744px;
 }
 

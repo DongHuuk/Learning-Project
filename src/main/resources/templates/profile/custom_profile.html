@@ -18,14 +18,14 @@
     <div class="d-flex">
         <div th:replace="fragment.html :: profile-bar"></div>
 
-        <div class="alert alert-info alert-dismissible fade show mt-3 alert-custom" role="alert" th:if="${message}">
-            <p th:text="${message}">flush message</p>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-
         <div class="col-md-10 mt-md-5">
+
+            <div class="alert alert-info alert-dismissible fade show mt-3 alert-custom" role="alert" th:if="${message}">
+                <p th:text="${message}">flush message</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
             <div class="col-md-12 mb-2">
                 <div style="opacity: 0.7; font-size: 13px">설정/프로필 관리</div>
@@ -56,11 +56,11 @@
                         <hr/>
 
                         <div class="align-items-center profile-content d-flex justify-content-center">
-                            <form class="needs-validation justify-content-start profile-content-input" action="#" method="post"
-                                  th:action="@{'/update/nickname/' + ${account.id}}" th:object="${profileUpdateForm}" >
+                            <form class="justify-content-start profile-content-input" action="#" method="post"
+                                  th:action="@{'/update/nickname/' + ${account.id}}" th:object="${profileUpdateForm}" novalidate>
                                 <div class="card-body form-group">
                                     <label for="nickname">닉네임</label>
-                                    <input type="text" class="form-control" id="nickname" required minlength="2" maxlength="20" th:field="*{nickname}">
+                                    <input type="text" class="form-control-custom" id="nickname" required minlength="2" maxlength="20" th:field="*{nickname}">
                                     <small class="invalid-feedback">닉네임을 다시 입력해주세요</small>
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">nickname duplication Exception</small>
                                 </div>
@@ -97,17 +97,17 @@
                                 <input type="hidden" th:value="${account.nickname}" name="accountNickname">
                                 <div class="card-body form-group">
                                     <label for="nowPassword">비밀번호</label>
-                                    <input type="password" class="form-control" id="nowPassword" placeholder="현재 비밀번호" required minlength="1" maxlength="50" th:field="*{nowPassword}">
+                                    <input type="password" class="form-control-custom" id="nowPassword" placeholder="현재 비밀번호" required minlength="1" maxlength="50" th:field="*{nowPassword}">
                                     <small class="invalid-feedback">비밀번호를 다시 입력해주세요</small>
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('nowPassword')}" th:errors="*{nowPassword}">Password Error</small>
                                 </div>
                                 <div class="card-body form-group">
-                                    <input type="password" class="form-control mt-sm-0" id="newPassword" placeholder="새 비밀번호" required minlength="1" maxlength="50" th:field="*{newPassword}">
+                                    <input type="password" class="form-control-custom mt-sm-0" id="newPassword" placeholder="새 비밀번호" required minlength="1" maxlength="50" th:field="*{newPassword}">
                                     <small class="invalid-feedback">비밀번호가 일치하지 않습니다</small>
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">Password Error</small>
                                 </div>
                                 <div class="card-body form-group">
-                                    <input type="password" class="form-control" id="newPasswordCheck" placeholder="새 비밀번호 재입력" required minlength="1" maxlength="50" th:field="*{newPasswordCheck}">
+                                    <input type="password" class="form-control-custom" id="newPasswordCheck" placeholder="새 비밀번호 재입력" required minlength="1" maxlength="50" th:field="*{newPasswordCheck}">
                                     <small class="invalid-feedback">비밀번호가 일치하지 않습니다</small>
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">Password Error</small>
                                 </div>
@@ -224,7 +224,7 @@
             tagify.on("remove", onRemove);
 
             // add a class to Tagify's input element
-            tagify.DOM.input.classList.add('form-control');
+            tagify.DOM.input.classList.add('form-control-custom');
             // re-place Tagify's input element outside of the  element (tagify.DOM.scope), just before it
             tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
         });

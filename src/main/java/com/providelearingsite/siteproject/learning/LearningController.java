@@ -112,10 +112,11 @@ public class LearningController {
         learningService.saveLearningTags(learning.orElseThrow(), tag);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/profile/learning/upload/{id}/remove")
     @ResponseBody
     public ResponseEntity learningRemoveTags(@CurrentAccount Account account, @PathVariable Long id,
-                                          @RequestBody TagForm tagForm) {
+                                             @RequestBody TagForm tagForm) {
         Optional<Learning> learning = learningRepository.findById(id);
         Tag tag = tagRepository.findByTitle(tagForm.getTitle());
 
@@ -144,5 +145,20 @@ public class LearningController {
         learningService.saveVideoAndBanner(videofile, banner, account, learning);
         attributes.addFlashAttribute("message", "저장되었습니다.");
         return "redirect:/profile/learning/upload/" + learning.getId();
+    }
+
+    @GetMapping("/learning/{id}")
+    public String viewLearning(@CurrentAccount Account account, Model model) {
+        model.addAttribute(account);
+
+        return "learning/main_learning";
+    }
+
+    @GetMapping("/descriptiontest")
+    public String testDescriptiton(@CurrentAccount Account account, Model model) {
+        model.addAttribute("description", account.getDescription());
+
+
+        return "descriptiontest";
     }
 }
