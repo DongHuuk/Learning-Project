@@ -59,7 +59,7 @@ public class LearningService {
 
     public void saveVideoAndBanner(List<MultipartFile> videoFileList, MultipartFile banner, Account account, Learning learning){
         final String accountPath = "C:/project/" + account.getId();
-        final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getId();
+        final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
         BufferedInputStream inputStream = null;
         BufferedOutputStream outputStream = null;
 
