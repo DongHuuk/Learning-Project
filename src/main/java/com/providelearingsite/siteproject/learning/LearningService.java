@@ -10,9 +10,12 @@ import com.providelearingsite.siteproject.video.Video;
 import com.providelearingsite.siteproject.video.VideoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +35,7 @@ public class LearningService {
     @Autowired private AccountRepository accountRepository;
     @Autowired private TagRepository tagRepository;
     @Autowired private VideoRepository videoRepository;
+    @Autowired private ModelMapper modelMapper;
 
     public Learning saveLearning(LearningForm learningForm, Account account){
         Optional<Account> byId = accountRepository.findById(account.getId());
@@ -39,6 +43,7 @@ public class LearningService {
 
         learning.setTitle(learningForm.getTitle());
         learning.setSubscription(learningForm.getSubscription());
+        learning.setLecturerName(learningForm.getLecturerName());
         learning.setCreateLearning(LocalDateTime.now());
         Account newAccount = byId.orElseThrow();
         newAccount.getLearningSet().add(learning);
@@ -57,22 +62,14 @@ public class LearningService {
         learning.getTags().remove(tag);
     }
 
-    public void saveVideoAndBanner(List<MultipartFile> videoFileList, MultipartFile banner, Account account, Learning learning){
+    public void saveVideo(List<MultipartFile> videoFileList, Account account, Learning learning) throws IOException{
         final String accountPath = "C:/project/" + account.getId();
         final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
         BufferedInputStream inputStream = null;
         BufferedOutputStream outputStream = null;
 
         Video video = new Video();
-        video.setBannerServerPath(accountLearningPath + "/" + banner.getResource().getFilename());
-
-        try { //banner byte encoding
-            byte[] bytes = Base64.encodeBase64(banner.getBytes());
-            String bannerStr = new String(bytes, StandardCharsets.UTF_8);
-            video.setBannerBytes(bannerStr);
-        }catch (IOException e){
-            log.info("banner bytes error");
-        } //banner byte encoding
+        learning.setVideoCount(learning.getVideoCount() + videoFileList.size());
 
         //directory checking
         File accountFolder = new File(accountPath);
@@ -97,11 +94,43 @@ public class LearningService {
                 IOUtils.copy(inputStream, outputStream);
                 outputStream.flush();
             } catch (IOException e) {
-                log.info(e.getMessage() + " is error code");
+                throw new IOException(e);
             }
             videoRepository.save(video);
             learning.setVideos(video);
         } //save the vide files in server folder
+
+        learning.setUploadVideo(LocalDateTime.now());
+        learningRepository.save(learning);
+    }
+
+    public void saveBanner(MultipartFile banner, Account account, Learning learning) throws IOException{
+        final String accountPath = "C:/project/" + account.getId();
+        final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
+        BufferedInputStream inputStream = null;
+        BufferedOutputStream outputStream = null;
+
+        Video video = new Video();
+        learning.setBannerServerPath(accountLearningPath + "/" + banner.getResource().getFilename());
+
+        try { //banner byte encoding
+            byte[] bytes = Base64.encodeBase64(banner.getBytes());
+            String bannerStr = new String(bytes, StandardCharsets.UTF_8);
+            learning.setBannerBytes(bannerStr);
+        }catch (IOException e){
+            throw new IOException(e);
+            //TODO 에러종류에 따라 코드 재작성
+        } //banner byte encoding
+
+        //directory checking
+        File accountFolder = new File(accountPath);
+        if(!accountFolder.isDirectory()){
+            accountFolder.mkdir();
+        }
+        File accountLearningfolder = new File(accountLearningPath);
+        if(!accountLearningfolder.isDirectory()){
+            accountLearningfolder.mkdir();
+        }
 
         try{ //save the banner img in server folder
             Resource resource = banner.getResource();
@@ -109,13 +138,80 @@ public class LearningService {
             outputStream = new BufferedOutputStream(new FileOutputStream(accountLearningPath + "/" + resource.getFilename()), 1024 * 5);
             IOUtils.copy(inputStream, outputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException(e);
         } //save the banner img in server folder
 
-        learning.setUploadVideo(LocalDateTime.now());
         learningRepository.save(learning);
     }
 
+    public boolean canListenLearning(Account account, Learning learning) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow().getListenLearning().contains(learning);
+    }
 
+    public void updateLearningScript(LearningForm learningForm, Account account, Long id) {
+        Optional<Learning> learningById = learningRepository.findById(id);
+        Learning oldLearning = learningById.orElseThrow();
+
+        final String learningPathBefore = "C:/project/" + account.getId() + "/" + oldLearning.getTitle().trim();
+        final String learningPathAfter = "C:/project/" + account.getId() + "/" + learningForm.getTitle().trim();
+
+        File removeDir = new File(learningPathBefore);
+        String[] removeList = removeDir.list();
+        File newDir = new File(learningPathAfter);
+
+
+        if(!newDir.isDirectory()){
+            newDir.mkdir();
+        }
+
+        try {
+            if (removeList != null) {
+                for (String s : removeList) {
+                    File file = new File(learningPathBefore + "/" + s);
+                    inoutStream(file, learningPathAfter, s);
+                }
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        oldLearning.setTitle(learningForm.getTitle());
+        oldLearning.setSubscription(learningForm.getSubscription());
+        oldLearning.setLecturerName(learningForm.getLecturerName());
+
+        String accountIdStr = account.getId() + "";
+        int i = oldLearning.getBannerServerPath().indexOf(accountIdStr);
+        String firstStr = oldLearning.getBannerServerPath().substring(0, i);
+        String secondStr = oldLearning.getBannerServerPath().substring(i + accountIdStr.length());
+        oldLearning.setBannerServerPath(firstStr + accountIdStr + secondStr);
+
+        if(account.getLearningSet().contains(oldLearning)){
+            account.removeLearningSet(oldLearning);
+            account.setLearningSet(oldLearning);
+        }
+
+        accountRepository.save(account);
+        learningRepository.save(oldLearning);
+    }
+
+    @Async
+    public void inoutStream(File file, String learningPathAfter, String s) throws IOException {
+        try (
+                BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+                BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(learningPathAfter + "/" + s), 1024 * 500)
+             ){
+            IOUtils.copy(inputStream, outputStream);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (!file.isDirectory()) {
+                file.delete();
+            }else{
+                FileUtils.deleteDirectory(file);
+            }
+        }
+    }
 
 }

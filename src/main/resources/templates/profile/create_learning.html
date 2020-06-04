@@ -45,18 +45,17 @@
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">강의명 미입력</small>
                                 </div>
 
+                                <div class="card-body form-group mt-lg-4">
+                                    <label for="lecturerName">업로더 이름</label>
+                                    <input type="text" class="form-control" id="lecturerName" required minlength="2" maxlength="20" th:field="*{lecturerName}" >
+                                    <small class="invalid-feedback">이름을 입력해주세요</small>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('lecturerName')}" th:errors="*{lecturerName}">강의자 이름 미입력</small>
+                                </div>
+
                                 <div class="mt-lg-4 form-group">
                                     <label for="summernote">강의소개</label>
                                     <textarea id="summernote" class="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
                                 </div>
-
-<!--                                <div class="card-body form-group mt-md-2 tagify-custom-uploader mt-lg-4">-->
-<!--                                    <div th:text="${whiteList}" id="whitelist" hidden></div>-->
-<!--                                    <label for="tags">분야</label>-->
-<!--                                    <text type="text" class="tagify&#45;&#45;outside form-control input-tagify" id="tags" th:field="*{tags}" aria-describedby="tagHelp"-->
-<!--                                          hidden="hidden" placeholder="강의의 분야를 입력해주세요. 예) Java, Spring, 자바, 자바스크립트 etc..."></text>-->
-<!--                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}">강의의 분야를 입력해주세요</small>-->
-<!--                                </div>-->
 
                                 <button type="submit" class="btn btn-success mt-md-3 mb-md-3">저장하기</button>
                             </form>
@@ -80,8 +79,8 @@
             tabSize: 2,
             lang: "ko-KR",
             height: 220,
-            minHeight: 220,
-            maxHeight: 220,
+            minHeight: 450,
+            maxHeight: 450,
             focus: true
         });
     </script>

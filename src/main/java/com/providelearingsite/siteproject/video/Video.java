@@ -20,9 +20,6 @@ public class Video {
     private String videoServerPath;
     private String videoTitle;
     private LocalDateTime saveTime;
-    @Lob
-    private String bannerBytes;
-    private String bannerServerPath;
 
     @ManyToOne
     @JoinColumn(name = "learning_id")

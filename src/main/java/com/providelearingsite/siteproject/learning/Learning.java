@@ -27,18 +27,27 @@ public class Learning {
     @NotNull
     private String title;
     @NotNull
+    private String lecturerName;
+    @NotNull
+    @Lob
     private String subscription;
+    @Lob
+    private String bannerBytes;
+    private String bannerServerPath;
+    private float rating = 0;
 
     private LocalDateTime createLearning;
     private LocalDateTime openLearning;
     private LocalDateTime closeLearning;
 
+
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @OneToMany(mappedBy = "learning")
+    @OneToMany(mappedBy = "learning", fetch = FetchType.LAZY)
     private List<Video> videos = new ArrayList<>();
+    private int videoCount = 0;
 
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();

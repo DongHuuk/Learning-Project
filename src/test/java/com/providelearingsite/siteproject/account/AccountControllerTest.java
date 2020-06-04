@@ -267,4 +267,15 @@ class AccountControllerTest {
         assertNotNull(account);
     }
 
+    @Test
+    public void subStringTest(){
+        String str = "C:/project/127/테스트5/KakaoTalk_20200524_153154229.png";
+        String number = 127 + "";
+        int i = str.indexOf(number);
+        String substring = str.substring(i + number.length());
+        System.out.println(substring);
+        String substring1 = str.substring(0, i);
+        System.out.println(substring1);
+    }
+
 }

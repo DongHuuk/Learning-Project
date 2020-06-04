@@ -26,5 +26,8 @@ public class LearningValidator implements Validator {
         if(repositoryByTitle != null && formStr.equals(repositoryByTitle.getTitle().trim())){
             errors.rejectValue("title", "wrong.title", "같은 제목의 강의가 존재합니다.");
         }
+        if(learningForm.getLecturerName() == null){
+            errors.rejectValue("lecturerName", "wrong.lecturerName", "이름 미입력");
+        }
     }
 }

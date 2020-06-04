@@ -16,6 +16,9 @@ public class LearningForm {
     private String title;
 
     @NotBlank @NotNull
-    @Length(max = 255)
     private String subscription;
+
+    @NotNull
+    @Column(nullable = false)
+    private String lecturerName;
 }

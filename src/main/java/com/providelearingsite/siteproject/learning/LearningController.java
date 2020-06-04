@@ -10,6 +10,7 @@ import com.providelearingsite.siteproject.learning.validator.LearningValidator;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +43,8 @@ public class LearningController {
     private TagRepository tagRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @InitBinder("learningForm")
     private void initVideoForm(WebDataBinder webDataBinder) {
@@ -128,37 +132,105 @@ public class LearningController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/profile/learning/upload/{id}")
-    public String videoUpdate(@CurrentAccount Account account, Model model, @PathVariable Long id,
-                              MultipartHttpServletRequest httpServletRequest, RedirectAttributes attributes) {
+    @PostMapping(value = "/profile/learning/upload/{id}/video", produces="text/plain;Charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity videoUpdate(@CurrentAccount Account account, Model model, @PathVariable Long id,
+                                     MultipartHttpServletRequest httpServletRequest) {
         List<MultipartFile> videofile = httpServletRequest.getFiles("videofile");
-        MultipartFile banner = httpServletRequest.getFile("banner");
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning learning = learningById.orElseThrow();
 
-        if (videofile.size() < 1 || banner.getSize() < 1) {
-            attributes.addFlashAttribute("message", "잘못된 파일입니다. 다시 입력해주세요");
-
-            return "redirect:/profile/learning/upload/" + learning.getId();
+        try {
+            learningService.saveVideo(videofile, account, learning);
+        }catch (IOException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
 
-        learningService.saveVideoAndBanner(videofile, banner, account, learning);
-        attributes.addFlashAttribute("message", "저장되었습니다.");
-        return "redirect:/profile/learning/upload/" + learning.getId();
+        return ResponseEntity.ok().build();
     }
 
+    @PostMapping(value = "/profile/learning/upload/{id}/banner", produces="text/plain;Charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity bannerUpdate(@CurrentAccount Account account, Model model, @PathVariable Long id,
+                                     @RequestParam("banner") MultipartFile multipartFile) {
+        Optional<Learning> learningById = learningRepository.findById(id);
+        Learning learning = learningById.orElseThrow();
+
+        try {
+            learningService.saveBanner(multipartFile, account, learning);
+        }catch (IOException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+
     @GetMapping("/learning/{id}")
-    public String viewLearning(@CurrentAccount Account account, Model model) {
+    public String viewMainLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
+        Optional<Learning> learningById = learningRepository.findById(id);
+        Learning learning = learningById.orElseThrow();
+
+        float rating = learning.getRating();
+        int floorRating = (int) Math.floor(rating);
+        boolean halfrating = ((rating * 10) - floorRating * 10) >= 5 && Math.floor(rating) <= 5;
+
         model.addAttribute(account);
+        model.addAttribute("listenLearning", learningService.canListenLearning(account, learning) || account.getLearningSet().contains(learning));
+        model.addAttribute("countVideo", learning.getVideoCount());
+        model.addAttribute("learning", learning);
+        model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
+        model.addAttribute("ratings", floorRating);
+        model.addAttribute("halfrating", halfrating);
+        model.addAttribute("rating", 5 - floorRating - (halfrating ? 1 : 0));
+        model.addAttribute("learningRating", rating);
 
         return "learning/main_learning";
     }
 
-    @GetMapping("/descriptiontest")
-    public String testDescriptiton(@CurrentAccount Account account, Model model) {
-        model.addAttribute("description", account.getDescription());
+    @GetMapping("/learning/{id}/add")
+    public String addLearningAccount(@CurrentAccount Account account, Model model, @PathVariable Long id) {
 
+        Optional<Learning> byId = learningRepository.findById(id);
+        Learning learning = byId.orElseThrow();
 
-        return "descriptiontest";
+        return "index";
     }
+
+    @GetMapping("/profile/learning/update/{id}")
+    public String updateLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) throws JsonProcessingException {
+        Optional<Learning> byId = learningRepository.findById(id);
+        Learning learning = byId.orElseThrow();
+        List<String> tagList = learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList());
+        LearningForm learningForm = new LearningForm();
+        learningForm.setTitle(learning.getTitle());
+        learningForm.setLecturerName(learning.getLecturerName());
+
+        model.addAttribute(account);
+        model.addAttribute("learning", learning);
+        model.addAttribute("learningForm", learningForm);
+        model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
+        model.addAttribute("whiteList", objectMapper.writeValueAsString(tagList));
+
+        return "profile/update_learning";
+    }
+
+    @PostMapping(value = "/profile/learning/update/{id}/script")
+    public String updateLearningScript(@CurrentAccount Account account, Model model, @PathVariable Long id,
+                                       @Valid LearningForm learningForm, Errors errors,
+                                       RedirectAttributes attributes) {
+
+        if (errors.hasErrors()) {
+            attributes.addFlashAttribute("message", "값이 잘못되었습니다.");
+            return "redirect:/profile/learning/update/" + id;
+        }
+
+        learningService.updateLearningScript(learningForm, account, id);
+
+        attributes.addFlashAttribute("message", "수정되었습니다.");
+        return "redirect:/profile/learning/update/" + id;
+    }
+
 }

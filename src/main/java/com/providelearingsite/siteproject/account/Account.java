@@ -49,6 +49,10 @@ public class Account {
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
+    //can listen Learning buy or free videos
+    @ManyToMany
+    private Set<Learning> listenLearning = new HashSet<>();
+
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Learning> learningSet = new HashSet<>();
 
@@ -56,6 +60,13 @@ public class Account {
         this.learningSet.add(learning);
         if(learning.getAccount() != this){
             learning.setAccount(this);
+        }
+    }
+
+    public void removeLearningSet(Learning learning) {
+        this.learningSet.remove(learning);
+        if(learning.getAccount() == this){
+            learning.setAccount(null);
         }
     }
 

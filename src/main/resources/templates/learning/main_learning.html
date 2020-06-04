@@ -6,14 +6,106 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/main-learning.css">
     <script src="/node_modules/@editorjs/editorjs/dist/editor.js"></script>
+    <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
 </head>
 
 <body class="container">
 <div th:replace="fragment.html :: navbar"></div>
+    <div class="jumbotron p-4 text-white rounded bg-dark mt-md-1 d-flex">
+        <div class="px-0 d-flex pr-lg-4 pl-lg-4 col-md-9 inner-box">
+            <img class="banner-image" th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+            <img class="banner-image" src="/images/view_1.jpg" th:if="${learning.bannerBytes} == null"/>
+            <div class="ml-md-5 banner-box" th:if="${countVideo > 0}">
+                <p class="font-italic banner-title" th:text="${learning.title}">default Title</p>
+                <div class="d-flex rating-star">
+                    <span th:each="num : ${#numbers.sequence(1, ratings)}" th:if="${ratings} != 0"><i class="fas fa-star"></i></span>
+                    <span th:if="${halfrating}"><i class="fas fa-star-half-alt"></i></span>
+                    <span th:each="num : ${#numbers.sequence(1, rating)}"><i class="far fa-star"></i></span>
+                    (<span th:text="${learningRating}"></span>)
+                </div>
+                <p class="lead banner-tags mt-md-2 mb-md-3" th:text="${#strings.listJoin(tags, ', ')}">default tags</p>
+                <p class="lead banner-tags mt-md-4 mb-md-1">
+                    총 강의 수: <span th:text="${countVideo}">default count</span>
+<!--                    | 시간: <span th:text="${countVideoTime}">default time</span>-->
+                <!--TODO 영상의 시간값을 구해서 대입-->
+                </p>
+                <p class="lead">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="35"
+                             aria-valuemin="0" aria-valuemax="100">default 100%</div>
+                    </div>
+                <!--TODO 현재 진행률을 구해서 대입-->
+                </p>
+            </div>
+            <div class="ml-md-5 banner-box" th:if="${countVideo <= 0}">
+                <p class="font-italic banner-title">영상을 등록해주시기 바랍니다.</p>
+            </div>
+        </div>
 
+        <div class="col-md-3" th:if="${listenLearning}">
+            <form class="banner-form" action="#" th:action="@{'/learning/' + ${learning.id} + '/listen'}" method="get">
+                <button class="banner-form-btn btn-success btn" type="submit">학습하기</button>
+            </form>
+            <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/update/' + ${learning.id}}" method="get">
+                <button class="banner-form-btn btn-info btn" type="submit">편집하기</button>
+            </form>
+        </div>
+
+    </div>
+    <!--banner-->
+
+    <div class="col-md-2 course-floating" th:if="${!listenLearning}">
+        <div class="course-floating-price mt-4 mb-4">
+            110,000원
+        </div>
+        <form class="banner-form mt-md-2" action="#" th:action="@{'/learning/' + ${learning.id} + '/buy'}" method="get">
+            <button class="banner-form-btn btn-success btn" type="button">구매하기</button>
+        </form>
+        <form class="banner-form mt-md-2 mb-md-2" action="#" th:action="@{'/learning/' + ${learning.id} + '/cart'}" method="get">
+            <button class="banner-form-btn btn-info btn" type="button">장바구니</button>
+        </form>
+        <div class="mt-md-4 mb-md-4">
+            <p><i class="far fa-id-badge"></i>  교육자 : <span th:text="${learning.lecturerName}">default lecturerName</span></p>
+<!--            <p><i class="fas fa-align-left"></i>  강의 레벨 : <span th:text="${learning.lecturerName}">default lecturerName</span></p>-->
+        </div>
+        <div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item active mr-md-2" role="presentation">
+                    <a class="nav-link active" href="#another" aria-controls="another"
+                       role="tab" data-toggle="tab">같은 주제의 강의</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="#relation" role="tab" aria-controls="relation"
+                       data-toggle="tab">유사 장르의 강의</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <div class="tab-pane active" id="another" role="tabpanel">
+                <div class="banner-nav-content"></div>
+            </div>
+            <!--another div-->
+            <div class="tab-pane fade" id="relation" role="tabpanel">
+                <div class="banner-nav-content"></div>
+            </div>
+            <!--relation Learning-->
+        </div>
+    </div>
+    <!--floating box-->
+
+    <div class="col-md-8 ml-md-5">
+        <div hidden="hidden" id="value" th:text="${learning.subscription}"></div>
+        <div id="textValue"></div>
+    </div>
 
 <div th:replace="fragment.html :: footer"></div>
+<script type="application/javascript">
+    var value = document.getElementById('value').textContent;
+    value = $.parseHTML(value);
+    $('#textValue').append(value);
+</script>
 </body>
 
 </html>

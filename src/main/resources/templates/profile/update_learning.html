@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
+    <link rel="stylesheet" href="/css/profile-bar.css"/>
+    <link rel="stylesheet" href="/css/profile-settings.css"/>
+    <link rel="stylesheet" href="/css/create-learning.css"/>
+    <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body class="container">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="d-flex">
+        <div th:replace="fragment.html :: profile-bar"></div>
+
+        <div class="col-md-10 mt-md-5">
+            <div class="col alert alert-info alert-dismissible fade show mt-3 alert-custom message-content" role="alert" th:if="${message}">
+                <p th:text="${message}">flush message</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <div style="opacity: 0.7; font-size: 13px">업로더/강의 편집</div>
+                <span style="font-size: 17px; font-weight: bold">업로더/강의 편집</span>
+            </div>
+
+            <div class="col d-flex justify-content-start">
+                <div class="tab-content d-flex justify-content-start">
+                    <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
+                        <div class="align-items-center profile-content d-flex justify-content-center">
+                            <form class="needs-validation justify-content-start profile-content-input" action="#"
+                                  th:action="@{'/profile/learning/update/' + ${learning.id} + '/script'}"
+                                  method="post" id="form-data" novalidate
+                                  th:object="${learningForm}">
+
+                                <div class="card-body form-group mt-lg-4">
+                                    <label for="title">강의 제목</label>
+                                    <input type="text" class="form-control" id="title" required minlength="2" maxlength="20" th:field="*{title}" >
+                                    <small class="invalid-feedback">강의명을 입력해주세요</small>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">강의명 미입력</small>
+                                </div>
+
+                                <div class="card-body form-group mt-lg-4">
+                                    <label for="lecturerName">업로더 이름</label>
+                                    <input type="text" class="form-control" id="lecturerName" required minlength="2" maxlength="20" th:field="*{lecturerName}" >
+                                    <small class="invalid-feedback">이름을 입력해주세요</small>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('lecturerName')}" th:errors="*{lecturerName}">강의자 이름 미입력</small>
+                                </div>
+
+                                <div class="mt-lg-4 form-group">
+                                    <label for="summernote">강의소개</label>
+                                    <div th:text="${learning.subscription}" id="defaultSubscript" hidden="hidden"></div>
+                                    <textarea id="summernote" class="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-success mt-md-3 mb-md-3 data-form-btn">수정하기</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--profile main data - body-->
+            </div>
+            <!--profile subscript data-->
+            <div class="col d-flex justify-content-start">
+                <div class="tab-content d-flex justify-content-start">
+                    <div class="profile-body tab-pane active profile-content-body" id="videos" role="tabpanel">
+                        <div class="align-items-center profile-content ">
+                            <div class="card-body form-group mt-md-2 tagify-custom-uploader mt-lg-4">
+                                <div th:text="${whiteList}" id="whitelist" hidden></div>
+                                <label for="tags" class="label-title ml-1">분야(Tag)</label>
+                                <input class="tagify--outside input-tagify" id="skills" type="tags" th:value="${#strings.listJoin(tags, ',')}"
+                                       aria-describedby="tagHelp" placeholder="강의의 분야를 입력해주세요. 예) Java, Spring, 자바, 자바스크립트 etc..."/>
+                                <small id="tagHelp" style="margin-left: 6px;">
+                                    태그는 저장하기 버튼을 누르지 않아도 자동으로 저장됩니다.
+                                </small>
+                            </div>
+
+                            <form class="justify-content-start profile-content-input" action="#" id="videoForm" enctype="multipart/form-data">
+                                <div class="d-flex justify-content-center">
+                                    <div class="mt-3 input-video">
+                                        <label for="videoFile" class="label-title mb-md-3">영상 업로드</label>
+                                        <input type="file" id="videoFile" class="fileUpload" name="videofile" accept="video/*,.mkv,.mp3" aria-describedby="videoHelp" multiple>
+                                        <small id="videoHelp">
+                                            영상의 제목은 000 부터 999까지의 숫자를 입력해주세요.<br>
+                                            예) 자바_00_소개영상, 스프링_48_웹MVC
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="mb-md-2 mt-md-2">
+                                    <div class="progress-label"></div>
+                                    <div id="progressbar"></div>
+                                    <button id="uploadBtn" type="submit" class="btn btn-success mt-md-3 mb-md-3">업로드</button>
+                                </div>
+                            </form>
+
+                            <form class="justify-content-start profile-content-input" action="#" id="bannerForm" enctype="multipart/form-data">
+                                <div class="d-flex justify-content-center mb-md-2 mt-lg-4">
+                                    <div class="mt-3">
+                                        <label for="banner" class="label-title mb-md-3">배너 이미지 업로드</label>
+                                        <input type="file" id="banner" class="fileUpload" name="banner" accept="image/*">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success mt-md-3 mb-md-3">업로드</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--profile main data - body-->
+            </div>
+            <!--profile video and banner data-->
+        </div>
+        <!--profile body-->
+    </div>
+    <!--page body-->
+
+    <div th:replace="fragment.html :: footer"></div>
+    <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+    <script th:replace="fragment.html :: csrf-code"></script>
+    <script type="application/javascript">
+        $(function () {
+            const progressBar = $('#progressbar');
+            const progressLabel = $('.progress-label');
+            progressBar.progressbar({
+                value: true,
+                change: function() {
+                    progressLabel.text("Current Progress: " + progressBar.progressbar("value") + "%");
+                },
+                complete: function () {
+                    progressLabel.text("Complate!");
+                }
+            });
+            $('#videoForm').ajaxForm({
+                url: window.location.pathname + '/video',
+                type: "POST",
+                enctype: "multipart/form-data",
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSubmit: function(arr, $form, options){
+                    progressBar.progressbar("value", 0);
+                },
+                uploadProgress: function(event, position, total, percentComplete){
+                    progressBar.progressbar("value", percentComplete);
+                },
+                success: function(text, status, xhr, element){
+                    progressBar.progressbar("value", 100);
+                },
+                complete: function () {
+                    alert("저장되었습니다.");
+                }
+            });
+        });
+    </script>
+    <!--banner script-->
+    <script type="application/javascript">
+        $(function () {
+            $('#bannerForm').ajaxForm({
+                url: window.location.pathname + '/banner',
+                type: "POST",
+                enctype: "multipart/form-data",
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                complete: function () {
+                    alert("저장되었습니다.");
+                }
+            });
+        });
+    </script>
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <!--tagify script-->
+    <script type="application/javascript">
+        $(function(){
+            var learningURL = window.location.pathname;
+            function tagRequest(url, learningURL, tagTitle) {
+                $.ajax({
+                    dataType: "json",
+                    autocomplete: {
+                        enabled: true,
+                        rightKey: true,
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    method: "POST",
+                    url: learningURL + url,
+                    data: JSON.stringify({'title': tagTitle})
+                });
+            }
+            function onAdd(e) {
+                tagRequest("/add", learningURL, e.detail.data.value);
+            }
+
+            function onRemove(e) {
+                tagRequest("/remove", learningURL, e.detail.data.value);
+            }
+
+            var input = document.querySelector('.input-tagify')
+            var tagify = new Tagify(input, {
+                whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
+                dropdown : {
+                    position: "input",
+                    enabled: 1 // suggest tags after a single character input
+                } // map tags
+            });
+            tagify.on("add", onAdd);
+            tagify.on("remove", onRemove);
+
+            // add a class to Tagify's input element
+            tagify.DOM.input.classList.add('form-control');
+            // re-place Tagify's input element outside of the  element (tagify.DOM.scope), just before it
+            tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+        });
+    </script>
+    <!--summernote set-->
+    <script type="application/javascript">
+        $("#summernote").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
+            placeholder: '강의에 대한 설명을 반드시 입력해주세요.',
+            tabSize: 2,
+            lang: "ko-KR",
+            height: 220,
+            minHeight: 450,
+            maxHeight: 450,
+            focus: true
+        });
+        var value = $('#defaultSubscript').text();
+        $('#summernote').summernote('code', value);
+    </script>
+
+    <div th:replace="fragment.html::form-validation"></div>
+<!--TODO summernote 사용시 empty 상태일 경우 console에서만 경고 이외에는 반응 없음.-->
+</body>
+
+</html>

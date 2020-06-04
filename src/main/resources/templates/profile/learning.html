@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="/css/create-learning.css"/>
     <link rel="stylesheet" href="/css/learning.css"/>
     <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 
 <body class="container">
@@ -21,7 +23,7 @@
 
     <div class="col-md-10 mt-md-5">
         <div class="col alert alert-info alert-dismissible fade show mt-3 alert-custom message-content" role="alert" th:if="${message}">
-            <p th:text="${message}">flush message</p>
+            <p id="message" th:text="${message}">flush message</p>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -29,7 +31,7 @@
 
         <div class="col-md-12 mb-2">
             <div style="opacity: 0.7; font-size: 13px">업로더/강의 영상 업로드</div>
-            <span style="font-size: 17px; font-weight: bold">업로더/강의 영상 업로드</span>
+            <span style="font-size: 17px; font-weight: bold" th:text="${learning.title}">default Title</span>
         </div>
 
         <div class="col d-flex justify-content-start">
@@ -38,18 +40,18 @@
                     <div class="align-items-center profile-content ">
                         <div class="card-body form-group mt-md-2 tagify-custom-uploader mt-lg-4">
                             <div th:text="${whiteList}" id="whitelist" hidden></div>
-                            <label for="tags">분야</label>
+                            <label for="tags" class="label-title ml-1">분야(Tag)</label>
                             <input class="tagify--outside input-tagify" id="skills" type="tags" th:value="${#strings.listJoin(tags, ',')}"
                                    aria-describedby="tagHelp" placeholder="강의의 분야를 입력해주세요. 예) Java, Spring, 자바, 자바스크립트 etc..."/>
-<!--                            <input type="text" class="tagify&#45;&#45;outside form-control " id="" aria-describedby="tagHelp" th:value="${#strings.listJoin(tags,',')}"-->
+                            <small id="tagHelp" style="margin-left: 6px;">
+                                태그는 저장하기 버튼을 누르지 않아도 자동으로 저장됩니다.
+                            </small>
                         </div>
 
-                        <form class="needs-validation justify-content-start profile-content-input" action="#" method="post" id="form-data" novalidate
-                              th:action="@{'/profile/learning/upload/' + ${learning.id}}" enctype="multipart/form-data">
-
-                            <div class="d-flex justify-content-center mb-md-2">
+                        <form class="justify-content-start profile-content-input" action="#" id="videoForm" enctype="multipart/form-data">
+                            <div class="d-flex justify-content-center">
                                 <div class="mt-3 input-video">
-                                    <label for="videoFile">영상 업로드</label>
+                                    <label for="videoFile" class="label-title mb-md-3">영상 업로드</label>
                                     <input type="file" id="videoFile" class="fileUpload" name="videofile" accept="video/*,.mkv,.mp3" aria-describedby="videoHelp" multiple>
                                     <small id="videoHelp">
                                         영상의 제목은 000 부터 999까지의 숫자를 입력해주세요.<br>
@@ -57,15 +59,21 @@
                                     </small>
                                 </div>
                             </div>
+                            <div class="mb-md-2 mt-md-2">
+                                <div class="progress-label"></div>
+                                <div id="progressbar"></div>
+                                <button id="uploadBtn" type="submit" class="btn btn-success mt-md-3 mb-md-3">업로드</button>
+                            </div>
+                        </form>
 
+                        <form class="justify-content-start profile-content-input" action="#" id="bannerForm" enctype="multipart/form-data">
                             <div class="d-flex justify-content-center mb-md-2 mt-lg-4">
                                 <div class="mt-3">
-                                    <label for="banner">배너 이미지 업로드</label>
+                                    <label for="banner" class="label-title mb-md-3">배너 이미지 업로드</label>
                                     <input type="file" id="banner" class="fileUpload" name="banner" accept="image/*">
                                 </div>
                             </div>
-
-                            <button type="submit" class="btn btn-success mt-md-3 mb-md-3">저장하기</button>
+                            <button type="submit" class="btn btn-success mt-md-3 mb-md-3">업로드</button>
                         </form>
                     </div>
                 </div>
@@ -80,6 +88,58 @@
 
     <div th:replace="fragment.html :: footer"></div>
     <script th:replace="fragment.html :: csrf-code"></script>
+    <!--video script-->
+    <script type="application/javascript">
+        $(function () {
+            const progressBar = $('#progressbar');
+            const progressLabel = $('.progress-label');
+            progressBar.progressbar({
+                value: true,
+                change: function() {
+                    progressLabel.text("Current Progress: " + progressBar.progressbar("value") + "%");
+                },
+                complete: function () {
+                    progressLabel.text("Complate!");
+                }
+            });
+            $('#videoForm').ajaxForm({
+                url: window.location.pathname + '/video',
+                type: "POST",
+                enctype: "multipart/form-data",
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSubmit: function(arr, $form, options){
+                    progressBar.progressbar("value", 0);
+                },
+                uploadProgress: function(event, position, total, percentComplete){
+                    progressBar.progressbar("value", percentComplete);
+                },
+                success: function(text, status, xhr, element){
+                    progressBar.progressbar("value", 100);
+                },
+                complete: function () {
+                    alert("저장되었습니다.");
+                }
+            });
+        });
+    </script>
+    <!--banner script-->
+    <script type="application/javascript">
+        $(function () {
+            $('#bannerForm').ajaxForm({
+                url: window.location.pathname + '/banner',
+                type: "POST",
+                enctype: "multipart/form-data",
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                complete: function () {
+                    alert("저장되었습니다.");
+                }
+            });
+        });
+    </script>
     <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
     <script type="application/javascript">
     $(function(){
