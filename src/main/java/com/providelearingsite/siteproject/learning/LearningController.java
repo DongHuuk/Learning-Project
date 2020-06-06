@@ -31,20 +31,15 @@ import java.util.stream.Collectors;
 @Controller
 public class LearningController {
 
-    @Autowired
-    private LearningService learningService;
-    @Autowired
-    private LearningValidator learningValidator;
-    @Autowired
-    private LearningRepository learningRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private TagRepository tagRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private ModelMapper modelMapper;
+    static final String CREATE_LEARNING = "profile/create_learning";
+
+    @Autowired private LearningService learningService;
+    @Autowired private LearningValidator learningValidator;
+    @Autowired private LearningRepository learningRepository;
+    @Autowired private AccountRepository accountRepository;
+    @Autowired private TagRepository tagRepository;
+    @Autowired private ObjectMapper objectMapper;
+    @Autowired private ModelMapper modelMapper;
 
     @InitBinder("learningForm")
     private void initVideoForm(WebDataBinder webDataBinder) {
@@ -55,28 +50,30 @@ public class LearningController {
     public String viewUpload(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(new LearningForm());
-        return "profile/create_learning";
+
+        return CREATE_LEARNING;
     }
 
     @PostMapping("/profile/learning/create")
     public String createLearning(@CurrentAccount Account account, Model model,
-                                 @Valid LearningForm learningForm, Errors errors, RedirectAttributes attributes) {
+                                 @Valid LearningForm learningForm, Errors errors) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        Account account_1 = byId.orElseThrow();
         if (errors.hasErrors()) {
-            model.addAttribute(account);
-            model.addAttribute(new LearningForm());
+            model.addAttribute("account", account_1);
             model.addAttribute("message", "잘못 입력 하셨습니다.");
-            return "profile/create_learning";
+            return CREATE_LEARNING;
         }
 
-        Learning learning = learningService.saveLearning(learningForm, account);
+        Learning learning = learningService.saveLearning(learningForm, account_1);
 
-        model.addAttribute(account);
-        attributes.addFlashAttribute("message", learning.getTitle() + " 강의가 추가되었습니다");
-        return "redirect:/profile/learning/create";
+        model.addAttribute("account", account_1);
+        model.addAttribute("message", learning.getTitle() + " 강의가 추가되었습니다");
+        return CREATE_LEARNING;
     }
 
     @GetMapping("/profile/learning/list")
-    public String updateLearning(@CurrentAccount Account account, Model model) {
+    public String viewLearningList(@CurrentAccount Account account, Model model) {
         Optional<Account> accountById = accountRepository.findById(account.getId());
         Account newAccount = accountById.orElseThrow();
         model.addAttribute("account", newAccount);
@@ -85,10 +82,9 @@ public class LearningController {
     }
 
     @GetMapping("/profile/learning/upload/{id}")
-    public String viewLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) throws JsonProcessingException {
+    public String viewVideoUpdate(@CurrentAccount Account account, Model model, @PathVariable Long id) throws JsonProcessingException {
         Optional<Learning> learning = learningRepository.findById(id);
         List<String> tagList = tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
-//        Optional<Account> accountById = accountRepository.findById(account.getId());
 
         model.addAttribute(account);
         model.addAttribute("learning", learning.orElseThrow());
@@ -100,8 +96,7 @@ public class LearningController {
 
     @PostMapping("/profile/learning/upload/{id}/add")
     @ResponseBody
-    public ResponseEntity learningAddTags(@CurrentAccount Account account, @PathVariable Long id,
-                                          @RequestBody TagForm tagForm) {
+    public ResponseEntity learningAddTags(@CurrentAccount Account account, @PathVariable Long id, @RequestBody TagForm tagForm) {
         Optional<Learning> learning = learningRepository.findById(id);
         Tag tag = tagRepository.findByTitle(tagForm.getTitle());
 
@@ -119,8 +114,7 @@ public class LearningController {
 
     @PostMapping("/profile/learning/upload/{id}/remove")
     @ResponseBody
-    public ResponseEntity learningRemoveTags(@CurrentAccount Account account, @PathVariable Long id,
-                                             @RequestBody TagForm tagForm) {
+    public ResponseEntity learningRemoveTags(@CurrentAccount Account account, @PathVariable Long id, @RequestBody TagForm tagForm) {
         Optional<Learning> learning = learningRepository.findById(id);
         Tag tag = tagRepository.findByTitle(tagForm.getTitle());
 

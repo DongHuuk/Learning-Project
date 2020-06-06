@@ -46,12 +46,6 @@ public class ProfileController {
         return "redirect:/profile/" + id + "/custom";
     }
 
-    private void addForms(@CurrentAccount Account account, Model model) {
-        model.addAttribute(modelMapper.map(account, ProfileUpdateForm.class));
-        model.addAttribute(new PasswordUpdateForm());
-        model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
-    }
-
     @InitBinder("profileUpdateForm")
     public void nicknameUpdate(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(profileNicknameValidator);
@@ -76,7 +70,9 @@ public class ProfileController {
         model.addAttribute(account);
         model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
         model.addAttribute("whiteList", objectMapper.writeValueAsString(tagList));
-        addForms(account, model);
+        model.addAttribute(modelMapper.map(account, ProfileUpdateForm.class));
+        model.addAttribute(new PasswordUpdateForm());
+        model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
 
         return CUSTOM_PROFILE;
     }

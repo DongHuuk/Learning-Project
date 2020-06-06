@@ -21,12 +21,11 @@ public class LearningValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         LearningForm learningForm = (LearningForm) o;
-        String formStr = learningForm.getTitle().trim();
         Learning repositoryByTitle = learningRepository.findByTitle(learningForm.getTitle());
-        if(repositoryByTitle != null && formStr.equals(repositoryByTitle.getTitle().trim())){
+        if(repositoryByTitle != null){
             errors.rejectValue("title", "wrong.title", "같은 제목의 강의가 존재합니다.");
         }
-        if(learningForm.getLecturerName() == null){
+        if(learningForm.getLecturerName() == null || learningForm.getLecturerName().isEmpty()){
             errors.rejectValue("lecturerName", "wrong.lecturerName", "이름 미입력");
         }
     }

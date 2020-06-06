@@ -38,16 +38,14 @@ public class LearningService {
     @Autowired private ModelMapper modelMapper;
 
     public Learning saveLearning(LearningForm learningForm, Account account){
-        Optional<Account> byId = accountRepository.findById(account.getId());
         Learning learning = new Learning();
 
         learning.setTitle(learningForm.getTitle());
         learning.setSubscription(learningForm.getSubscription());
         learning.setLecturerName(learningForm.getLecturerName());
         learning.setCreateLearning(LocalDateTime.now());
-        Account newAccount = byId.orElseThrow();
-        newAccount.getLearningSet().add(learning);
-        learning.setAccount(newAccount);
+        account.getLearningSet().add(learning);
+        learning.setAccount(account);
 
         return learningRepository.save(learning);
     }
