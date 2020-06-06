@@ -44,19 +44,28 @@
             </div>
         </div>
 
-        <div class="col-md-3" th:if="${listenLearning}">
+        <div class="col-md-3" th:if="${!listenLearning}">
             <form class="banner-form" action="#" th:action="@{'/learning/' + ${learning.id} + '/listen'}" method="get">
                 <button class="banner-form-btn btn-success btn" type="submit">학습하기</button>
             </form>
-            <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/update/' + ${learning.id}}" method="get">
+            <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/update/' + ${learning.id}}" method="get"
+            th:if="${learningSet}">
                 <button class="banner-form-btn btn-info btn" type="submit">편집하기</button>
+            </form>
+            <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/start/' + ${learning.id}}" method="get"
+                  th:if="${!learning.startingLearning}">
+                <button class="banner-form-btn btn-info btn" type="submit">강의 공개하기</button>
+            </form>
+            <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/close/' + ${learning.id}}" method="get"
+                  th:if="${learning.startingLearning && !learning.closedLearning}">
+                <button class="banner-form-btn btn-info btn" type="submit">강의 닫기</button>
             </form>
         </div>
 
     </div>
     <!--banner-->
 
-    <div class="col-md-2 course-floating" th:if="${!listenLearning}">
+    <div class="col-md-2 course-floating" th:if="${listenLearning}">
         <div class="course-floating-price mt-4 mb-4">
             110,000원
         </div>

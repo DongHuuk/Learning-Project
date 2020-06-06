@@ -22,7 +22,7 @@ public class ProfileNicknameValidator implements Validator {
         ProfileUpdateForm profileUpdateForm = (ProfileUpdateForm) target;
 
         if (accountRepository.existsByNickname(profileUpdateForm.getNickname())) {
-            errors.rejectValue("nickname", "wrong.nickname", "닉네임을 사용할 수 없습니다.");
+            errors.rejectValue("nickname", "wrong.nickname", "닉네임이 중복입니다.");
         }
         if (profileUpdateForm.getDescription() == null || profileUpdateForm.getDescription().isEmpty()) {
             errors.rejectValue("description", "wrong.description", "자기 소개를 입력해주세요.");

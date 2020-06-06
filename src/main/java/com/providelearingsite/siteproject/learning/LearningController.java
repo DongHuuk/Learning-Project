@@ -178,7 +178,8 @@ public class LearningController {
         boolean halfrating = ((rating * 10) - floorRating * 10) >= 5 && Math.floor(rating) <= 5;
 
         model.addAttribute(account);
-        model.addAttribute("listenLearning", learningService.canListenLearning(account, learning) || account.getLearningSet().contains(learning));
+        model.addAttribute("listenLearning", learningService.canListenLearning(account, learning));
+        model.addAttribute("learningSet", account.getLearningSet().contains(learning));
         model.addAttribute("countVideo", learning.getVideoCount());
         model.addAttribute("learning", learning);
         model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
@@ -217,7 +218,7 @@ public class LearningController {
         return "profile/update_learning";
     }
 
-    @PostMapping(value = "/profile/learning/update/{id}/script")
+    @PostMapping("/profile/learning/update/{id}/script")
     public String updateLearningScript(@CurrentAccount Account account, Model model, @PathVariable Long id,
                                        @Valid LearningForm learningForm, Errors errors,
                                        RedirectAttributes attributes) {
@@ -233,4 +234,19 @@ public class LearningController {
         return "redirect:/profile/learning/update/" + id;
     }
 
+    @GetMapping("/profile/learning/start/{id}")
+    public String startLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
+        learningService.startLearning(id);
+
+        model.addAttribute("message", "강의가 오픈되었습니다.");
+        return "redirect:/learning/" + id;
+    }
+
+    @GetMapping("/profile/learning/close/{id}")
+    public String closedLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
+        learningService.closeLearning(id);
+
+        model.addAttribute("message", "강의가 닫혔습니다..");
+        return "redirect:/learning/" + id;
+    }
 }

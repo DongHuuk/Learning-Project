@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +41,8 @@ public class Learning {
     private LocalDateTime openLearning;
     private LocalDateTime closeLearning;
 
+    private boolean startingLearning;
+    private boolean closedLearning;
 
     @ManyToOne
     @JoinColumn(name = "account_id")

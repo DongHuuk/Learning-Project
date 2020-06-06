@@ -40,19 +40,19 @@ public class ProfileController {
     @Autowired private TagRepository tagRepository;
     @Autowired private ObjectMapper objectMapper;
 
-    private final static String CUSTOM_PROFILE = "profile/custom_profile";
+    public final static String CUSTOM_PROFILE = "profile/custom_profile";
 
     private static String redirectPath_Custom(Long id){
         return "redirect:/profile/" + id + "/custom";
     }
 
     private void addForms(@CurrentAccount Account account, Model model) {
-        model.addAttribute(new ProfileUpdateForm());
+        model.addAttribute(modelMapper.map(account, ProfileUpdateForm.class));
         model.addAttribute(new PasswordUpdateForm());
         model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
     }
 
-    @InitBinder("accountUpdateForm")
+    @InitBinder("profileUpdateForm")
     public void nicknameUpdate(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(profileNicknameValidator);
     }
@@ -60,11 +60,6 @@ public class ProfileController {
     @InitBinder("passwordUpdateForm")
     public void passwordUpdate(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(profilePasswordValidator);
-    }
-
-    @InitBinder("videoForm")
-    public void uploadFiles(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(learningValidator);
     }
 
     @GetMapping("/profile/{id}")
@@ -93,51 +88,49 @@ public class ProfileController {
             model.addAttribute(account);
             model.addAttribute(new PasswordUpdateForm());
             model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
+            model.addAttribute("message", "잘못 입력하셧습니다. 다시 입력해주세요.");
             return CUSTOM_PROFILE;
         }
 
         Account newAccount = accountService.updateNicknameAndDescription(profileUpdateForm, account);
 
-        model.addAttribute(newAccount);
-        addForms(newAccount, model);
+        attributes.addFlashAttribute("account", newAccount);
         attributes.addFlashAttribute("message", "프로필이 수정되었습니다.");
         return redirectPath_Custom(newAccount.getId());
     }
 
     @PostMapping("/update/password/{id}")
     public String updatePasswordForm(@CurrentAccount Account account, @PathVariable Long id,
-                                     @Valid PasswordUpdateForm passwordUpdateForm, Errors errors, Model model) {
+                                     @Valid PasswordUpdateForm passwordUpdateForm, Errors errors, Model model, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             model.addAttribute(new ProfileUpdateForm());
             model.addAttribute(modelMapper.map(account, NotificationUpdateForm.class));
-            return redirectPath_Custom(account.getId());
+            model.addAttribute("message", "비밀번호가 잘못되었습니다. 다시 입력해주세요.");
+            return CUSTOM_PROFILE;
         }
 
         final Account newAccount = accountService.updatePassword(passwordUpdateForm, account);
 
-        model.addAttribute(newAccount);
-        model.addAttribute("message", "비밀번호가 수정되었습니다.");
-        addForms(account, model);
+        attributes.addFlashAttribute("account", newAccount);
+        attributes.addFlashAttribute("message", "비밀번호가 수정되었습니다.");
         return redirectPath_Custom(account.getId());
     }
 
     @PostMapping("/update/noti/{id}")
     public String updateNotificationForm(@CurrentAccount Account account, @PathVariable Long id, Model model,
-                                         NotificationUpdateForm notificationUpdateForm) {
+                                         NotificationUpdateForm notificationUpdateForm, RedirectAttributes attributes) {
         Account newAccount = accountService.updateNotifications(notificationUpdateForm, account);
 
-        model.addAttribute(newAccount);
-        model.addAttribute("message", "알림 설정이 완료되었습니다.");
-        addForms(account, model);
+        attributes.addFlashAttribute("account", newAccount);
+        attributes.addFlashAttribute("message", "알림 설정이 완료되었습니다.");
         return redirectPath_Custom(account.getId());
     }
 
     @PostMapping("/update/tags/add")
     @ResponseBody
     public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm){
-        String title = tagForm.getTitle();
-        Tag tag = tagRepository.findByTitle(title);
+        Tag tag = tagRepository.findByTitle(tagForm.getTitle());
         if(tag == null){
             tag = tagRepository.save(Tag.builder()
                     .title(tagForm.getTitle())
@@ -151,8 +144,7 @@ public class ProfileController {
     @PostMapping("/update/tags/remove")
     @ResponseBody
     public ResponseEntity removeTag(@CurrentAccount Account account, @RequestBody TagForm tagForm){
-        String title = tagForm.getTitle();
-        Tag tag = tagRepository.findByTitle(title);
+        Tag tag = tagRepository.findByTitle(tagForm.getTitle());
 
         if(tag == null){
             return ResponseEntity.badRequest().build();

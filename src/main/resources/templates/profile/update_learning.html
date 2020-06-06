@@ -124,8 +124,11 @@
     <!--page body-->
 
     <div th:replace="fragment.html :: footer"></div>
+
     <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
     <script th:replace="fragment.html :: csrf-code"></script>
+    <!--video script-->
     <script type="application/javascript">
         $(function () {
             const progressBar = $('#progressbar');
@@ -139,8 +142,12 @@
                     progressLabel.text("Complate!");
                 }
             });
+
+            const regex = /[^0-9]/g;
+            const accountId = window.location.pathname.replace(regex, "");
+
             $('#videoForm').ajaxForm({
-                url: window.location.pathname + '/video',
+                url: '/profile/learning/upload/' + accountId + '/video',
                 type: "POST",
                 enctype: "multipart/form-data",
                 dataType: 'json',
@@ -164,8 +171,11 @@
     <!--banner script-->
     <script type="application/javascript">
         $(function () {
+            const regex = /[^0-9]/g;
+            const accountId = window.location.pathname.replace(regex, "");
+
             $('#bannerForm').ajaxForm({
-                url: window.location.pathname + '/banner',
+                url: '/profile/learning/upload/'+ accountId + '/banner',
                 type: "POST",
                 enctype: "multipart/form-data",
                 dataType: 'json',
@@ -177,12 +187,13 @@
             });
         });
     </script>
-    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
     <!--tagify script-->
     <script type="application/javascript">
         $(function(){
-            var learningURL = window.location.pathname;
-            function tagRequest(url, learningURL, tagTitle) {
+            const regex = /[^0-9]/g;
+            const accountId = window.location.pathname.replace(regex, "");
+
+            function tagRequest(url, tagTitle) {
                 $.ajax({
                     dataType: "json",
                     autocomplete: {
@@ -191,16 +202,16 @@
                     },
                     contentType: "application/json; charset=utf-8",
                     method: "POST",
-                    url: learningURL + url,
+                    url: '/profile/learning/upload/' + accountId + url,
                     data: JSON.stringify({'title': tagTitle})
                 });
             }
             function onAdd(e) {
-                tagRequest("/add", learningURL, e.detail.data.value);
+                tagRequest("/add", e.detail.data.value);
             }
 
             function onRemove(e) {
-                tagRequest("/remove", learningURL, e.detail.data.value);
+                tagRequest("/remove", e.detail.data.value);
             }
 
             var input = document.querySelector('.input-tagify')

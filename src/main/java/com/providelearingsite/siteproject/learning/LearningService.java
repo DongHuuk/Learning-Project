@@ -65,9 +65,6 @@ public class LearningService {
     public void saveVideo(List<MultipartFile> videoFileList, Account account, Learning learning) throws IOException{
         final String accountPath = "C:/project/" + account.getId();
         final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
-        BufferedInputStream inputStream = null;
-        BufferedOutputStream outputStream = null;
-
         Video video = new Video();
         learning.setVideoCount(learning.getVideoCount() + videoFileList.size());
 
@@ -82,15 +79,17 @@ public class LearningService {
         }
 
         for (MultipartFile file : videoFileList){ //save the vide files in server folder
-            try{
-                Resource resource = file.getResource();
+            Resource resource = file.getResource();
+            try(
+                    BufferedInputStream inputStream = new BufferedInputStream(resource.getInputStream());
+                    BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(
+                            accountLearningPath + "/" + resource.getFilename()), 1024 * 500)
+                    ){
                 video.setVideoServerPath(accountLearningPath +"/" + resource.getFilename());
                 video.setVideoSize(file.getSize() > 0 ? file.getSize() : 0);
                 video.setVideoTitle(file.getOriginalFilename());
                 video.setSaveTime(LocalDateTime.now());
 
-                inputStream = new BufferedInputStream(resource.getInputStream());
-                outputStream = new BufferedOutputStream(new FileOutputStream(accountLearningPath + "/" + resource.getFilename()), 1024 * 500);
                 IOUtils.copy(inputStream, outputStream);
                 outputStream.flush();
             } catch (IOException e) {
@@ -107,10 +106,8 @@ public class LearningService {
     public void saveBanner(MultipartFile banner, Account account, Learning learning) throws IOException{
         final String accountPath = "C:/project/" + account.getId();
         final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
-        BufferedInputStream inputStream = null;
-        BufferedOutputStream outputStream = null;
 
-        Video video = new Video();
+
         learning.setBannerServerPath(accountLearningPath + "/" + banner.getResource().getFilename());
 
         try { //banner byte encoding
@@ -132,10 +129,12 @@ public class LearningService {
             accountLearningfolder.mkdir();
         }
 
-        try{ //save the banner img in server folder
-            Resource resource = banner.getResource();
-            inputStream = new BufferedInputStream(resource.getInputStream());
-            outputStream = new BufferedOutputStream(new FileOutputStream(accountLearningPath + "/" + resource.getFilename()), 1024 * 5);
+        Resource resource = banner.getResource();
+        try(
+                BufferedInputStream inputStream = new BufferedInputStream(resource.getInputStream());
+                BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(
+                        accountLearningPath + "/" + resource.getFilename()), 1024 * 5)
+            ){ //save the banner img in server folder
             IOUtils.copy(inputStream, outputStream);
         } catch (IOException e) {
             throw new IOException(e);
@@ -214,4 +213,19 @@ public class LearningService {
         }
     }
 
+    public void startLearning(Long id) {
+        Optional<Learning> byId = learningRepository.findById(id);
+        Learning learning = byId.orElseThrow();
+
+        learning.setStartingLearning(true);
+        learning.setOpenLearning(LocalDateTime.now());
+    }
+
+    public void closeLearning(Long id) {
+        Optional<Learning> byId = learningRepository.findById(id);
+        Learning learning = byId.orElseThrow();
+        learning.setStartingLearning(false);
+        learning.setClosedLearning(true);
+        learning.setCloseLearning(LocalDateTime.now());
+    }
 }

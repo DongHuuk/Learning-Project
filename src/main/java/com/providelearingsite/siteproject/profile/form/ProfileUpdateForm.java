@@ -11,7 +11,7 @@ public class ProfileUpdateForm {
 
 
     @Length(max = 20)
-    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9_!@#$%-]{0,20}$")
+    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9_!@#$%-]{2,20}$")
     private String nickname;
 
     private String description;
