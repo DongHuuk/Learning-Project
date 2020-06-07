@@ -225,7 +225,6 @@ public class LearningController {
     public String updateLearningScript(@CurrentAccount Account account, Model model, @PathVariable Long id,
                                        @Valid LearningForm learningForm, Errors errors,
                                        RedirectAttributes attributes) {
-
         if (errors.hasErrors()) {
             attributes.addFlashAttribute("message", "값이 잘못되었습니다.");
             return "redirect:/profile/learning/update/" + id;

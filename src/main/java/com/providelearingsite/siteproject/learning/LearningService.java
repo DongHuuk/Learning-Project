@@ -177,11 +177,15 @@ public class LearningService {
         oldLearning.setSubscription(learningForm.getSubscription());
         oldLearning.setLecturerName(learningForm.getLecturerName());
 
-        String accountIdStr = account.getId() + "";
-        int i = oldLearning.getBannerServerPath().indexOf(accountIdStr);
-        String firstStr = oldLearning.getBannerServerPath().substring(0, i);
-        String secondStr = oldLearning.getBannerServerPath().substring(i + accountIdStr.length());
-        oldLearning.setBannerServerPath(firstStr + accountIdStr + secondStr);
+        try {
+            String accountIdStr = account.getId() + "";
+            int i = oldLearning.getBannerServerPath().indexOf(accountIdStr);
+            String firstStr = oldLearning.getBannerServerPath().substring(0, i);
+            String secondStr = oldLearning.getBannerServerPath().substring(i + accountIdStr.length());
+            oldLearning.setBannerServerPath(firstStr + accountIdStr + secondStr);
+        }catch (NullPointerException e){
+            log.info("banner image serverPath 미지정 = 기본 이미지 값 사용중");
+        }
 
         if(account.getLearningSet().contains(oldLearning)){
             account.removeLearningSet(oldLearning);
@@ -193,7 +197,7 @@ public class LearningService {
     }
 
     @Async
-    public void inoutStream(File file, String learningPathAfter, String s) throws IOException {
+    private void inoutStream(File file, String learningPathAfter, String s) throws IOException {
         try (
                 BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
                 BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(learningPathAfter + "/" + s), 1024 * 500)

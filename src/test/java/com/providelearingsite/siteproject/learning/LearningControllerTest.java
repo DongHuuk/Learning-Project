@@ -458,19 +458,86 @@ class LearningControllerTest {
     @Test
     @WithAccount("test@naver.com")
     @DisplayName("강의 편집 페이지에서 편집 - 성공")
-    public void updateMainLearning_success() throws Exception {
+    public void updateLearningScript_success() throws Exception {
         Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
         Learning learning = createLearning(account);
+        learning.setBannerServerPath("C:/project/테스트_코드_1/"+ account.getId() +"/fpewjpoeq.jpg");
 
-        mockMvc.perform(get("/profile/learning/update/" + learning.getId()))
-                .andExpect(model().attributeExists("account"))
-                .andExpect(model().attributeExists("learning"))
-                .andExpect(model().attributeExists("learningForm"))
-                .andExpect(model().attributeExists("tags"))
-                .andExpect(model().attributeExists("whiteList"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("profile/update_learning"));
+        mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
+                .param("title", learning.getTitle())
+                .param("subscription", "테스트_1 수정 설명입니다.")
+                .param("lecturerName", "mark.2_흑우냥이")
+                .with(csrf()))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profile/learning/update/" + learning.getId()));
 
+        assertEquals(learning.getSubscription(), "테스트_1 수정 설명입니다.");
+        assertEquals(learning.getLecturerName(), "mark.2_흑우냥이");
+
+    }
+
+    @Test
+    @WithAccount("test@naver.com")
+    @DisplayName("강의 편집 페이지에서 편집 - 실패 title null")
+    public void updateLearningScript_success_title_null() throws Exception {
+        Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
+        Learning learning = createLearning(account);
+        learning.setBannerServerPath("C:/project/테스트_코드_1/"+ account.getId() +"/fpewjpoeq.jpg");
+
+        mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
+                .param("title", "")
+                .param("subscription", "테스트_1 수정 설명입니다.")
+                .param("lecturerName", "mark.2_흑우냥이")
+                .with(csrf()))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profile/learning/update/" + learning.getId()));
+
+        assertNotEquals(learning.getSubscription(), "테스트_1 수정 설명입니다.");
+        assertNotEquals(learning.getLecturerName(), "mark.2_흑우냥이");
+    }
+
+    @Test
+    @WithAccount("test@naver.com")
+    @DisplayName("강의 편집 페이지에서 편집 - 실패 subscription null")
+    public void updateLearningScript_success_subscription_null() throws Exception {
+        Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
+        Learning learning = createLearning(account);
+        learning.setBannerServerPath("C:/project/테스트_코드_1/"+ account.getId() +"/fpewjpoeq.jpg");
+
+        mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
+                .param("title", "테스트_2")
+                .param("subscription", "")
+                .param("lecturerName", "mark.2_흑우냥이")
+                .with(csrf()))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profile/learning/update/" + learning.getId()));
+
+        assertNotEquals(learning.getTitle(), "테스트_2");
+        assertNotEquals(learning.getLecturerName(), "mark.2_흑우냥이");
+    }
+
+    @Test
+    @WithAccount("test@naver.com")
+    @DisplayName("강의 편집 페이지에서 편집 - 실패 lecturerName null")
+    public void updateLearningScript_success_lecturerName_null() throws Exception {
+        Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
+        Learning learning = createLearning(account);
+        learning.setBannerServerPath("C:/project/테스트_코드_1/"+ account.getId() +"/fpewjpoeq.jpg");
+
+        mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
+                .param("title", "테스트_2")
+                .param("subscription", "테스트_2 수정 설명코드입니다.")
+                .param("lecturerName", "")
+                .with(csrf()))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profile/learning/update/" + learning.getId()));
+
+        assertNotEquals(learning.getTitle(), "테스트_2");
+        assertNotEquals(learning.getSubscription(), "테스트_2 수정 설명코드입니다.");
     }
 
     @Test
@@ -504,5 +571,9 @@ class LearningControllerTest {
         assertFalse(learning.isStartingLearning());
         assertTrue(learning.isClosedLearning());
     }
-
+    /*
+    TODO File Mokito 파일이 생성됬는지 확인하는 방법?
+      있으면? 확인해봣었는데 없었음..
+      그냥 then이나 return값 받아오는건 있고 값이 있는지 확인하는건 없었음
+    */
 }
