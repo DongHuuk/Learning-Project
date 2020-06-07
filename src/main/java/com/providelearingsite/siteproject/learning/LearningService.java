@@ -63,7 +63,6 @@ public class LearningService {
     public void saveVideo(List<MultipartFile> videoFileList, Account account, Learning learning) throws IOException{
         final String accountPath = "C:/project/" + account.getId();
         final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
-        Video video = new Video();
         learning.setVideoCount(learning.getVideoCount() + videoFileList.size());
 
         //directory checking
@@ -83,6 +82,7 @@ public class LearningService {
                     BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(
                             accountLearningPath + "/" + resource.getFilename()), 1024 * 500)
                     ){
+                Video video = new Video();
                 video.setVideoServerPath(accountLearningPath +"/" + resource.getFilename());
                 video.setVideoSize(file.getSize() > 0 ? file.getSize() : 0);
                 video.setVideoTitle(file.getOriginalFilename());
@@ -90,11 +90,12 @@ public class LearningService {
 
                 IOUtils.copy(inputStream, outputStream);
                 outputStream.flush();
+
+                Video newVideo = videoRepository.save(video);
+                learning.setVideos(newVideo);
             } catch (IOException e) {
                 throw new IOException(e);
             }
-            videoRepository.save(video);
-            learning.setVideos(video);
         } //save the vide files in server folder
 
         learning.setUploadVideo(LocalDateTime.now());
@@ -103,8 +104,7 @@ public class LearningService {
 
     public void saveBanner(MultipartFile banner, Account account, Learning learning) throws IOException{
         final String accountPath = "C:/project/" + account.getId();
-        final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
-
+        final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle();
 
         learning.setBannerServerPath(accountLearningPath + "/" + banner.getResource().getFilename());
 

@@ -6,6 +6,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface LearningRepository extends JpaRepository<Learning, Long> {
     Learning findByTitle(String title);
-
-    boolean existsByTitle(String title);
 }

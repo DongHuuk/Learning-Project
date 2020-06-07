@@ -269,6 +269,7 @@ class AccountControllerTest {
 
     @Test
     public void subStringTest(){
+        System.out.println("c");
         String str = "C:/project/127/테스트5/KakaoTalk_20200524_153154229.png";
         String number = 127 + "";
         int i = str.indexOf(number);
@@ -276,6 +277,9 @@ class AccountControllerTest {
         System.out.println(substring);
         String substring1 = str.substring(0, i);
         System.out.println(substring1);
+        int i1 = str.indexOf(".");
+        String substring2 = str.substring(i1 + 1);
+        System.out.println(substring2.equals("png"));
     }
 
 }

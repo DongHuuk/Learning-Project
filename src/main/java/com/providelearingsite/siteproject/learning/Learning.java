@@ -49,7 +49,7 @@ public class Learning {
     private Account account;
 
     @OneToMany(mappedBy = "learning", fetch = FetchType.LAZY)
-    private List<Video> videos = new ArrayList<>();
+    private Set<Video> videos = new HashSet<>();
     private int videoCount = 0;
 
     @ManyToMany

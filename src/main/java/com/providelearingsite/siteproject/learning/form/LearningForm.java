@@ -12,7 +12,7 @@ public class LearningForm {
 
     @NotBlank
     @Length(max = 255)
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String title;
 
     @NotBlank @NotNull

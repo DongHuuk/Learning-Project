@@ -129,10 +129,14 @@ public class LearningController {
     @PostMapping(value = "/profile/learning/upload/{id}/video", produces="text/plain;Charset=UTF-8")
     @ResponseBody
     public ResponseEntity videoUpdate(@CurrentAccount Account account, Model model, @PathVariable Long id,
-                                     MultipartHttpServletRequest httpServletRequest) {
+                                    MultipartHttpServletRequest httpServletRequest) {
         List<MultipartFile> videofile = httpServletRequest.getFiles("videofile");
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning learning = learningById.orElseThrow();
+
+        if (videofile.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
 
         try {
             learningService.saveVideo(videofile, account, learning);
@@ -151,6 +155,21 @@ public class LearningController {
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning learning = learningById.orElseThrow();
 
+        String originalFilename = multipartFile.getOriginalFilename();
+        int i = originalFilename.indexOf(".");
+        String extension = originalFilename.substring(i + 1);
+
+        switch (extension){
+            case "jpg":
+                break;
+            case "png":
+                break;
+            case "jpeg":
+                break;
+            default:
+                return ResponseEntity.badRequest().build();
+        }
+
         try {
             learningService.saveBanner(multipartFile, account, learning);
         }catch (IOException e){
@@ -160,7 +179,6 @@ public class LearningController {
 
         return ResponseEntity.ok().build();
     }
-
 
     @GetMapping("/learning/{id}")
     public String viewMainLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
@@ -185,17 +203,8 @@ public class LearningController {
         return "learning/main_learning";
     }
 
-    @GetMapping("/learning/{id}/add")
-    public String addLearningAccount(@CurrentAccount Account account, Model model, @PathVariable Long id) {
-
-        Optional<Learning> byId = learningRepository.findById(id);
-        Learning learning = byId.orElseThrow();
-
-        return "index";
-    }
-
     @GetMapping("/profile/learning/update/{id}")
-    public String updateLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) throws JsonProcessingException {
+    public String viewUpdateMainLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) throws JsonProcessingException {
         Optional<Learning> byId = learningRepository.findById(id);
         Learning learning = byId.orElseThrow();
         List<String> tagList = learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList());
@@ -229,18 +238,18 @@ public class LearningController {
     }
 
     @GetMapping("/profile/learning/start/{id}")
-    public String startLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
+    public String startLearning(@CurrentAccount Account account, Model model, @PathVariable Long id, RedirectAttributes attributes) {
         learningService.startLearning(id);
 
-        model.addAttribute("message", "강의가 오픈되었습니다.");
+        attributes.addFlashAttribute("message", "강의가 오픈되었습니다.");
         return "redirect:/learning/" + id;
     }
 
     @GetMapping("/profile/learning/close/{id}")
-    public String closedLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
+    public String closedLearning(@CurrentAccount Account account, Model model, @PathVariable Long id, RedirectAttributes attributes) {
         learningService.closeLearning(id);
 
-        model.addAttribute("message", "강의가 닫혔습니다..");
+        attributes.addFlashAttribute("message", "강의가 닫혔습니다..");
         return "redirect:/learning/" + id;
     }
 }
