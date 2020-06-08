@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/login.css"/>
 </head>
 <body class="container align-items-center justify-content-center">
-<!--TODO 패스워드 실패시 경고창 띄워주기-->
+
 <div th:replace="fragment.html :: navbar"></div>
     <div class="inner-div">
         <div class="logo-div">
@@ -21,7 +21,7 @@
         </div>
         <div class="d-flex justify-content-center">
             <div class="col-lg-3"></div>
-        <div class="alert alert-danger alert-dismissible fade show alert-custom col-lg-6 mb-md-4" role="alert" th:if="${param.error}">
+        <div class="alert alert-danger alert-dismissible fade show alert-custom col-lg-6 mb-md-4" role="alert" th:if="${message}">
             <p>이메일과 패스워드가 정확하지 않습니다.</p>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

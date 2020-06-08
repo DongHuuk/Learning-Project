@@ -8,6 +8,7 @@
     <div th:replace="fragment.html :: links"></div>
     <link rel="stylesheet" href="/css/main-learning.css">
     <script src="/node_modules/@editorjs/editorjs/dist/editor.js"></script>
+    <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
 </head>
 
@@ -44,7 +45,7 @@
             </div>
         </div>
 
-        <div class="col-md-3" th:if="${!listenLearning}">
+        <div class="col-md-3" th:if="${listenLearning || learningSet}">
             <form class="banner-form" action="#" th:action="@{'/learning/' + ${learning.id} + '/listen'}" method="get">
                 <button class="banner-form-btn btn-success btn" type="submit">학습하기</button>
             </form>
@@ -53,19 +54,18 @@
                 <button class="banner-form-btn btn-info btn" type="submit">편집하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/start/' + ${learning.id}}" method="get"
-                  th:if="${!learning.startingLearning}">
+                  th:if="${!learning.startingLearning && learningSet}">
                 <button class="banner-form-btn btn-info btn" type="submit">강의 공개하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/close/' + ${learning.id}}" method="get"
-                  th:if="${learning.startingLearning && !learning.closedLearning}">
+                  th:if="${learning.startingLearning && !learning.closedLearning && learningSet}">
                 <button class="banner-form-btn btn-info btn" type="submit">강의 닫기</button>
             </form>
         </div>
-
     </div>
     <!--banner-->
 
-    <div class="col-md-2 course-floating" th:if="${listenLearning}">
+    <div class="col-md-2 course-floating" th:if="${!listenLearning && !learningSet}">
         <div class="course-floating-price mt-4 mb-4">
             110,000원
         </div>
@@ -109,12 +109,44 @@
         <div id="textValue"></div>
     </div>
 
-<div th:replace="fragment.html :: footer"></div>
-<script type="application/javascript">
-    var value = document.getElementById('value').textContent;
-    value = $.parseHTML(value);
-    $('#textValue').append(value);
-</script>
+    <div class="mt-md-5 d-flex align-content-start" style=" width: 50%">
+        <hr style="width: 100%"/>
+    </div>
+
+    <div class="learning-uploader-info mt-lg-5 ml-md-5 pl-md-3">
+        <p class="learning-uploader-info-title">강의 제공자 : <span th:text="${learning.lecturerName}"></span></p>
+        <div hidden="hidden" id="lectureDescription" th:text="${learning.lecturerDescription}"></div>
+        <p id="lectureDescriptionValue"></p>
+    </div>
+
+    <div class="learning-update-info mt-lg-5 ml-md-5 pl-md-3">
+        <p class="learning-update-info-title">공개 일자</p>
+        <p>
+            <span class="date-time" th:text="${learning.openLearning}">Date Time</span>
+            (마지막 업데이트 날짜 : <span class="date-time" th:text="${learning.updateLearning}"></span>)
+        </p>
+    </div>
+
+    <div class="mt-md-5 learning-comment">
+        <p class="learning-comment-title">강의 후기</p>
+    </div>
+
+    <div th:replace="fragment.html :: footer"></div>
+    <script type="application/javascript">
+        moment.locale('ko');
+        $(".date-time").text(function (index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LLL");
+        })
+    </script>
+    <script type="application/javascript">
+        var value = document.getElementById('value').textContent;
+        value = $.parseHTML(value);
+        $('#textValue').append(value);
+
+        var lectureValue = document.getElementById('lectureDescription').textContent;
+        lectureValue = $.parseHTML(lectureValue);
+        $('#lectureDescriptionValue').append(lectureValue);
+    </script>
 </body>
 
 </html>

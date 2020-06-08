@@ -1,6 +1,7 @@
 package com.providelearingsite.siteproject.learning;
 
 import com.providelearingsite.siteproject.account.Account;
+import com.providelearingsite.siteproject.question.Question;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.video.Video;
 import lombok.*;
@@ -30,12 +31,13 @@ public class Learning {
     @NotNull
     private String lecturerName;
     @NotNull
+    private String lecturerDescription;
+    @NotNull
     @Lob
     private String subscription;
     @Lob
     private String bannerBytes;
     private String bannerServerPath;
-    private float rating = 0;
 
     private LocalDateTime createLearning;
     private LocalDateTime openLearning;
@@ -56,6 +58,12 @@ public class Learning {
     private Set<Tag> tags = new HashSet<>();
     private LocalDateTime uploadVideo = null;
     private LocalDateTime updateLearning = null;
+
+    @OneToMany(mappedBy = "learning")
+    private Set<Question> questions;
+
+    private String comment; // 후기
+    private float rating = 0;
 
     public void setVideos(Video video) {
         this.videos.add(video);

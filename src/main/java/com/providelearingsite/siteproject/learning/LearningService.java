@@ -43,11 +43,12 @@ public class LearningService {
         learning.setTitle(learningForm.getTitle());
         learning.setSubscription(learningForm.getSubscription());
         learning.setLecturerName(learningForm.getLecturerName());
+        learning.setLecturerDescription(learningForm.getLecturerDescription());
         learning.setCreateLearning(LocalDateTime.now());
-        account.getLearningSet().add(learning);
+        learningRepository.save(learning);
         learning.setAccount(account);
 
-        return learningRepository.save(learning);
+        return learning;
     }
 
     public void saveLearningTags(Learning learning, Tag tag){
@@ -149,6 +150,8 @@ public class LearningService {
     public void updateLearningScript(LearningForm learningForm, Account account, Long id) {
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning oldLearning = learningById.orElseThrow();
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        Account newAccount = byId.orElseThrow();
 
         final String learningPathBefore = "C:/project/" + account.getId() + "/" + oldLearning.getTitle().trim();
         final String learningPathAfter = "C:/project/" + account.getId() + "/" + learningForm.getTitle().trim();
@@ -173,12 +176,19 @@ public class LearningService {
             e.printStackTrace();
         }
 
+        if(newAccount.getLearningSet().contains(oldLearning)){
+            newAccount.getLearningSet().remove(oldLearning);
+        }
+
         oldLearning.setTitle(learningForm.getTitle());
         oldLearning.setSubscription(learningForm.getSubscription());
         oldLearning.setLecturerName(learningForm.getLecturerName());
+        oldLearning.setLecturerDescription(learningForm.getLecturerDescription());
+        oldLearning.setUpdateLearning(LocalDateTime.now());
+        oldLearning.setAccount(newAccount);
 
         try {
-            String accountIdStr = account.getId() + "";
+            String accountIdStr = newAccount.getId() + "";
             int i = oldLearning.getBannerServerPath().indexOf(accountIdStr);
             String firstStr = oldLearning.getBannerServerPath().substring(0, i);
             String secondStr = oldLearning.getBannerServerPath().substring(i + accountIdStr.length());
@@ -186,18 +196,10 @@ public class LearningService {
         }catch (NullPointerException e){
             log.info("banner image serverPath 미지정 = 기본 이미지 값 사용중");
         }
-
-        if(account.getLearningSet().contains(oldLearning)){
-            account.removeLearningSet(oldLearning);
-            account.setLearningSet(oldLearning);
-        }
-
-        accountRepository.save(account);
-        learningRepository.save(oldLearning);
     }
 
     @Async
-    private void inoutStream(File file, String learningPathAfter, String s) throws IOException {
+    public void inoutStream(File file, String learningPathAfter, String s) throws IOException {
         try (
                 BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
                 BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(learningPathAfter + "/" + s), 1024 * 500)

@@ -63,6 +63,15 @@ p{
     padding: 8px;
 }
 
-.banner-nav-content{
-    min-height: 70px;
+.learning-comment,
+.banner-nav-content,
+.learning-uploader-info,
+.learning-update-info{
+    max-width: 70%;
+}
+
+.learning-comment-title,
+.learning-uploader-info-title,
+.learning-update-info-title{
+    font-size: 1.5rem;
 }

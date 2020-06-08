@@ -1,6 +1,7 @@
 package com.providelearingsite.siteproject.account;
 
-import com.providelearingsite.siteproject.mail.LocalJavaMailService;
+import com.providelearingsite.siteproject.mail.EmailMessage;
+import com.providelearingsite.siteproject.mail.EmailService;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
@@ -8,7 +9,8 @@ import com.providelearingsite.siteproject.tag.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -32,7 +34,7 @@ public class AccountService implements UserDetailsService {
 
     @Autowired private AccountRepository accountRepository;
     @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private LocalJavaMailService localJavaMailService;
+    @Autowired private EmailService emailService;
     @Autowired private ModelMapper modelMapper;
 
     public void login(Account account){
@@ -68,11 +70,15 @@ public class AccountService implements UserDetailsService {
 
     private void sendEmailToken(Account account) {
         account.createEmailCheckToken();
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(account.getEmail());
-        mailMessage.setSubject("회원 가입 안내 메일");
-        mailMessage.setText("/check-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail());
-        localJavaMailService.send(mailMessage);
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(account.getEmail())
+                .subject("회원 가입 안내 메일")
+                .message("/check-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail())
+                .build();
+
+        emailService.sendEmail(emailMessage);
+
         log.info("/check-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail());
     }
 

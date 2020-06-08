@@ -1,6 +1,8 @@
 package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.account.form.AccountForm;
+import com.providelearingsite.siteproject.mail.EmailMessage;
+import com.providelearingsite.siteproject.mail.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,7 +39,7 @@ class AccountControllerTest {
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private AccountService accountService;
     @Autowired private ModelMapper modelMapper;
-
+    @MockBean private EmailService emailService;
 
     @Test
     @DisplayName("로그인 폼 구현 - 성공")
@@ -170,6 +174,7 @@ class AccountControllerTest {
         Account nicknameAccount = accountRepository.findByNicknameAndTokenChecked("Test", true);
         assertNotNull(nicknameAccount);
         assertEquals(emailAccount, nicknameAccount);
+        then(emailService).should().sendEmail(any(EmailMessage.class));
     }
 
     @Test
@@ -236,13 +241,14 @@ class AccountControllerTest {
         mockMvc.perform(post("/recheck-token")
                 .param("email", accountForm.getEmail())
                 .with(csrf()))
-                .andExpect(flash().attributeExists())
+                .andExpect(flash().attributeExists("message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 
         Account newAccount = accountRepository.findByEmailAndTokenChecked(accountForm.getEmail(), false);
         assertNotNull(newAccount.getEmailCheckToken());
         //emailToken 서로 다른 값 log로 확인 완료
+        then(emailService).should().sendEmail(any(EmailMessage.class));
     }
 
     @Test
@@ -265,6 +271,7 @@ class AccountControllerTest {
 
         Account account = accountRepository.findByEmailAndTokenChecked(accountForm.getEmail(), false);
         assertNotNull(account);
+
     }
 
     @Test

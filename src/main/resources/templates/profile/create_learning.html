@@ -52,9 +52,14 @@
                                     <small class="form-text text-danger" th:if="${#fields.hasErrors('lecturerName')}" th:errors="*{lecturerName}">강의자 이름 미입력</small>
                                 </div>
 
+                                <div class="card-body form-group mt-lg-4">
+                                    <label for="summernote_lecturerDescription">업로더 설명</label>
+                                    <textarea id="summernote_lecturerDescription" class="summernote" type="textarea" required th:field="*{lecturerDescription}"> </textarea>
+                                </div>
+
                                 <div class="mt-lg-4 form-group">
-                                    <label for="summernote">강의소개</label>
-                                    <textarea id="summernote" class="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
+                                    <label for="summernote_subscription">강의소개</label>
+                                    <textarea id="summernote_subscription" class="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-success mt-md-3 mb-md-3">저장하기</button>
@@ -73,7 +78,7 @@
     <div th:replace="fragment.html :: footer"></div>
     <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
     <script type="application/javascript">
-        $("#summernote").summernote({
+        $("#summernote_subscription").summernote({
             fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
             placeholder: '강의에 대한 설명을 반드시 입력해주세요.',
             tabSize: 2,
@@ -81,6 +86,18 @@
             height: 220,
             minHeight: 450,
             maxHeight: 450,
+            focus: true
+        });
+    </script>
+    <script type="application/javascript">
+        $("#summernote_lecturerDescription").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
+            placeholder: '강의 제공자에 대한 설명을 입력해주세요.',
+            tabSize: 2,
+            lang: "ko-KR",
+            height: 150,
+            minHeight: 200,
+            maxHeight: 250,
             focus: true
         });
     </script>

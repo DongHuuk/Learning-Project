@@ -81,20 +81,23 @@ class LearningControllerTest {
     @DisplayName("강의 만들기 - 성공")
     @WithAccount("test@naver.com")
     public void createLearning() throws Exception {
+        Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
         String title = "테스트_1";
         String subscription = "테스트 설명입니다.";
         String lecturerName = "흑우냥이";
+        String lectureSubscription = "게시자에 대한 설명입니다.";
 
         mockMvc.perform(post("/profile/learning/create")
                 .param("title", title)
                 .param("subscription", subscription)
                 .param("lecturerName", lecturerName)
+                .param("lecturerDescription", lectureSubscription)
                 .with(csrf()))
                 .andExpect(model().hasNoErrors())
-                .andExpect(model().attributeExists("account"))
-                .andExpect(model().attributeExists("message"))
-                .andExpect(view().name(LearningController.CREATE_LEARNING))
-                .andExpect(status().isOk());
+                .andExpect(flash().attributeExists("account"))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(redirectedUrl("/profile/learning/create"))
+                .andExpect(status().is3xxRedirection());
 
         Learning learning = learningRepository.findByTitle(title);
 
@@ -102,8 +105,36 @@ class LearningControllerTest {
         assertEquals(learning.getTitle(), title);
         assertEquals(learning.getSubscription(), subscription);
         assertEquals(learning.getLecturerName(), lecturerName);
+        assertEquals(learning.getLecturerDescription(), lectureSubscription);
+
+        assertTrue(account.getLearningSet().contains(learning));
     }
 
+    @Test
+    @WithAccount("test@naver.com")
+    @DisplayName("강의 만들기 - 실패_lecturerDescription null")
+    public void createLearning_fail_lecturerDescription() throws Exception {
+        Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
+        String title = "";
+        String subscription = "테스트 설명입니다.";
+        String lecturerName = "test";
+
+        mockMvc.perform(post("/profile/learning/create")
+                .param("title", "Test_Title")
+                .param("subscription", subscription)
+                .param("lecturerName", lecturerName)
+                .with(csrf()))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("message"))
+                .andExpect(model().attributeExists("learningForm"))
+                .andExpect(model().hasErrors())
+                .andExpect(view().name(LearningController.CREATE_LEARNING))
+                .andExpect(status().isOk());
+
+        Learning learning = learningRepository.findByTitle(title);
+
+        assertNull(learning);
+    }
     @Test
     @WithAccount("test@naver.com")
     @DisplayName("강의 만들기 - 실패_title null")
@@ -112,11 +143,12 @@ class LearningControllerTest {
         String title = "";
         String subscription = "테스트 설명입니다.";
         String lecturerName = "test";
+        String lectureSubscription = "게시자에 대한 설명입니다.";
 
         mockMvc.perform(post("/profile/learning/create")
-                .param("title", title)
                 .param("subscription", subscription)
                 .param("lecturerName", lecturerName)
+                .param("lecturerDescription", lectureSubscription)
                 .with(csrf()))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("message"))
@@ -137,11 +169,12 @@ class LearningControllerTest {
         String title = "테스트_1";
         String subscription = "";
         String lecturerName = "흑우냥이_1";
+        String lectureSubscription = "게시자에 대한 설명입니다.";
 
         mockMvc.perform(post("/profile/learning/create")
                 .param("title", title)
-                .param("subscription", subscription)
                 .param("lecturerName", lecturerName)
+                .param("lecturerDescription", lectureSubscription)
                 .with(csrf()))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("message"))
@@ -164,11 +197,12 @@ class LearningControllerTest {
         String title = "테스트_1";
         String subscription = "테스트 설명입니다.";
         String lecturerName = "";
+        String lectureSubscription = "게시자에 대한 설명입니다.";
 
         mockMvc.perform(post("/profile/learning/create")
                 .param("title", title)
                 .param("subscription", subscription)
-                .param("lecturerName", lecturerName)
+                .param("lecturerDescription", lectureSubscription)
                 .with(csrf()))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("message"))
@@ -197,6 +231,7 @@ class LearningControllerTest {
         learningForm.setTitle("테스트_1");
         learningForm.setSubscription("테스트_1 설명입니다.");
         learningForm.setLecturerName("흑우냥이");
+        learningForm.setLecturerDescription("테스트 게시자 설명입니다.");
         return learningService.saveLearning(learningForm, account);
     }
 
@@ -467,6 +502,7 @@ class LearningControllerTest {
                 .param("title", learning.getTitle())
                 .param("subscription", "테스트_1 수정 설명입니다.")
                 .param("lecturerName", "mark.2_흑우냥이")
+                .param("lecturerDescription", "테스트_게시자_수정_입니다.")
                 .with(csrf()))
                 .andExpect(flash().attributeExists("message"))
                 .andExpect(status().is3xxRedirection())
@@ -474,7 +510,7 @@ class LearningControllerTest {
 
         assertEquals(learning.getSubscription(), "테스트_1 수정 설명입니다.");
         assertEquals(learning.getLecturerName(), "mark.2_흑우냥이");
-
+        assertEquals(learning.getLecturerDescription(), "테스트_게시자_수정_입니다.");
     }
 
     @Test
@@ -486,9 +522,9 @@ class LearningControllerTest {
         learning.setBannerServerPath("C:/project/테스트_코드_1/"+ account.getId() +"/fpewjpoeq.jpg");
 
         mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
-                .param("title", "")
                 .param("subscription", "테스트_1 수정 설명입니다.")
                 .param("lecturerName", "mark.2_흑우냥이")
+                .param("lecturerDescription", "테스트_게시자_수정_입니다.")
                 .with(csrf()))
                 .andExpect(flash().attributeExists("message"))
                 .andExpect(status().is3xxRedirection())
@@ -496,6 +532,7 @@ class LearningControllerTest {
 
         assertNotEquals(learning.getSubscription(), "테스트_1 수정 설명입니다.");
         assertNotEquals(learning.getLecturerName(), "mark.2_흑우냥이");
+        assertNotEquals(learning.getLecturerDescription(), "테스트_게시자_수정_입니다.");
     }
 
     @Test
@@ -508,8 +545,8 @@ class LearningControllerTest {
 
         mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
                 .param("title", "테스트_2")
-                .param("subscription", "")
                 .param("lecturerName", "mark.2_흑우냥이")
+                .param("lecturerDescription", "테스트_게시자_수정_입니다.")
                 .with(csrf()))
                 .andExpect(flash().attributeExists("message"))
                 .andExpect(status().is3xxRedirection())
@@ -517,6 +554,29 @@ class LearningControllerTest {
 
         assertNotEquals(learning.getTitle(), "테스트_2");
         assertNotEquals(learning.getLecturerName(), "mark.2_흑우냥이");
+        assertNotEquals(learning.getLecturerDescription(), "테스트_게시자_수정_입니다.");
+    }
+
+    @Test
+    @WithAccount("test@naver.com")
+    @DisplayName("강의 편집 페이지에서 편집 - 실패 lecturerDescription null")
+    public void updateLearningScript_success_lecturerDescription_null() throws Exception {
+        Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
+        Learning learning = createLearning(account);
+        learning.setBannerServerPath("C:/project/테스트_코드_1/"+ account.getId() +"/fpewjpoeq.jpg");
+
+        mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
+                .param("title", "테스트_2")
+                .param("lecturerName", "mark.2_흑우냥이")
+                .param("subscription", "테스트_1 수정 설명입니다.")
+                .with(csrf()))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profile/learning/update/" + learning.getId()));
+
+        assertNotEquals(learning.getTitle(), "테스트_2");
+        assertNotEquals(learning.getLecturerName(), "mark.2_흑우냥이");
+        assertNotEquals(learning.getLecturerDescription(), "테스트_게시자_수정_입니다.");
     }
 
     @Test
@@ -530,7 +590,7 @@ class LearningControllerTest {
         mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
                 .param("title", "테스트_2")
                 .param("subscription", "테스트_2 수정 설명코드입니다.")
-                .param("lecturerName", "")
+                .param("lecturerDescription", "테스트_게시자_수정_입니다.")
                 .with(csrf()))
                 .andExpect(flash().attributeExists("message"))
                 .andExpect(status().is3xxRedirection())
@@ -538,6 +598,7 @@ class LearningControllerTest {
 
         assertNotEquals(learning.getTitle(), "테스트_2");
         assertNotEquals(learning.getSubscription(), "테스트_2 수정 설명코드입니다.");
+        assertNotEquals(learning.getLecturerDescription(), "테스트_게시자_수정_입니다.");
     }
 
     @Test

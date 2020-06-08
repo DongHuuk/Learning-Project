@@ -56,7 +56,7 @@ public class LearningController {
 
     @PostMapping("/profile/learning/create")
     public String createLearning(@CurrentAccount Account account, Model model,
-                                 @Valid LearningForm learningForm, Errors errors) {
+                                 @Valid LearningForm learningForm, Errors errors, RedirectAttributes attributes) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         Account account_1 = byId.orElseThrow();
         if (errors.hasErrors()) {
@@ -67,9 +67,9 @@ public class LearningController {
 
         Learning learning = learningService.saveLearning(learningForm, account_1);
 
-        model.addAttribute("account", account_1);
-        model.addAttribute("message", learning.getTitle() + " 강의가 추가되었습니다");
-        return CREATE_LEARNING;
+        attributes.addFlashAttribute("account", account_1);
+        attributes.addFlashAttribute("message", learning.getTitle() + " 강의가 추가되었습니다");
+        return "redirect:/profile/learning/create";
     }
 
     @GetMapping("/profile/learning/list")
@@ -161,9 +161,7 @@ public class LearningController {
 
         switch (extension){
             case "jpg":
-                break;
             case "png":
-                break;
             case "jpeg":
                 break;
             default:
@@ -211,6 +209,7 @@ public class LearningController {
         LearningForm learningForm = new LearningForm();
         learningForm.setTitle(learning.getTitle());
         learningForm.setLecturerName(learning.getLecturerName());
+        learningForm.setLecturerDescription(learning.getLecturerDescription());
 
         model.addAttribute(account);
         model.addAttribute("learning", learning);

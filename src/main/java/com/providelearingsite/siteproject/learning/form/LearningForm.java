@@ -21,4 +21,8 @@ public class LearningForm {
     @NotNull
     @Column(nullable = false)
     private String lecturerName;
+
+    @NotNull
+    @Column(nullable = false)
+    private String lecturerDescription;
 }

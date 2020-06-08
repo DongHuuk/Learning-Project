@@ -1,6 +1,7 @@
 package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.learning.Learning;
+import com.providelearingsite.siteproject.question.Question;
 import com.providelearingsite.siteproject.tag.Tag;
 import lombok.*;
 
@@ -56,17 +57,13 @@ public class Account {
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Learning> learningSet = new HashSet<>();
 
+    @OneToMany(mappedBy = "account")
+    private Set<Question> questionSet = new HashSet<>();
+
     public void setLearningSet(Learning learning) {
         this.learningSet.add(learning);
         if(learning.getAccount() != this){
             learning.setAccount(this);
-        }
-    }
-
-    public void removeLearningSet(Learning learning) {
-        this.learningSet.remove(learning);
-        if(learning.getAccount() == this){
-            learning.setAccount(null);
         }
     }
 
