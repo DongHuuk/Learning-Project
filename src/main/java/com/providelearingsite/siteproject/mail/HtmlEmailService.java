@@ -23,7 +23,7 @@ public class HtmlEmailService implements EmailService {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8"); //첨부파일시 true
-            mimeMessageHelper.setTo("drivespublic@gmail.com");
+            mimeMessageHelper.setTo(emailMessage.getTo());
             mimeMessageHelper.setSubject(emailMessage.getSubject());
             mimeMessageHelper.setText(emailMessage.getMessage(), true);
             mimeMessageHelper.setFrom("kuronekospi@gmail.com");

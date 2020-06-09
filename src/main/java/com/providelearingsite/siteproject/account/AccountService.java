@@ -1,5 +1,6 @@
 package com.providelearingsite.siteproject.account;
 
+import com.providelearingsite.siteproject.config.AppProperties;
 import com.providelearingsite.siteproject.mail.EmailMessage;
 import com.providelearingsite.siteproject.mail.EmailService;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
@@ -21,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +39,8 @@ public class AccountService implements UserDetailsService {
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private EmailService emailService;
     @Autowired private ModelMapper modelMapper;
+    @Autowired private TemplateEngine templateEngine;
+    @Autowired private AppProperties appProperties;
 
     public void login(Account account){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -70,11 +75,19 @@ public class AccountService implements UserDetailsService {
 
     private void sendEmailToken(Account account) {
         account.createEmailCheckToken();
+        Context context = new Context();
+        context.setVariable("nickname", account.getNickname());
+        context.setVariable("linkName", "이메일 인증하기");
+        context.setVariable("message", "이메일 인증을 마치시려면 링크를 클릭해주세요.");
+        context.setVariable("host", appProperties.getHost());
+        context.setVariable("link", "/check-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail());
+
+        String process = templateEngine.process("mail/simplemail", context);
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
                 .subject("회원 가입 안내 메일")
-                .message("/check-token?token=" + account.getEmailCheckToken() + "&email=" + account.getEmail())
+                .message(process)
                 .build();
 
         emailService.sendEmail(emailMessage);
