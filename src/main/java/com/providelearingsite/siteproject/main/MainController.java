@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class MainController {
-
-    @Autowired
-    private LearningRepository learningRepository;
 
     @GetMapping("/")
     public String indexGet(@CurrentAccount Account account, Model model){
@@ -50,23 +49,5 @@ public class MainController {
     @GetMapping("/logout")
     public String logout(){
         return "index";
-    }
-
-    @GetMapping("/learning/program")
-    public String viewProgramming(@CurrentAccount Account account, Model model){
-        if(account != null){
-            model.addAttribute(account);
-        }
-
-        return "learning/program";
-    }
-
-    @GetMapping("/learning/algorithm")
-    public String viewSelf(@CurrentAccount Account account, Model model){
-        if(account != null){
-            model.addAttribute(account);
-        }
-
-        return "learning/program";
     }
 }

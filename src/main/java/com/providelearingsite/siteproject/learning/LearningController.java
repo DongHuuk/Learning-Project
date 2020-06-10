@@ -189,7 +189,7 @@ public class LearningController {
 
         model.addAttribute(account);
         model.addAttribute("listenLearning", learningService.canListenLearning(account, learning));
-        model.addAttribute("learningSet", account.getLearningSet().contains(learning));
+        model.addAttribute("learnings", account.getLearnings().contains(learning));
         model.addAttribute("countVideo", learning.getVideoCount());
         model.addAttribute("learning", learning);
         model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
@@ -210,6 +210,7 @@ public class LearningController {
         learningForm.setTitle(learning.getTitle());
         learningForm.setLecturerName(learning.getLecturerName());
         learningForm.setLecturerDescription(learning.getLecturerDescription());
+        learningForm.setPrice(learning.getPrice());
 
         model.addAttribute(account);
         model.addAttribute("learning", learning);

@@ -44,6 +44,7 @@ public class LearningService {
         learning.setSubscription(learningForm.getSubscription());
         learning.setLecturerName(learningForm.getLecturerName());
         learning.setLecturerDescription(learningForm.getLecturerDescription());
+        learning.setPrice(learningForm.getPrice());
         learning.setCreateLearning(LocalDateTime.now());
         learningRepository.save(learning);
         learning.setAccount(account);
@@ -176,14 +177,15 @@ public class LearningService {
             e.printStackTrace();
         }
 
-        if(newAccount.getLearningSet().contains(oldLearning)){
-            newAccount.getLearningSet().remove(oldLearning);
+        if(newAccount.getLearnings().contains(oldLearning)){
+            newAccount.getLearnings().remove(oldLearning);
         }
 
         oldLearning.setTitle(learningForm.getTitle());
         oldLearning.setSubscription(learningForm.getSubscription());
         oldLearning.setLecturerName(learningForm.getLecturerName());
         oldLearning.setLecturerDescription(learningForm.getLecturerDescription());
+        oldLearning.setPrice(learningForm.getPrice());
         oldLearning.setUpdateLearning(LocalDateTime.now());
         oldLearning.setAccount(newAccount);
 

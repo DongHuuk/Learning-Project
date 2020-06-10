@@ -107,7 +107,7 @@ class LearningControllerTest {
         assertEquals(learning.getLecturerName(), lecturerName);
         assertEquals(learning.getLecturerDescription(), lectureSubscription);
 
-        assertTrue(account.getLearningSet().contains(learning));
+        assertTrue(account.getLearnings().contains(learning));
     }
 
     @Test

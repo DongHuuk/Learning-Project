@@ -2,17 +2,15 @@ package com.providelearingsite.siteproject.learning;
 
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.question.Question;
+import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.video.Video;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Learning {
 
-    @Id @Column(name = "learning_id")
+    @Id
     @GeneratedValue
     private Long id;
     @NotNull
@@ -38,32 +36,47 @@ public class Learning {
     @Lob
     private String bannerBytes;
     private String bannerServerPath;
+    private int price;
 
     private LocalDateTime createLearning;
     private LocalDateTime openLearning;
     private LocalDateTime closeLearning;
 
+    private LocalDateTime uploadVideo = null;
+    private LocalDateTime updateLearning = null;
+
     private boolean startingLearning;
     private boolean closedLearning;
 
+    private int videoCount = 0;
+
+    private String comment; // 후기
+    private float rating = 0;
+
+    @ManyToMany
+    @JoinTable(
+            name = "LearningAndAccount",
+            joinColumns = @JoinColumn(name = "learning_id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id")
+    )
+    private Set<Account> accounts = new HashSet<>();
+
+    //업로더 (게시자)
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
     @OneToMany(mappedBy = "learning", fetch = FetchType.LAZY)
     private Set<Video> videos = new HashSet<>();
-    private int videoCount = 0;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
-    private LocalDateTime uploadVideo = null;
-    private LocalDateTime updateLearning = null;
 
     @OneToMany(mappedBy = "learning")
-    private Set<Question> questions;
+    private Set<Question> questions = new HashSet<>();
 
-    private String comment; // 후기
-    private float rating = 0;
+    @OneToMany(mappedBy = "learning")
+    private Set<Review> reviews = new HashSet<>();
 
     public void setVideos(Video video) {
         this.videos.add(video);
@@ -74,8 +87,8 @@ public class Learning {
 
     public void setAccount(Account account) {
         this.account = account;
-        if(!account.getLearningSet().contains(this)){
-            account.getLearningSet().add(this);
+        if(!account.getLearnings().contains(this)){
+            account.getLearnings().add(this);
         }
     }
 

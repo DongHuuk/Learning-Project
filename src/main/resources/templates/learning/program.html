@@ -19,7 +19,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h2 class="m-0">
-                            <a href="#">
+                            <a href="#" th:href="@{/all}">
                                 <button class="btn btn-block text-left" type="button">
                                     모든 강의
                                 </button>
@@ -35,22 +35,22 @@
                         </h2>
                     </div>
                     <div id="collapseOne" class="collapse" aria-labelledby="headingOne">
-                        <a href="#">
+                        <a href="#" th:href="@{/web/all}">
                             <div class="card-body div-bottom-line">
                                 All
                             </div>
                         </a>
-                        <a href="#">
+                        <a href="#" th:href="@{/web/java}">
                             <div class="card-body div-bottom-line">
                                 Java
                             </div>
                         </a>
-                        <a href="#">
+                        <a href="#" th:href="@{/web/javascript}">
                             <div class="card-body div-bottom-line">
                                 Javascript
                             </div>
                         </a>
-                        <a href="#">
+                        <a href="#" th:href="@{/web/html}">
                             <div class="card-body div-bottom-line">
                                 CSS HTML
                             </div>
@@ -64,17 +64,17 @@
                         </h2>
                     </div>
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
-                        <a href="#">
+                        <a href="#" th:href="@{/algorithm/all}">
                             <div class="card-body div-bottom-line">
                                 All
                             </div>
                         </a>
-                        <a href="#">
+                        <a href="#" th:href="@{/algorithm/gof}">
                             <div class="card-body div-bottom-line">
                                 GOF 디자인 패턴
                             </div>
                         </a>
-                        <a href="#">
+                        <a href="#" th:href="@{/algorithm/algorithm}">
                             <div class="card-body">
                                 알고리즘
                             </div>
@@ -88,27 +88,25 @@
 
         <div class="col-sm-11 mt-lg-5 inner-container">
             <header class="">
-                <div class="d-flex justify-content-end input-group">
+                <form class="d-flex justify-content-end input-group" action="#" th:action="@{/search/learning}" method="get">
                     <input type="text" class="form-control search_wrapper_input search-bar" placeholder="강의 검색하기"
-                           aria-label="Recipient's username" aria-describedby="button-addon2">
+                           aria-label="Recipient's username" aria-describedby="button-addon2" name="keyword">
                     <span class="input-group-append">
-                    <button class="btn btn-success search_wrapper_btn search-button" type="button" id="button-addon2">검색</button>
-                </span>
-                </div>
+                    <button class="btn btn-success search_wrapper_btn search-button" type="submit" id="button-addon2">검색</button>
+                    </span>
+                </form>
                 <hr class="void-line"/>
-                <!--TODO 특정 경로에 있을 경우 그 경로를 보여주도록-->
+
                 <div class="header-nav row d-flex justify-content-between">
                     <nav class="navbar navbar-expand-lg header-nav-navbar">
                         <div class="collapse navbar-collapse" >
                             <ul class="navbar-nav">
-                                <li class="nav-item active">
-                                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span>|</a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span>|</a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span>|</a>
+                                <li class="nav-item active" th:each="path : ${pathLink}">
+                                    <a class="nav-link" href="#">
+                                        <span class="path-link" th:text="${path}">
+                                            default path
+                                        </span>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -116,11 +114,11 @@
                     <div class="list-viewer d-flex align-content-center">
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-info active list-viewer-icon">
-                                <input type="radio" name="options" id="option1" checked>
+                                <input type="radio" name="options" id="option1" >
                                 <i class="fas fa-list-ul"></i>
                             </label>
                             <label class="btn btn-info list-viewer-icon">
-                                <input type="radio" name="options" id="option2">
+                                <input type="radio" name="options" id="option2" checked>
                                 <i class="fas fa-th"></i>
                             </label>
                         </div>
@@ -136,18 +134,36 @@
                     </div>
                 </div>
             </header>
+
             <main class="row mt-md-3">
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail" src="/images/view_1.jpg"/>
+                <div class="col-md-3 roof-start" th:each="learning : ${learningList}">
+                    <div class="card mb-4 shadow-sm card-view">
+                        <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
+                             th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+                        <img class="banner-image" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
                         <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                            <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
+                            <p class="card-text" id="card-tags">
+                                <i class="fas fa-tasks"></i>
+                                <span class="card-tag-box" th:each="tag : ${learning.tags}">
+                                    <span th:text="${tag.getTitle()}"></span>
+                                </span>
+                            </p>
+                            <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
+                            <p class="mb-1">
+                                <span class="full-star star" th:each="num : ${#numbers.sequence(0, ${learning.rating})}">
+                                    num
+                                </span>
+                                <span class="half-star star"></span>
+                                <span class="empty-star star"></span>
+                                (<span th:text="${learning.rating}"></span>)
+                            </p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-muted">9 mins</small>
+                                <p>
+                                    <span th:text="${learning.price}"></span>원
+                                    <span class="date-time" th:text="${learning.openLearning}"></span>
+                                </p>
+
                             </div>
                         </div>
                     </div>
@@ -156,12 +172,39 @@
         </div>
     </main>
 
-
-
-
 <div style="height: 1000px"></div>
 <footer th:replace="fragment.html :: footer"></footer>
+    <!--rating star-->
+    <script type="application/javascript">
 
+            // const rating = $(".card-learning-rating").text();
+            // const fullstar = $(".full-star");
+            // const halfstar = $(".half-star");
+            // const emptystar = $(".empty-star");
+            //
+            // const y = $('<i class="fas fa-star-half-alt"></i>');
+            //
+            // const i_rating = Math.floor(rating);
+            // const b_rating = ((rating * 10) - i_rating * 10) >= 5 && i_rating <= 5;
+            // const f_rating = 5 - i_rating - (b_rating ? 1 : 0);
+            // for (let i = 0; i < i_rating; i++) {
+            //     $('<i class="fas fa-star"></i>').appendTo(fullstar);
+            // }
+            // if (b_rating) {
+            //     halfstar.append(y);
+            // }
+            // for (i = 0; i < f_rating; i++) {
+            //     $('<i class="far fa-star"></i>').appendTo(emptystar);
+            // }
+
+    </script>
+    <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
+    <script type="application/javascript">
+        moment.locale('ko');
+        $(".date-time").text(function (index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LLL");
+        })
+    </script>
 </body>
 
 </html>

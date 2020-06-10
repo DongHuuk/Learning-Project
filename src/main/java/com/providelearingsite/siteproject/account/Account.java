@@ -2,6 +2,7 @@ package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.learning.Learning;
 import com.providelearingsite.siteproject.question.Question;
+import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.tag.Tag;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor @NoArgsConstructor
 public class Account {
 
-    @Id @Column(name = "account_id")
+    @Id
     @GeneratedValue
     private Long id;
 
@@ -51,17 +52,20 @@ public class Account {
     private Set<Tag> tags = new HashSet<>();
 
     //can listen Learning buy or free videos
-    @ManyToMany
+    @ManyToMany(mappedBy = "accounts")
     private Set<Learning> listenLearning = new HashSet<>();
 
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
-    private Set<Learning> learningSet = new HashSet<>();
+    private Set<Learning> learnings = new HashSet<>();
 
     @OneToMany(mappedBy = "account")
-    private Set<Question> questionSet = new HashSet<>();
+    private Set<Question> questions = new HashSet<>();
 
-    public void setLearningSet(Learning learning) {
-        this.learningSet.add(learning);
+    @OneToMany(mappedBy = "account")
+    private Set<Review> reviews = new HashSet<>();
+
+    public void setLearnings(Learning learning) {
+        this.learnings.add(learning);
         if(learning.getAccount() != this){
             learning.setAccount(this);
         }
@@ -76,7 +80,7 @@ public class Account {
         return this.createEmailToken.isBefore(LocalDateTime.now().minusHours(1));
     }
     public boolean canUploadVideo(){
-        return !this.learningSet.isEmpty();
+        return !this.learnings.isEmpty();
     }
 
 }

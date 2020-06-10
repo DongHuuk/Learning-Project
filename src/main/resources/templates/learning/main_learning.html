@@ -17,7 +17,7 @@
     <div class="jumbotron p-4 text-white rounded bg-dark mt-md-1 d-flex">
         <div class="px-0 d-flex pr-lg-4 pl-lg-4 col-md-9 inner-box">
             <img class="banner-image" th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
-            <img class="banner-image" src="/images/view_1.jpg" th:if="${learning.bannerBytes} == null"/>
+            <img class="banner-image" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
             <div class="ml-md-5 banner-box" th:if="${countVideo > 0}">
                 <p class="font-italic banner-title" th:text="${learning.title}">default Title</p>
                 <div class="d-flex rating-star">
@@ -45,27 +45,27 @@
             </div>
         </div>
 
-        <div class="col-md-3" th:if="${listenLearning || learningSet}">
+        <div class="col-md-3" th:if="${listenLearning || learnings}">
             <form class="banner-form" action="#" th:action="@{'/learning/' + ${learning.id} + '/listen'}" method="get">
                 <button class="banner-form-btn btn-success btn" type="submit">학습하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/update/' + ${learning.id}}" method="get"
-            th:if="${learningSet}">
+            th:if="${learnings}">
                 <button class="banner-form-btn btn-info btn" type="submit">편집하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/start/' + ${learning.id}}" method="get"
-                  th:if="${!learning.startingLearning && learningSet}">
+                  th:if="${!learning.startingLearning && learnings}">
                 <button class="banner-form-btn btn-info btn" type="submit">강의 공개하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/close/' + ${learning.id}}" method="get"
-                  th:if="${learning.startingLearning && !learning.closedLearning && learningSet}">
+                  th:if="${learning.startingLearning && !learning.closedLearning && learnings}">
                 <button class="banner-form-btn btn-info btn" type="submit">강의 닫기</button>
             </form>
         </div>
     </div>
     <!--banner-->
 
-    <div class="col-md-2 course-floating" th:if="${!listenLearning && !learningSet}">
+    <div class="col-md-2 course-floating" th:if="${!listenLearning && !learnings}">
         <div class="course-floating-price mt-4 mb-4">
             110,000원
         </div>
@@ -127,8 +127,18 @@
         </p>
     </div>
 
-    <div class="mt-md-5 learning-comment">
+    <div class="mt-md-5 d-flex align-content-start" style=" width: 50%">
+        <hr style="width: 100%"/>
+    </div>
+
+    <div class="mt-md-5 learning-comment mt-lg-5 ml-md-5 pl-md-3">
         <p class="learning-comment-title">강의 후기</p>
+        <div th:each="review : ${learning.reviews}">
+            <img src="images/rogo.png" class="review-image">
+            <div>
+                <p><span>rating</span> <span th:text="${}"></span></p>
+            </div>
+        </div>
     </div>
 
     <div th:replace="fragment.html :: footer"></div>

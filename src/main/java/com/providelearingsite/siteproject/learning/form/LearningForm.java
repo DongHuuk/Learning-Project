@@ -11,18 +11,19 @@ import javax.validation.constraints.NotNull;
 public class LearningForm {
 
     @NotBlank
+    @NotNull
     @Length(max = 255)
-    @Column(nullable = false)
     private String title;
 
     @NotBlank @NotNull
     private String subscription;
 
-    @NotNull
-    @Column(nullable = false)
+    @NotNull @NotBlank
     private String lecturerName;
 
-    @NotNull
-    @Column(nullable = false)
+    @NotNull @NotBlank
     private String lecturerDescription;
+
+    @NotNull
+    private int price;
 }
