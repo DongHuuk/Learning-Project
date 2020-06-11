@@ -26,4 +26,7 @@ public class LearningForm {
 
     @NotNull
     private int price;
+
+    @NotNull
+    private String kategorie;
 }

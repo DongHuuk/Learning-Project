@@ -15,3 +15,6 @@
 #progressbar{
     width: 25%;
 }
+.input-tagify-lengh{
+    max-width: 60%;
+}

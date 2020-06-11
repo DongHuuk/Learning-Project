@@ -62,11 +62,13 @@
         <div class="col-lg-3"></div>
         <div class="col-lg-6 col-lg-offset-4">
             <div class="input-group col-centered">
-                <input type="text" class="form-control search_wrapper_input" placeholder="무엇을 학습하고 싶으신가요?"
-                       aria-label="Recipient's username" aria-describedby="button-addon2">
-                <span class="input-group-append">
-                    <button class="btn btn-outline-secondary search_wrapper_btn" type="button" id="button-addon2">Button</button>
-                </span>
+                <form class="d-flex justify-content-end input-group" action="#" th:action="@{/search/learning}" method="get">
+                    <input type="text" class="form-control search_wrapper_input" placeholder="무엇을 학습하고 싶으신가요?"
+                           aria-label="Recipient's username" aria-describedby="button-addon2" name="keyword">
+                    <span class="input-group-append">
+                        <button class="btn btn-outline-secondary search_wrapper_btn" type="submit" id="button-addon2">Button</button>
+                    </span>
+                </form>
             </div>
         </div>
         <div class="col-lg-3"></div>

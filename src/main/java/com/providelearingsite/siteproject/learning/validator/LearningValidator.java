@@ -33,5 +33,8 @@ public class LearningValidator implements Validator {
         if(learningForm.getLecturerDescription() == null || learningForm.getLecturerDescription().isEmpty()){
             errors.rejectValue("lecturerDescription", "wrong.lecturerDescription", "설명 미입력");
         }
+        if (learningForm.getKategorie() == null || learningForm.getKategorie().isEmpty()) {
+            errors.rejectValue("kategorie", "wrong.kategorie", "카테고리 미설정");
+        }
     }
 }

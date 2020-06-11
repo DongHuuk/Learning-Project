@@ -207,6 +207,7 @@ public class LearningController {
         learningForm.setLecturerName(learning.getLecturerName());
         learningForm.setLecturerDescription(learning.getLecturerDescription());
         learningForm.setPrice(learning.getPrice());
+        learningForm.setKategorie(learning.getKategorie());
 
         model.addAttribute(account);
         model.addAttribute("learning", learning);
@@ -247,4 +248,5 @@ public class LearningController {
         attributes.addFlashAttribute("message", "강의가 닫혔습니다..");
         return "redirect:/learning/" + id;
     }
+
 }

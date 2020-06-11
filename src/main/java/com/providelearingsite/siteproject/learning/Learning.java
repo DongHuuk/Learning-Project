@@ -36,6 +36,8 @@ public class Learning {
     @Lob
     private String bannerBytes;
     private String bannerServerPath;
+    private String kategorie;
+
     private int price;
 
     private LocalDateTime createLearning;
@@ -109,9 +111,16 @@ public class Learning {
         int insertTime = index - 3;
         float i = index / 3;
 
+        if(index <= 1){
+            return "free";
+        }
+
         for (int j=0; j < i; j++){
             if(index % 3 <= 0){
                 i--;
+            }
+            if(index <= 3){
+                return String.valueOf(str);
             }
             str.insert(insertTime, ',');
             insertTime -= 3;
@@ -123,5 +132,15 @@ public class Learning {
     }
     public boolean checkUpdateLearning(){
         return !(this.updateLearning instanceof LocalDateTime) || this.updateLearning == null;
+    }
+    public String getKategorieValue(){
+        switch (this.kategorie) {
+            case "1":
+                return "Web";
+            case "2":
+                return "algorithm";
+            default:
+                return "none";
+        }
     }
 }

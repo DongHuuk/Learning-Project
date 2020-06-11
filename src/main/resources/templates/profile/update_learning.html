@@ -74,6 +74,14 @@
                                     <textarea id="summernote" class="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
                                 </div>
 
+                                <div class="input-group mb-3">
+                                    <label for="kategorie">카테고리</label>
+                                    <select class="custom-select" id="kategorie" th:field="*{kategorie}">
+                                        <option selected value="1">Web</option>
+                                        <option value="2">algorithm</option>
+                                    </select>
+                                </div>
+
                                 <button type="submit" class="btn btn-success mt-md-3 mb-md-3 data-form-btn">수정하기</button>
                             </form>
                         </div>

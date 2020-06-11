@@ -40,17 +40,17 @@
                                 All
                             </div>
                         </a>
-                        <a href="#" th:href="@{/web/java}">
+                        <a href="#" th:href="@{'/web/java?keyword=java&sort=openLearning'}">
                             <div class="card-body div-bottom-line">
                                 Java
                             </div>
                         </a>
-                        <a href="#" th:href="@{/web/javascript}">
+                        <a href="#" th:href="@{'/web/javascript?keyword=javascript&sort=openLearning'}">
                             <div class="card-body div-bottom-line">
                                 Javascript
                             </div>
                         </a>
-                        <a href="#" th:href="@{/web/html}">
+                        <a href="#" th:href="@{'/web/html?keyword=html&sort=openLearning'}">
                             <div class="card-body div-bottom-line">
                                 CSS HTML
                             </div>
@@ -69,12 +69,12 @@
                                 All
                             </div>
                         </a>
-                        <a href="#" th:href="@{/algorithm/gof}">
+                        <a href="#" th:href="@{'/algorithm/gof?keyword=gof&sort=openLearning'}">
                             <div class="card-body div-bottom-line">
                                 GOF 디자인 패턴
                             </div>
                         </a>
-                        <a href="#" th:href="@{/algorithm/algorithm}">
+                        <a href="#" th:href="@{'/algorithm/algorithm?keyword=algorithm&sort=openLearning'}">
                             <div class="card-body">
                                 알고리즘
                             </div>
@@ -126,9 +126,14 @@
                             <button type="button" class="btn btn-info dropdown-toggle list-selector-button" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false">정렬</button>
                             <div class="dropdown-menu" style="min-width: 6rem">
-                                <a class="dropdown-item" href="#">추천순</a>
-                                <a class="dropdown-item" href="#">인기순</a>
-                                <a class="dropdown-item" href="#">평점순</a>
+                                <a class="dropdown-item" href="#" th:classappend="${#strings.equalsIgnoreCase(sortProperty, 'rating')}? active"
+                                   th:href="@{${url}+'?sort=rating,desc&keyword=' + ${keyword}}">
+                                    평점순
+                                </a>
+                                <a class="dropdown-item" href="#" th:classappend="${#strings.equalsIgnoreCase(sortProperty, 'openLearning')}? active"
+                                   th:href="@{${url}+'?sort=openLearning,desc&keyword=' + ${keyword}}">
+                                    최신순
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -136,7 +141,7 @@
             </header>
 
             <main class="row mt-md-3">
-                <div class="col-md-3 roof-start" th:each="learning : ${learningList}">
+                <div class="col-md-3 roof-start" th:each="learning : ${learningList.getContent()}">
                     <div class="card mb-4 shadow-sm card-view">
                         <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
                              th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
@@ -157,17 +162,39 @@
                                 (<span th:text="${learning.rating}"></span>)
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
+                                <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
+                                <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
                                 <div class="date-time" th:text="${learning.openLearning}"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${!learningList.hasPrevious()}? disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true"
+                           th:href="@{${url}+'?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + '&page=' + ${learningList.getNumber() - 1}}">
+                            Previous
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="num : ${#numbers.sequence(0, learningList.getTotalPages() -1)}"
+                        th:classappend="${num == learningList.getNumber()}? active">
+                        <a class="page-link" th:href="@{${url}+'?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + '&page=' + ${num}}"
+                           href="#" th:text="${num + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:class="${!learningList.hasNext()}? disabled">
+                        <a class="page-link" href="#"
+                           th:href="@{${url}+'?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + '&page=' + ${learningList.getNumber() + 1}}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!--page nation-->
         </div>
     </main>
 
-<div style="height: 1000px"></div>
 <footer th:replace="fragment.html :: footer"></footer>
     <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
     <script type="application/javascript">

@@ -38,7 +38,7 @@
             <div class="tab-content d-flex justify-content-start">
                 <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
                     <div class="align-items-center profile-content ">
-                        <div class="card-body form-group mt-md-2 tagify-custom-uploader mt-lg-4">
+                        <div class="card-body form-group mt-md-2 tagify-custom-uploader input-tagify-lengh mt-lg-4">
                             <div th:text="${whiteList}" id="whitelist" hidden></div>
                             <label for="tags" class="label-title ml-1">분야(Tag)</label>
                             <input class="tagify--outside input-tagify" id="skills" type="tags" th:value="${#strings.listJoin(tags, ',')}"

@@ -9,6 +9,7 @@ import com.providelearingsite.siteproject.tag.TagRepository;
 import com.providelearingsite.siteproject.video.Video;
 import com.providelearingsite.siteproject.video.VideoRepository;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -45,6 +46,7 @@ public class LearningService {
         learning.setLecturerName(learningForm.getLecturerName());
         learning.setLecturerDescription(learningForm.getLecturerDescription());
         learning.setPrice(learningForm.getPrice());
+        learning.setKategorie(learningForm.getKategorie());
         learning.setCreateLearning(LocalDateTime.now());
         learningRepository.save(learning);
         learning.setAccount(account);
@@ -186,6 +188,7 @@ public class LearningService {
         oldLearning.setLecturerName(learningForm.getLecturerName());
         oldLearning.setLecturerDescription(learningForm.getLecturerDescription());
         oldLearning.setPrice(learningForm.getPrice());
+        oldLearning.setKategorie(learningForm.getKategorie());
         oldLearning.setUpdateLearning(LocalDateTime.now());
         oldLearning.setAccount(newAccount);
 
