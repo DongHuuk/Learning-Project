@@ -13,5 +13,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureMockMvc
 class MainControllerTest {
 
+    @Test
+    public void test(){
+        StringBuilder str = new StringBuilder("4500000000");
+        int index = str.length();
+        int insertTime = index - 3;
+        float i = index / 3;
 
+        for (int j=0; j < i; j++){
+            if(index % 3 <= 0){
+                i--;
+            }
+            str.insert(insertTime, ',');
+            insertTime -= 3;
+        }
+        System.out.println(str);
+    }
 }

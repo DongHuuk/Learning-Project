@@ -91,7 +91,33 @@ public class Learning {
             account.getLearnings().add(this);
         }
     }
+    public int getRating_int(){
+        return (int)Math.floor(this.rating);
+    }
+    public boolean checkRating_boolean(){
+        int rating_double = getRating_int();
+        return ((this.rating * 10) - (rating_double * 10)) >= 5 && rating_double <= 5;
+    }
+    public int emptyRating(){
+        int rating_double = getRating_int();
+        boolean halfRating = checkRating_boolean();
+        return 5 - rating_double - (halfRating ? 1 : 0);
+    }
+    public String price_comma(){
+        StringBuilder str = new StringBuilder().append(this.price);
+        int index = str.length();
+        int insertTime = index - 3;
+        float i = index / 3;
 
+        for (int j=0; j < i; j++){
+            if(index % 3 <= 0){
+                i--;
+            }
+            str.insert(insertTime, ',');
+            insertTime -= 3;
+        }
+        return String.valueOf(str);
+    }
     public boolean checkUploadLearning(){
         return !(this.uploadVideo instanceof LocalDateTime) || this.uploadVideo == null;
     }

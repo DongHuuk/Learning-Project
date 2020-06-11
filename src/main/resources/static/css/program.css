@@ -39,6 +39,11 @@ a:hover{
 .card-title{
     font-size: 1.25rem;
     font-weight: 600;
+    max-width: 95%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
 }
 .card-text{
     margin-bottom: 0;

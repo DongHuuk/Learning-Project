@@ -183,20 +183,16 @@ public class LearningController {
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning learning = learningById.orElseThrow();
 
-        float rating = learning.getRating();
-        int floorRating = (int) Math.floor(rating);
-        boolean halfrating = ((rating * 10) - floorRating * 10) >= 5 && Math.floor(rating) <= 5;
-
         model.addAttribute(account);
         model.addAttribute("listenLearning", learningService.canListenLearning(account, learning));
         model.addAttribute("learnings", account.getLearnings().contains(learning));
         model.addAttribute("countVideo", learning.getVideoCount());
         model.addAttribute("learning", learning);
         model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
-        model.addAttribute("ratings", floorRating);
-        model.addAttribute("halfrating", halfrating);
-        model.addAttribute("rating", 5 - floorRating - (halfrating ? 1 : 0));
-        model.addAttribute("learningRating", rating);
+        model.addAttribute("ratings", learning.getRating_int());
+        model.addAttribute("halfrating", learning.checkRating_boolean());
+        model.addAttribute("rating", learning.emptyRating());
+        model.addAttribute("learningRating", learning.getRating());
 
         return "learning/main_learning";
     }
