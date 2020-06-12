@@ -14,8 +14,8 @@ npm version - 6.14.4 <br>
 백엔드 설계 및 코드는 spring MVC를 기반으로 한 프레임 워크들을 사용했습니다.<br>
 
 사용된 프레임워크<br>
-1. Spring Web MVC
-2. Spring Boot Ver.2.0
+1. Spring Web MVC Ver.5.2.2
+2. Spring Boot Ver.2.2.6
 3. Spring Data API(JPA)
 4. Spring Security(Login & Logout)
 

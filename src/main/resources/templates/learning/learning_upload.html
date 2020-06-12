@@ -42,7 +42,7 @@
                             <div th:text="${whiteList}" id="whitelist" hidden></div>
                             <label for="tags" class="label-title ml-1">분야(Tag)</label>
                             <input class="tagify--outside input-tagify" id="skills" type="tags" th:value="${#strings.listJoin(tags, ',')}"
-                                   aria-describedby="tagHelp" placeholder="강의의 분야를 입력해주세요. 예) Java, Spring, 자바, 자바스크립트 etc..."/>
+                                   aria-describedby="tagHelp" placeholder="강의의 분야를 입력해주세요. 예) Java, Spring etc..."/>
                             <small id="tagHelp" style="margin-left: 6px;">
                                 태그는 저장하기 버튼을 누르지 않아도 자동으로 저장됩니다.
                             </small>

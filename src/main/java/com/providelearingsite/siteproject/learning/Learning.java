@@ -31,6 +31,8 @@ public class Learning {
     @NotNull
     private String lecturerDescription;
     @NotNull
+
+    private String simplesubscription;
     @Lob
     private String subscription;
     @Lob

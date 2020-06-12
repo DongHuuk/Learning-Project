@@ -69,14 +69,20 @@
                                 </div>
 
                                 <div class="mt-lg-4 form-group">
+                                    <label for="summernote_simplesubscription">강의 간략 소개</label>
+                                    <div th:text="${learning.simplesubscription}" id="simplesubscription" hidden="hidden"></div>
+                                    <textarea id="summernote_simplesubscription" class="summernote" type="textarea" required th:field="*{simplesubscription}"> </textarea>
+                                </div>
+
+                                <div class="mt-lg-4 form-group">
                                     <label for="summernote">강의소개</label>
                                     <div th:text="${learning.subscription}" id="defaultSubscript" hidden="hidden"></div>
                                     <textarea id="summernote" class="summernote" type="textarea" required th:field="*{subscription}"> </textarea>
                                 </div>
 
-                                <div class="input-group mb-3">
+                                <div class="form-group card-body mb-3 mt-3">
                                     <label for="kategorie">카테고리</label>
-                                    <select class="custom-select" id="kategorie" th:field="*{kategorie}">
+                                    <select class="custom-select form-control" id="kategorie" th:field="*{kategorie}">
                                         <option selected value="1">Web</option>
                                         <option value="2">algorithm</option>
                                     </select>
@@ -264,6 +270,19 @@
         });
         var value = $('#defaultSubscript').text();
         $('#summernote').summernote('code', value);
+    </script>
+
+    <script type="application/javascript">
+        $("#summernote_simplesubscription").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
+            placeholder: '강의 제공자에 대한 설명을 입력해주세요.',
+            tabSize: 2,
+            lang: "ko-KR",
+            height: 100,
+            minHeight: 200,
+            maxHeight: 250,
+            focus: true
+        });
     </script>
     <script type="application/javascript">
         $("#summernote_lecturerDescription").summernote({

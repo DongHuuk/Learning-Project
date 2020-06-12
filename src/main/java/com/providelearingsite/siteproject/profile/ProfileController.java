@@ -59,7 +59,7 @@ public class ProfileController {
     @GetMapping("/profile/{id}")
     public String viewProfile(@CurrentAccount Account account, @PathVariable Long id, Model model) {
         model.addAttribute(account);
-        return "navbar/profile";
+        return "profile/profile";
     }
 
     @GetMapping("/profile/{id}/custom")

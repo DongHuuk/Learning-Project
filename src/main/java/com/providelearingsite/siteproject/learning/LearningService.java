@@ -2,19 +2,22 @@ package com.providelearingsite.siteproject.learning;
 
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountRepository;
+import com.providelearingsite.siteproject.learning.event.LearningClosedEvent;
+import com.providelearingsite.siteproject.learning.event.LearningUpdateEvent;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
+import com.providelearingsite.siteproject.learning.event.LearningCreateEvent;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
 import com.providelearingsite.siteproject.video.Video;
 import com.providelearingsite.siteproject.video.VideoRepository;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.utility.RandomString;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,7 @@ public class LearningService {
     @Autowired private TagRepository tagRepository;
     @Autowired private VideoRepository videoRepository;
     @Autowired private ModelMapper modelMapper;
+    @Autowired private ApplicationEventPublisher applicationEventPublisher;
 
     public Learning saveLearning(LearningForm learningForm, Account account){
         Learning learning = new Learning();
@@ -47,11 +51,12 @@ public class LearningService {
         learning.setLecturerDescription(learningForm.getLecturerDescription());
         learning.setPrice(learningForm.getPrice());
         learning.setKategorie(learningForm.getKategorie());
+        learning.setSimplesubscription(learningForm.getSimplesubscription());
         learning.setCreateLearning(LocalDateTime.now());
-        learningRepository.save(learning);
-        learning.setAccount(account);
+        Learning newLearning = learningRepository.save(learning);
+        newLearning.setAccount(account);
 
-        return learning;
+        return newLearning;
     }
 
     public void saveLearningTags(Learning learning, Tag tag){
@@ -189,6 +194,7 @@ public class LearningService {
         oldLearning.setLecturerDescription(learningForm.getLecturerDescription());
         oldLearning.setPrice(learningForm.getPrice());
         oldLearning.setKategorie(learningForm.getKategorie());
+        oldLearning.setSimplesubscription(learningForm.getSimplesubscription());
         oldLearning.setUpdateLearning(LocalDateTime.now());
         oldLearning.setAccount(newAccount);
 
@@ -200,6 +206,10 @@ public class LearningService {
             oldLearning.setBannerServerPath(firstStr + accountIdStr + secondStr);
         }catch (NullPointerException e){
             log.info("banner image serverPath 미지정 = 기본 이미지 값 사용중");
+        }
+
+        if(oldLearning.isStartingLearning()){
+            applicationEventPublisher.publishEvent(new LearningUpdateEvent(oldLearning));
         }
     }
 
@@ -227,14 +237,20 @@ public class LearningService {
         Learning learning = byId.orElseThrow();
 
         learning.setStartingLearning(true);
+        learning.setClosedLearning(false);
         learning.setOpenLearning(LocalDateTime.now());
+
+        applicationEventPublisher.publishEvent(new LearningCreateEvent(learning));
     }
 
     public void closeLearning(Long id) {
         Optional<Learning> byId = learningRepository.findById(id);
         Learning learning = byId.orElseThrow();
+
         learning.setStartingLearning(false);
         learning.setClosedLearning(true);
         learning.setCloseLearning(LocalDateTime.now());
+
+        applicationEventPublisher.publishEvent(new LearningClosedEvent(learning));
     }
 }

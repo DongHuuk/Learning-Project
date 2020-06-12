@@ -1,6 +1,7 @@
 package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.learning.Learning;
+import com.providelearingsite.siteproject.notification.Notification;
 import com.providelearingsite.siteproject.question.Question;
 import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.tag.Tag;
@@ -63,6 +64,9 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private Set<Review> reviews = new HashSet<>();
+
+    @OneToMany(mappedBy = "account")
+    private Set<Notification> notifications = new HashSet<>();
 
     public void setLearnings(Learning learning) {
         this.learnings.add(learning);

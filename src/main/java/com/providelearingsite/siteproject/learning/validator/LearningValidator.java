@@ -27,6 +27,10 @@ public class LearningValidator implements Validator {
         if(learningForm.getLecturerName() == null || learningForm.getLecturerName().isEmpty()){
             errors.rejectValue("lecturerName", "wrong.lecturerName", "이름 미입력");
         }
+        if(learningForm.getSimplesubscription() == null || learningForm.getSimplesubscription().isEmpty()){
+            errors.rejectValue("simplesubscription", "wrong.simplesubscription", "간단 설명 미입력");
+        }
+
         if(learningForm.getSubscription() == null || learningForm.getSubscription().isEmpty()){
             errors.rejectValue("subscription", "wrong.subscription", "설명 미입력");
         }

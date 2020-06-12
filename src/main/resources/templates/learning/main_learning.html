@@ -54,11 +54,11 @@
                 <button class="banner-form-btn btn-info btn" type="submit">편집하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/start/' + ${learning.id}}" method="get"
-                  th:if="${!learning.startingLearning && learnings}">
+                  th:if="${!learning.startingLearning &&learnings}">
                 <button class="banner-form-btn btn-info btn" type="submit">강의 공개하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/close/' + ${learning.id}}" method="get"
-                  th:if="${learning.startingLearning && !learning.closedLearning && learnings}">
+                  th:if="${!learning.closedLearning && learnings}">
                 <button class="banner-form-btn btn-info btn" type="submit">강의 닫기</button>
             </form>
         </div>

@@ -16,6 +16,9 @@ public class LearningForm {
     private String title;
 
     @NotBlank @NotNull
+    private String simplesubscription;
+
+    @NotBlank @NotNull
     private String subscription;
 
     @NotNull @NotBlank

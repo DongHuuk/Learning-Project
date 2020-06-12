@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Controller
 public class LearningController {
 
-    static final String CREATE_LEARNING = "profile/create_learning";
+    static final String CREATE_LEARNING = "learning/create_learning";
 
     @Autowired private LearningService learningService;
     @Autowired private LearningValidator learningValidator;
@@ -78,7 +78,7 @@ public class LearningController {
         Account newAccount = accountById.orElseThrow();
         model.addAttribute("account", newAccount);
 
-        return "profile/learning_list";
+        return "learning/learning_list";
     }
 
     @GetMapping("/profile/learning/upload/{id}")
@@ -91,7 +91,7 @@ public class LearningController {
         model.addAttribute("tags", learning.orElseThrow().getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
         model.addAttribute("whiteList", objectMapper.writeValueAsString(tagList));
 
-        return "profile/learning";
+        return "learning/learning_upload";
     }
 
     @PostMapping("/profile/learning/upload/{id}/add")
@@ -208,6 +208,7 @@ public class LearningController {
         learningForm.setLecturerDescription(learning.getLecturerDescription());
         learningForm.setPrice(learning.getPrice());
         learningForm.setKategorie(learning.getKategorie());
+        learningForm.setSimplesubscription(learning.getSimplesubscription());
 
         model.addAttribute(account);
         model.addAttribute("learning", learning);
@@ -215,7 +216,7 @@ public class LearningController {
         model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
         model.addAttribute("whiteList", objectMapper.writeValueAsString(tagList));
 
-        return "profile/update_learning";
+        return "learning/update_learning";
     }
 
     @PostMapping("/profile/learning/update/{id}/script")
