@@ -253,4 +253,12 @@ public class LearningService {
 
         applicationEventPublisher.publishEvent(new LearningClosedEvent(learning));
     }
+
+    public boolean checkOpenTimer(boolean startingLearning, boolean closedLearning, boolean contains) {
+        return !startingLearning && closedLearning && contains;
+    }
+
+    public Object checkCloseTimer(boolean startingLearning, boolean closedLearning, boolean contains) {
+        return startingLearning && !closedLearning && contains;
+    }
 }

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/profile-bar.css"/>
+    <link rel="stylesheet" href="/css/profile-settings.css"/>
+    <link rel="stylesheet" href="/css/notification.css"/>
+    <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
+</head>
+
+<body class="container">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="d-flex">
+        <div th:replace="fragment.html :: profile-bar"></div>
+
+        <div class="col-md-10 mt-md-5">
+
+            <div class="alert alert-info alert-dismissible fade show mt-3 alert-custom" role="alert" th:if="${message}">
+                <p th:text="${message}">flush message</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <div style="opacity: 0.7; font-size: 13px">설정/알림</div>
+                <span style="font-size: 17px; font-weight: bold">설정/알림</span>
+            </div>
+
+            <div class="col">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item active" role="presentation">
+                        <a class="nav-link active d-flex justify-content-between align-items-center nav-btn1" href="#notread"
+                           aria-controls="notread" role="tab" data-toggle="tab">
+                            읽지 않은 알림
+                            <span class="badge badge-primary badge-pill" th:text="${notChecked.size()}">1</span>
+                        </a>
+
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link d-flex justify-content-between align-items-center nav-btn2" href="#read" role="tab"
+                           aria-controls="read" data-toggle="tab">
+                            읽은 알림
+                            <span class="badge badge-primary badge-pill" th:text="${checked.size()}">1</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content d-flex justify-content-start">
+                    <div class="profile-body tab-pane active profile-content-body col-9" id="notread" role="tabpanel">
+                        <div class="d-flex flex-column notification-body mt-md-2 justify-content-between pl-2 pr-2 pt-1 pb-1"
+                             th:each="noti : ${notChecked}">
+                            <p class="notification-title" th:text="${noti.title}">default title</p>
+                            <span id="description" th:text="${noti.description}" hidden></span>
+                            <p class="notification-description"></p>
+                            <p class="notification-foot d-flex justify-content-between">
+                                <span>
+                                    from: <span class="notification-lectureName" th:text="${noti.lectureName}"></span>
+                                </span>
+                                <span class="notification-dateTime date-time" th:text="${noti.createNotification}"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <!--읽지 않은 알림-->
+
+                    <div class="tab-pane fade notification-setting col-9" id="read" role="tabpanel">
+                        <div class="d-flex flex-column notification-body mt-md-2 justify-content-between pl-2 pr-2 pt-1 pb-1"
+                             th:each="noti : ${checked}">
+                            <p class="notification-title" th:text="${noti.title}">default title</p>
+                            <span id="description-checked" th:text="${noti.description}" hidden></span>
+                            <p class="notification-description-checked"></p>
+                            <p class="notification-foot d-flex justify-content-between">
+                                <span>
+                                    from: <span class="notification-lectureName" th:text="${noti.lectureName}"></span>
+                                </span>
+                                <span class="notification-dateTime date-time" th:text="${noti.createNotification}"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <!--읽은 알림-->
+
+                    <div class="col-3 mt-3">
+                        <form action="#" th:action="@{'/profile/notification/remove'}" method="get">
+                            <button class="btn btn-info notification-btn" type="submit">읽은 알림 전체 삭제</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--page body-->
+
+    <div th:replace="fragment.html :: footer"></div>
+    <script type="application/javascript">
+        moment.locale('ko');
+        $(".date-time").text(function (index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LL");
+        })
+    </script>
+    <script type="application/javascript">
+        var value = document.getElementById('description').textContent;
+        value = $.parseHTML(value);
+        $('.notification-description').append(value);
+
+        var value_2 = document.getElementById('description-checked').textContent;
+        value_2 = $.parseHTML(value_2);
+        $('.notification-description-checked').append(value_2);
+    </script>
+</body>
+
+</html>

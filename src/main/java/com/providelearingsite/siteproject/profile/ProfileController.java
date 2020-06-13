@@ -6,6 +6,9 @@ import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
 import com.providelearingsite.siteproject.learning.validator.LearningValidator;
+import com.providelearingsite.siteproject.notification.Notification;
+import com.providelearingsite.siteproject.notification.NotificationRepository;
+import com.providelearingsite.siteproject.notification.NotificationService;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
@@ -39,10 +42,12 @@ public class ProfileController {
     @Autowired private LearningValidator learningValidator;
     @Autowired private TagRepository tagRepository;
     @Autowired private ObjectMapper objectMapper;
+    @Autowired private NotificationRepository notificationRepository;
+    @Autowired private NotificationService notificationService;
 
     public final static String CUSTOM_PROFILE = "profile/custom_profile";
 
-    private static String redirectPath_Custom(Long id){
+    private static String redirectPath_Custom(Long id) {
         return "redirect:/profile/" + id + "/custom";
     }
 
@@ -125,9 +130,9 @@ public class ProfileController {
 
     @PostMapping("/update/tags/add")
     @ResponseBody
-    public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm){
+    public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
         Tag tag = tagRepository.findByTitle(tagForm.getTitle());
-        if(tag == null){
+        if (tag == null) {
             tag = tagRepository.save(Tag.builder()
                     .title(tagForm.getTitle())
                     .build());
@@ -139,10 +144,10 @@ public class ProfileController {
 
     @PostMapping("/update/tags/remove")
     @ResponseBody
-    public ResponseEntity removeTag(@CurrentAccount Account account, @RequestBody TagForm tagForm){
+    public ResponseEntity removeTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
         Tag tag = tagRepository.findByTitle(tagForm.getTitle());
 
-        if(tag == null){
+        if (tag == null) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -150,4 +155,26 @@ public class ProfileController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/profile/notification")
+    public String viewNotification(@CurrentAccount Account account, Model model) {
+        List<Notification> notCheckedNotifications = notificationRepository.findByAccountAndChecked(account, false);
+        List<Notification> checkedNotifications = notificationRepository.findByAccountAndChecked(account, true);
+
+        model.addAttribute(account);
+        model.addAttribute("notChecked", notCheckedNotifications);
+        model.addAttribute("checked", checkedNotifications);
+
+        notificationService.readNotifications(notCheckedNotifications);
+
+        return "profile/notification";
+    }
+
+    @GetMapping("/profile/notification/remove")
+    public String removeNotification(@CurrentAccount Account account, RedirectAttributes attributes) {
+
+        notificationService.deleteNotifications(account);
+
+        attributes.addFlashAttribute("message", "알림이 삭제되었습니다.");
+        return "redirect:/profile/notification";
+    }
 }

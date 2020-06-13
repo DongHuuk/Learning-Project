@@ -54,13 +54,14 @@
                 <button class="banner-form-btn btn-info btn" type="submit">편집하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/start/' + ${learning.id}}" method="get"
-                  th:if="${!learning.startingLearning &&learnings}">
-                <button class="banner-form-btn btn-info btn" type="submit">강의 공개하기</button>
+                  th:if="${canOpen && canOpenTimer}">
+                <button class="banner-form-btn btn-info btn" th:if="${canOpenTimer}" type="submit">강의 공개하기</button>
             </form>
             <form class="banner-form mt-md-3" action="#" th:action="@{'/profile/learning/close/' + ${learning.id}}" method="get"
-                  th:if="${!learning.closedLearning && learnings}">
-                <button class="banner-form-btn btn-info btn" type="submit">강의 닫기</button>
+                  th:if="${canClose && canCloseTimer}">
+                <button class="banner-form-btn btn-info btn" th:if="${canCloseTimer}" type="submit">강의 닫기</button>
             </form>
+            <small th:if="${!canOpenTimer || !canCloseTimer}">강의 공개&닫기 버튼은 생성뒤부터 30분마다 사용이 가능합니다.</small>
         </div>
     </div>
     <!--banner-->

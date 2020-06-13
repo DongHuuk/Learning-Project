@@ -66,7 +66,7 @@
                     <a class="nav-link" href="#">장바구니</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link nav-bell" href="#" th:href="@{/profile/notifications}">
+                    <a class="nav-link nav-bell" href="#" th:href="@{'/profile/notification'}">
                         <i class="far fa-bell" th:if="${!hasNotification}"></i>
                         <span class="text-info" th:if="${hasNotification}">
                             <i class="fas fa-bell"></i>
@@ -101,7 +101,7 @@
 
 <div class="row col-md-2 mt-md-5 list-group" th:fragment="profile-bar">
     <form action="#" th:action="@{'/profile/' + ${account.id}}"><button type="submit" class="list-group-item list-group-item-action">대시보드</button></form>
-    <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">알람</button></form>
+    <form action="#" th:action="@{'/profile/notification'}" method="get"><button type="submit" class="list-group-item list-group-item-action">알람</button></form>
     <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 학습</button></form>
     <form action="#" th:action="@{/}"><button type="submit" class="list-group-item list-group-item-action">내 결제</button></form>
     <form action="#" th:action="@{'/profile/' + ${account.id} + '/custom'}" method="get"><button type="submit" class="list-group-item list-group-item-action">설정</button></form>

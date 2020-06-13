@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -182,10 +183,11 @@ public class LearningController {
     public String viewMainLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning learning = learningById.orElseThrow();
+        boolean contains = account.getLearnings().contains(learning);
 
         model.addAttribute(account);
         model.addAttribute("listenLearning", learningService.canListenLearning(account, learning));
-        model.addAttribute("learnings", account.getLearnings().contains(learning));
+        model.addAttribute("learnings", contains);
         model.addAttribute("countVideo", learning.getVideoCount());
         model.addAttribute("learning", learning);
         model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
@@ -193,6 +195,10 @@ public class LearningController {
         model.addAttribute("halfrating", learning.checkRating_boolean());
         model.addAttribute("rating", learning.emptyRating());
         model.addAttribute("learningRating", learning.getRating());
+        model.addAttribute("canOpen", learningService.checkOpenTimer(learning.isStartingLearning(), learning.isClosedLearning(), contains));
+        model.addAttribute("canClose", learningService.checkCloseTimer(learning.isStartingLearning(), learning.isClosedLearning(), contains));
+        model.addAttribute("canCloseTimer", learning.getOpenLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
+        model.addAttribute("canOpenTimer", learning.getCloseLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
 
         return "learning/main_learning";
     }

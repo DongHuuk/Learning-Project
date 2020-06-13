@@ -1,0 +1,29 @@
+p{
+    margin-bottom: 0;
+}
+.notification-body{
+    background-color: #F8F9FA;
+    height: 7rem;
+    width: 70%;
+    border: #D9DADB solid 0.5px;
+}
+.notification-title{
+    font-weight: 500;
+}
+.notification-btn {
+    height: 40px;
+    width: 60%;
+}
+.nav-tabs{
+    width: 90%;
+}
+.badge-primary{
+    background-color: #5fd05f;
+}
+
+.nav-btn1{
+    width: 160px;
+}
+.nav-btn2 {
+width: 130px;
+}

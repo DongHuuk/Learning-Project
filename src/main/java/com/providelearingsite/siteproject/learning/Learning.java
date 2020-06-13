@@ -49,8 +49,8 @@ public class Learning {
     private LocalDateTime uploadVideo = null;
     private LocalDateTime updateLearning = null;
 
-    private boolean startingLearning;
-    private boolean closedLearning;
+    private boolean startingLearning = false;
+    private boolean closedLearning = true;
 
     private int videoCount = 0;
 

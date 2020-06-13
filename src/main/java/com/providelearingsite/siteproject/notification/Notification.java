@@ -2,7 +2,7 @@ package com.providelearingsite.siteproject.notification;
 
 import com.providelearingsite.siteproject.account.Account;
 import lombok.*;
-import org.springframework.lang.Nullable;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,8 +18,6 @@ public class Notification {
     private String title;
 
     private String lectureName;
-
-    private int price;
 
     private String description;
 
