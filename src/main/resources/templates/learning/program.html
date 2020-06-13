@@ -145,7 +145,7 @@
                     <div class="card mb-4 shadow-sm card-view">
                         <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
                              th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
-                        <img class="banner-image" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+                        <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
                         <div class="card-body">
                             <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
                             <p class="card-text" id="card-tags">

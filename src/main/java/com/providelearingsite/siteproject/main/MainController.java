@@ -16,11 +16,25 @@ import java.util.List;
 @Controller
 public class MainController {
 
+    @Autowired private MainService mainService;
+    @Autowired private LearningRepository learningRepository;
+
     @GetMapping("/")
     public String indexGet(@CurrentAccount Account account, Model model){
+        List<Learning> learningList = null;
         if(account != null){
+            learningList = learningRepository.findTop4ByTagsOrderByRatingDesc(account.getTags());
             model.addAttribute(account);
+            model.addAttribute("learningList", learningList);
         }
+
+        if(learningList == null || learningList.isEmpty()) {
+            learningList = mainService.learningOrderByRating();
+            model.addAttribute("learningList", learningList);
+        }
+
+        List<Learning> learningOrderByDatetime = mainService.learningOrderByCreateLearning();
+        model.addAttribute("learningOrderByDatetime", learningOrderByDatetime);
 
         return "index";
     }

@@ -1,5 +1,6 @@
 package com.providelearingsite.siteproject.learning;
 
+import com.providelearingsite.siteproject.tag.Tag;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.Set;
 
 public class LearningRepositoryExtensionImpl extends QuerydslRepositorySupport implements LearningRepositoryExtension{
 
@@ -67,6 +69,17 @@ public class LearningRepositoryExtensionImpl extends QuerydslRepositorySupport i
         QueryResults<Learning> pageableQueryResult = pageableQuery.fetchResults();
 
         return new PageImpl<>(pageableQueryResult.getResults(), pageable, pageableQueryResult.getTotal());
+    }
+
+    @Override
+    public List<Learning> findTop4ByTagsOrderByRatingDesc(Set<Tag> tags) {
+        QLearning learning = QLearning.learning;
+        JPQLQuery<Learning> distinct = from(learning).where(learning.startingLearning.isTrue()
+                .and(LearningPredicates.findTop4ByTags(tags)))
+                .limit(4)
+                .distinct();
+
+        return distinct.fetch();
     }
 
 

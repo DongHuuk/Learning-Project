@@ -11,5 +11,4 @@ public class AccountPredicates {
         QAccount account = QAccount.account;
         return account.tags.any().in(tags);
     }
-
 }

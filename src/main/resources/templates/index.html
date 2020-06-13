@@ -5,10 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
     <div th:replace="fragment.html :: links"></div>
-
-
+    <link rel="stylesheet" href="/css/index-learning.css"/>
 </head>
 <body class="container">
     <div th:replace="fragment.html :: navbar"></div>
@@ -74,8 +72,85 @@
         <div class="col-lg-3"></div>
     </div>
 
-    <div style="height: 1000px"></div>
+    <div class="mt-lg-3 d-flex flex-column">
+        <label for="tagsCards" class="ml-3 tagsCards-label" sec:authorize="!isAuthenticated()">추천 강의</label>
+        <label for="tagsCards" class="ml-3 tagsCards-label" sec:authorize="isAuthenticated()">
+            <span class="tagsCards-label" th:text="${account.nickname}"></span>님 추천 강의!
+        </label>
+        <div class="d-flex justify-content-start">
+            <div class="col-md-3 roof-start" th:each="learning : ${learningList}" id="tagsCards">
+                <div class="card mb-4 shadow-sm card-view">
+                    <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
+                         th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+                    <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+                    <div class="card-body">
+                        <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
+                        <p class="card-text" id="card-tags">
+                            <i class="fas fa-tasks"></i>
+                            <span class="card-tag-box" th:each="tag : ${learning.tags}">
+                                <span th:text="${tag.getTitle()}"></span>
+                            </span>
+                        </p>
+                        <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
+                        <p class="mb-1">
+                            <span class="full-star star" th:each="num : ${#numbers.sequence(0, learning.getRating_int() + 1)}" th:if="${learning.getRating_int() > 0}"><i class="fas fa-star"></i></span>
+                            <span class="half-star star" th:if="${learning.checkRating_boolean()}"><i class="fas fa-star-half-alt"></i></span>
+                            <span class="empty-star star" th:each="num : ${#numbers.sequence(1, learning.emptyRating())}" th:if="${learning.emptyRating() > 0}"><i class="far fa-star"></i></span>
+                            (<span th:text="${learning.rating}"></span>)
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
+                            <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
+                            <div class="date-time" th:text="${learning.openLearning}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-lg-3 d-flex flex-column">
+        <label for="newCards" class="ml-3 tagsCards-label">신규 강의!</label>
+        <div class="d-flex justify-content-start">
+            <div class="col-md-3 roof-start" th:each="learning : ${learningOrderByDatetime}" id="newCards">
+                <div class="card mb-4 shadow-sm card-view">
+                    <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
+                         th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+                    <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+                    <div class="card-body">
+                        <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
+                        <p class="card-text" id="card-tags">
+                            <i class="fas fa-tasks"></i>
+                            <span class="card-tag-box" th:each="tag : ${learning.tags}">
+                                <span th:text="${tag.getTitle()}"></span>
+                            </span>
+                        </p>
+                        <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
+                        <p class="mb-1">
+                            <span class="full-star star" th:each="num : ${#numbers.sequence(0, learning.getRating_int() + 1)}" th:if="${learning.getRating_int() > 0}"><i class="fas fa-star"></i></span>
+                            <span class="half-star star" th:if="${learning.checkRating_boolean()}"><i class="fas fa-star-half-alt"></i></span>
+                            <span class="empty-star star" th:each="num : ${#numbers.sequence(1, learning.emptyRating())}" th:if="${learning.emptyRating() > 0}"><i class="far fa-star"></i></span>
+                            (<span th:text="${learning.rating}"></span>)
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
+                            <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
+                            <div class="date-time" th:text="${learning.openLearning}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div th:replace="fragment.html :: footer"></div>
+    <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
+    <script type="application/javascript">
+        moment.locale('ko');
+        $(".date-time").text(function (index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LL");
+        })
+    </script>
 </body>
 </html>

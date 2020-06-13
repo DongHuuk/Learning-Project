@@ -49,7 +49,7 @@ public class Account {
     //uploader
     private boolean uploader = true;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
 
     //can listen Learning buy or free videos
