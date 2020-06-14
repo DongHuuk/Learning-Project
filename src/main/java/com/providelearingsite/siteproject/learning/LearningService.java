@@ -264,6 +264,7 @@ public class LearningService {
         return startingLearning && !closedLearning && contains;
     }
 
+    //TODO TestCode 지우기
     public void testLearning(Account account) {
         float z = 0;
         for(int i=0; i < 16; i++){

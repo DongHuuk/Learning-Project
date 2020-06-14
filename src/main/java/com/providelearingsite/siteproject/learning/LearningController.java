@@ -255,7 +255,7 @@ public class LearningController {
         attributes.addFlashAttribute("message", "강의가 닫혔습니다..");
         return "redirect:/learning/" + id;
     }
-
+    //TODO TestCode 지우기
     @GetMapping("/create/test")
     public String testCode(@CurrentAccount Account account){
         learningService.testLearning(account);

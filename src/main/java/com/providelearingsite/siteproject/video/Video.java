@@ -21,6 +21,9 @@ public class Video {
     private String videoTitle;
     private LocalDateTime saveTime;
 
+    //영상의 목차
+    private String learningTitle;
+
     @ManyToOne
     @JoinColumn(name = "learning_id")
     private Learning learning;
