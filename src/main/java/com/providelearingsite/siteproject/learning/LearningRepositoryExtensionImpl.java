@@ -75,6 +75,7 @@ public class LearningRepositoryExtensionImpl extends QuerydslRepositorySupport i
     public List<Learning> findTop4ByTagsOrderByRatingDesc(Set<Tag> tags) {
         QLearning learning = QLearning.learning;
         JPQLQuery<Learning> distinct = from(learning).where(learning.startingLearning.isTrue()
+                .and(learning.closedLearning.isFalse())
                 .and(LearningPredicates.findTop4ByTags(tags)))
                 .limit(4)
                 .distinct();

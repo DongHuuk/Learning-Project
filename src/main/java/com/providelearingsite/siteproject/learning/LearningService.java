@@ -12,6 +12,7 @@ import com.providelearingsite.siteproject.tag.TagRepository;
 import com.providelearingsite.siteproject.video.Video;
 import com.providelearingsite.siteproject.video.VideoRepository;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -22,6 +23,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -260,5 +262,66 @@ public class LearningService {
 
     public Object checkCloseTimer(boolean startingLearning, boolean closedLearning, boolean contains) {
         return startingLearning && !closedLearning && contains;
+    }
+
+    public void testLearning(Account account) {
+        float z = 0;
+        for(int i=0; i < 16; i++){
+            LearningForm learningForm = new LearningForm();
+            learningForm.setSimplesubscription("자바 테스트" + RandomString.make());
+            learningForm.setKategorie("1");
+            learningForm.setSubscription("자바 테스트 중 " + RandomString.make());
+            learningForm.setLecturerName(RandomString.make());
+            learningForm.setLecturerDescription("12년차 " + RandomString.make());
+            learningForm.setPrice((int) Math.floor(Math.random() * 10000000));
+            learningForm.setTitle("자바의 고급 " + RandomString.make());
+
+            Learning learning = saveLearning(learningForm, account);
+            learning.setStartingLearning(true);
+            learning.setClosedLearning(false);
+            learning.setOpenLearning(LocalDateTime.now().minusHours(i));
+
+            if(z > 50){
+                z = 0;
+            }
+            learning.setRating((float) (z * 0.1));
+            learning.getTags().add(tagRepository.findByTitle("java"));
+
+            if(i > 10){
+                learning.getTags().add(tagRepository.findByTitle("spring"));
+            }
+
+            z += 1;
+        }
+
+        for(int i=0; i < 16; i++){
+            LearningForm learningForm = new LearningForm();
+            learningForm.setSimplesubscription("HTML 테스트" + RandomString.make());
+            learningForm.setKategorie("2");
+            learningForm.setSubscription("HTML 테스트 중 " + RandomString.make());
+            learningForm.setLecturerName(RandomString.make());
+            learningForm.setLecturerDescription("1년차 신입" + RandomString.make());
+            learningForm.setPrice((int) Math.floor(Math.random() * 10000000));
+            learningForm.setTitle("HTML의 초급과 고급 " + RandomString.make());
+            saveLearning(learningForm, account);
+
+            Learning learning = saveLearning(learningForm, account);
+            learning.setStartingLearning(true);
+            learning.setClosedLearning(false);
+            learning.setOpenLearning(LocalDateTime.now().minusHours(i));
+
+            if(z > 50){
+                z = 0;
+            }
+            learning.setRating((float) (z * 0.1));
+            learning.getTags().add(tagRepository.findByTitle("java"));
+
+            if(i > 10){
+                learning.getTags().add(tagRepository.findByTitle("spring"));
+            }
+
+            z += 1;
+        }
+
     }
 }

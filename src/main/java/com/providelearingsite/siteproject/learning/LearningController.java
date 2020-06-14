@@ -256,4 +256,11 @@ public class LearningController {
         return "redirect:/learning/" + id;
     }
 
+    @GetMapping("/create/test")
+    public String testCode(@CurrentAccount Account account){
+        learningService.testLearning(account);
+
+        return "index";
+    }
+
 }
