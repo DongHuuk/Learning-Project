@@ -27,10 +27,10 @@
 
             <div class="col d-flex justify-content-start">
                 <div class="tab-content d-flex justify-content-start">
-                    <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel" th:if="${account.learnings.size() > 0}">
+                    <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel" th:if="${learningList.size() > 0}">
                         <h5 class="mt-md-3 mb-md-3">영상을 업로드 할 강의를 선택해주세요.</h5>
                         <div class="accordion" id="accordionExample">
-                            <div th:each="learning : ${account.learnings}">
+                            <div th:each="learning : ${learningList}">
                                 <div class="list-group-item list-group-item-action list-header upload-list" id="headingOne">
                                     <h2 class="m-0 d-flex justify-content-between">
                                         <button class="btn btn-block text-left list-btn upload-btn" type="button" data-toggle="collapse" th:data-target="'#collapse' + ${learning.id}"
@@ -70,7 +70,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="profile-body tab-pane active profile-content-body" th:if="${account.learnings.size() <= 0}">
+                    <div class="profile-body tab-pane active profile-content-body" th:if="${learningList.size() <= 0}">
                         <p>등록하신 강의가 존재하지 않습니다.</p>
                     </div>
                 </div>

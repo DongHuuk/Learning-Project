@@ -61,7 +61,7 @@
                   th:if="${canClose && canCloseTimer}">
                 <button class="banner-form-btn btn-info btn" th:if="${canCloseTimer}" type="submit">강의 닫기</button>
             </form>
-            <small th:if="${!canOpenTimer || !canCloseTimer}">강의 공개&닫기 버튼은 생성뒤부터 30분마다 사용이 가능합니다.</small>
+            <small th:if="${!canOpenTimer || !canCloseTimer}">공개&닫기 버튼은 생성뒤부터 30분마다 사용이 가능합니다.</small>
         </div>
     </div>
     <!--banner-->

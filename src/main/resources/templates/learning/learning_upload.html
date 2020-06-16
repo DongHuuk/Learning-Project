@@ -68,8 +68,8 @@
                                     <label for="videoFile" class="label-title mb-md-3">영상 업로드</label>
                                     <input type="file" id="videoFile" class="fileUpload" name="videofile" accept="video/*,.mkv,.mp3" aria-describedby="videoHelp" multiple>
                                     <small id="videoHelp">
-                                        영상의 제목은 000 부터 999까지의 숫자를 입력해주세요.<br>
-                                        예) 자바_00_소개영상, 스프링_48_웹MVC
+                                        영상의 제목이 목차가 됩니다. 제목은 숫자_목차타이틀로 부탁드립니다!<br>
+                                        예)1-1_스프링 소개영상, 2-11_스프링 시큐리티 등...
                                     </small>
                                 </div>
                             </div>
@@ -79,7 +79,6 @@
                                 <button id="uploadBtn" type="submit" class="btn btn-success mt-md-3 mb-md-3">업로드</button>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
@@ -146,6 +145,7 @@
         });
     </script>
     <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <!--tag script-->
     <script type="application/javascript">
     $(function(){
         var learningURL = window.location.pathname;
@@ -187,6 +187,7 @@
         tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
     });
 </script>
+
 </body>
 
 </html>

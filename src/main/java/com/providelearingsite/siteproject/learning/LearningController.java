@@ -10,6 +10,7 @@ import com.providelearingsite.siteproject.learning.validator.LearningValidator;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
+import com.providelearingsite.siteproject.video.Video;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -77,8 +77,10 @@ public class LearningController {
     public String viewLearningList(@CurrentAccount Account account, Model model) {
         Optional<Account> accountById = accountRepository.findById(account.getId());
         Account newAccount = accountById.orElseThrow();
-        model.addAttribute("account", newAccount);
+        List<Learning> learningList = learningRepository.findAllByAccountOrderByCreateLearningDesc(account);
 
+        model.addAttribute("account", newAccount);
+        model.addAttribute("learningList", learningList);
         return "learning/learning_list";
     }
 
@@ -180,7 +182,7 @@ public class LearningController {
     }
 
     @GetMapping("/learning/{id}")
-    public String viewMainLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
+    public String viewMainLearning(@CurrentAccount Account account, Model model, @PathVariable Long id){
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning learning = learningById.orElseThrow();
         boolean contains = account.getLearnings().contains(learning);
@@ -197,9 +199,35 @@ public class LearningController {
         model.addAttribute("learningRating", learning.getRating());
         model.addAttribute("canOpen", learningService.checkOpenTimer(learning.isStartingLearning(), learning.isClosedLearning(), contains));
         model.addAttribute("canClose", learningService.checkCloseTimer(learning.isStartingLearning(), learning.isClosedLearning(), contains));
-        model.addAttribute("canCloseTimer", learning.getOpenLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
-        model.addAttribute("canOpenTimer", learning.getCloseLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
+        model.addAttribute("canCloseTimer", learning.getCloseLearning() == null || learning.getCloseLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
+        model.addAttribute("canOpenTimer", learning.getOpenLearning() == null || learning.getOpenLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
 
+        List<String> contentTitle = new ArrayList<>();
+        learning.getVideos().stream().map(Video::getVideoTitle)
+                .forEach(s -> {
+                    String s1 = s.replaceAll("[a-zA-Z가-힣ㄱ-ㅋㅏ-ㅣ]", "").trim();
+                    int i = s1.indexOf("-");
+
+                    String f = s1.substring(0, i); //앞
+                    String e = s1.substring(i+1); //뒤
+                    String newf = "";
+                    String newe = "";
+
+                    if(f.length() != 2){
+                        newf = 0 + f;
+                    }else {
+                        newf = f;
+                    }
+
+                    if(e.length() != 2){
+                        newe = 0 + e;
+                    }else {
+                        newe = e;
+                    }
+                    contentTitle.add(newf + "-" + newe);
+                });
+
+        contentTitle.sort(null);
         return "learning/main_learning";
     }
 

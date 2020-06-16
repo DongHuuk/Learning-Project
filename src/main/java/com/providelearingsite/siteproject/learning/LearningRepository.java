@@ -16,4 +16,6 @@ public interface LearningRepository extends JpaRepository<Learning, Long>, Query
     List<Learning> findTop4ByStartingLearningOrderByCreateLearningDesc(boolean b);
 
     List<Learning> findTop4ByStartingLearningOrderByRatingDesc(boolean b);
+
+    List<Learning> findAllByAccountOrderByCreateLearningDesc(Account account);
 }

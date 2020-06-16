@@ -34,9 +34,7 @@ public class MainController {
             learningList = learningRepository.findTop4ByTagsOrderByRatingDesc(account.getTags());
             model.addAttribute(account);
             model.addAttribute("learningList", learningList);
-        }
-
-        if (learningList == null || learningList.isEmpty()) {
+        }else{
             learningList = mainService.learningOrderByRating();
             model.addAttribute("learningList", learningList);
         }

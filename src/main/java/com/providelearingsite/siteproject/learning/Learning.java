@@ -6,6 +6,7 @@ import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.video.Video;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -42,11 +43,15 @@ public class Learning {
 
     private int price;
 
+    @Nullable
     private LocalDateTime createLearning;
-    private LocalDateTime openLearning;
-    private LocalDateTime closeLearning;
-
+    @Nullable
+    private LocalDateTime openLearning = null;
+    @Nullable
+    private LocalDateTime closeLearning = null;
+    @Nullable
     private LocalDateTime uploadVideo = null;
+    @Nullable
     private LocalDateTime updateLearning = null;
 
     private boolean startingLearning = false;
