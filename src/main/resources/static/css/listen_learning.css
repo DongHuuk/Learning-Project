@@ -1,0 +1,26 @@
+a:link{
+    color: black;
+    text-decoration: none;
+}
+a:visited {
+    color: black;
+    text-decoration: none;
+}
+a:hover{
+    color: black;
+    text-decoration: none;
+}
+
+.list-group-item{
+    padding: 0;
+}
+.content-title{
+    margin-bottom: 0;
+    display: inline-block;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.1rem;
+    font-weight: 400;
+}

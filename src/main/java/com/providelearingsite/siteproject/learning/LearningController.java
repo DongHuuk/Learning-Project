@@ -11,6 +11,7 @@ import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
 import com.providelearingsite.siteproject.video.Video;
+import org.dom4j.rule.Mode;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -186,6 +187,7 @@ public class LearningController {
         Optional<Learning> learningById = learningRepository.findById(id);
         Learning learning = learningById.orElseThrow();
         boolean contains = account.getLearnings().contains(learning);
+        List<String> contentsTitle = learningService.getContentsTitle(learning);
 
         model.addAttribute(account);
         model.addAttribute("listenLearning", learningService.canListenLearning(account, learning));
@@ -201,33 +203,8 @@ public class LearningController {
         model.addAttribute("canClose", learningService.checkCloseTimer(learning.isStartingLearning(), learning.isClosedLearning(), contains));
         model.addAttribute("canCloseTimer", learning.getCloseLearning() == null || learning.getCloseLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
         model.addAttribute("canOpenTimer", learning.getOpenLearning() == null || learning.getOpenLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
+        model.addAttribute("contentsTitle", contentsTitle);
 
-        List<String> contentTitle = new ArrayList<>();
-        learning.getVideos().stream().map(Video::getVideoTitle)
-                .forEach(s -> {
-                    String s1 = s.replaceAll("[a-zA-Z가-힣ㄱ-ㅋㅏ-ㅣ]", "").trim();
-                    int i = s1.indexOf("-");
-
-                    String f = s1.substring(0, i); //앞
-                    String e = s1.substring(i+1); //뒤
-                    String newf = "";
-                    String newe = "";
-
-                    if(f.length() != 2){
-                        newf = 0 + f;
-                    }else {
-                        newf = f;
-                    }
-
-                    if(e.length() != 2){
-                        newe = 0 + e;
-                    }else {
-                        newe = e;
-                    }
-                    contentTitle.add(newf + "-" + newe);
-                });
-
-        contentTitle.sort(null);
         return "learning/main_learning";
     }
 
@@ -283,6 +260,24 @@ public class LearningController {
         attributes.addFlashAttribute("message", "강의가 닫혔습니다..");
         return "redirect:/learning/" + id;
     }
+
+    @GetMapping("/learning/{id}/listen")
+    public String listenLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
+
+        Learning learning = learningRepository.findById(id).orElseThrow();
+        Account newAccount = learningService.listenLearning(account, learning);
+        List<String> contentsTitle = learningService.getContentsTitle(learning);
+
+        model.addAttribute("account", newAccount);
+        model.addAttribute("learning", learning);
+        model.addAttribute("contentsList", contentsTitle);
+
+        return "learning/listen_learning";
+    }
+
+
+
+
     //TODO TestCode 지우기
     @GetMapping("/create/test")
     public String testCode(@CurrentAccount Account account){

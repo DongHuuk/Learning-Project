@@ -128,6 +128,21 @@
         </p>
     </div>
 
+    <div class="mt-md-5 d-flex align-content-start" style=" width: 50%" th:if="${contentsTitle.size() > 0}">
+        <hr style="width: 100%"/>
+    </div>
+
+    <!--목차-->
+    <div class="mt-lg-5 ml-md-5 pl-md-3 learning-content" th:if="${contentsTitle.size() > 0}">
+        <p class="learning-content-title">목차</p>
+
+        <ul class="list-group">
+            <li class="list-group-item" th:each="content : ${contentsTitle}">
+                <p th:text="${content}"></p>
+            </li>
+        </ul>
+    </div>
+
     <div class="mt-md-5 d-flex align-content-start" style=" width: 50%">
         <hr style="width: 100%"/>
     </div>
@@ -140,6 +155,10 @@
                 <p><span>rating</span> <span th:text="${}"></span></p>
             </div>
         </div>
+    </div>
+
+    <div class="mt-md-5 d-flex align-content-start" style=" width: 50%">
+        <hr style="width: 100%"/>
     </div>
 
     <div th:replace="fragment.html :: footer"></div>

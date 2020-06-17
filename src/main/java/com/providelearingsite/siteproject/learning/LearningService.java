@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -324,5 +325,42 @@ public class LearningService {
             z += 1;
         }
 
+    }
+
+    public List<String> getContentsTitle(Learning learning) {
+        List<String> contentTitle = new ArrayList<>();
+        learning.getVideos().stream().map(Video::getVideoTitle)
+                .forEach(s -> {
+                    String s1 = s.replaceAll("[a-zA-Z가-힣ㄱ-ㅋㅏ-ㅣ]", "").trim();
+                    int i = s1.indexOf("-");
+
+                    String f = s1.substring(0, i); //앞
+                    String e = s1.substring(i+1); //뒤
+                    String newf = "";
+                    String newe = "";
+
+                    if(f.length() != 2){
+                        newf = 0 + f;
+                    }else {
+                        newf = f;
+                    }
+
+                    if(e.length() != 2){
+                        newe = 0 + e;
+                    }else {
+                        newe = e;
+                    }
+                    contentTitle.add(newf + "-" + newe);
+                });
+
+        return contentTitle;
+    }
+
+    public Account listenLearning(Account account, Learning learning) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+
+        newAccount.getListenLearning().add(learning);
+
+        return newAccount;
     }
 }
