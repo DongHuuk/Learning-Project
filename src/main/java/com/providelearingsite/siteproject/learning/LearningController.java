@@ -11,7 +11,7 @@ import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
 import com.providelearingsite.siteproject.video.Video;
-import com.providelearingsite.siteproject.video.VideoRepository;
+import org.dom4j.rule.Mode;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -43,7 +42,6 @@ public class LearningController {
     @Autowired private TagRepository tagRepository;
     @Autowired private ObjectMapper objectMapper;
     @Autowired private ModelMapper modelMapper;
-    @Autowired private VideoRepository videoRepository;
 
     @InitBinder("learningForm")
     private void initVideoForm(WebDataBinder webDataBinder) {
@@ -273,36 +271,11 @@ public class LearningController {
         model.addAttribute("account", newAccount);
         model.addAttribute("learning", learning);
         model.addAttribute("contentsList", contentsTitle);
-        model.addAttribute("now", contentsTitle.get(0));
 
         return "learning/listen_learning";
     }
 
-    @GetMapping("/learning/listen/{learningId}/{title}")
-    public String listenLearningPlayVideo(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id,
-                                          @PathVariable("title") String title, RedirectAttributes attributes) {
 
-        Learning learning = learningRepository.findById(id).orElseThrow();
-        Account newAccount = learningService.listenLearning(account, learning);
-        List<String> contentsTitle = learningService.getContentsTitle(learning);
-        List<Video> videos = videoRepository.findByTitleAndLearning(title, learning);
-        final String videoPath = "/video/" + account.getId() + "/" + learning.getTitle() + "/" + videos.get(0).getVideoTitle();
-
-        if(videos.size() >= 2){
-            attributes.addFlashAttribute("message", "잘못된 요청입니다.");
-            return "redirect:/learning/" + learning.getId() + "/listen";
-        }
-
-
-
-        model.addAttribute("account", newAccount);
-        model.addAttribute("learning", learning);
-        model.addAttribute("contentsList", contentsTitle);
-        model.addAttribute("now", videos.get(0));
-        model.addAttribute("videoPath", videoPath);
-
-        return "learning/listen_learning";
-    }
 
 
     //TODO TestCode 지우기

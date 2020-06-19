@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -45,9 +44,6 @@ public class LearningService {
     @Autowired private VideoRepository videoRepository;
     @Autowired private ModelMapper modelMapper;
     @Autowired private ApplicationEventPublisher applicationEventPublisher;
-
-    final File absoluteFile = new File("");
-    final String rootPath = absoluteFile.getAbsolutePath();
 
     public Learning saveLearning(LearningForm learningForm, Account account){
         Learning learning = new Learning();
@@ -77,8 +73,8 @@ public class LearningService {
     }
 
     public void saveVideo(List<MultipartFile> videoFileList, Account account, Learning learning) throws IOException{
-        final String accountPath = rootPath + "/src/main/resources/static/video/" + account.getId();
-        final String accountLearningPath = rootPath + "/src/main/resources/static/video/" + account.getId() + "/" + learning.getTitle().trim();
+        final String accountPath = "C:/project/" + account.getId();
+        final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle().trim();
         learning.setVideoCount(learning.getVideoCount() + videoFileList.size());
 
         //directory checking
@@ -101,7 +97,7 @@ public class LearningService {
                 Video video = new Video();
                 video.setVideoServerPath(accountLearningPath +"/" + resource.getFilename());
                 video.setVideoSize(file.getSize() > 0 ? file.getSize() : 0);
-                video.setVideoTitle(updateVideoTitle(Objects.requireNonNull(file.getOriginalFilename())));
+                video.setVideoTitle(file.getOriginalFilename());
                 video.setSaveTime(LocalDateTime.now());
 
                 IOUtils.copy(inputStream, outputStream);
@@ -118,37 +114,9 @@ public class LearningService {
         learningRepository.save(learning);
     }
 
-    private String updateVideoTitle(String title){
-        String regExp = "[a-zA-Zㄱ-ㅎ가-힣ㅏ-ㅣ\\s_](.mp3|.mp4|mkv)";
-        String regExpNot = "[0-9]+(.)[0-9]+";
-        String number = title.replaceAll(regExp, "").trim();
-        String notNumber = title.replaceAll(regExpNot, "").trim();
-        int i = number.indexOf("-");
-        int strIndex = number.indexOf(notNumber.charAt(0));
-
-        String f = number.substring(0, i); //앞
-        String e = number.substring(i+1, strIndex); //뒤
-        String newf = "";
-        String newe = "";
-
-        if(f.length() <= 1){
-            newf = 0 + f;
-        }else {
-            newf = f;
-        }
-
-        if(e.length() <= 1){
-            newe = 0 + e;
-        }else {
-            newe = e;
-        }
-
-        return newf + "-" + newe + notNumber;
-    }
-
     public void saveBanner(MultipartFile banner, Account account, Learning learning) throws IOException{
-        final String accountPath = rootPath + "/src/main/resources/static/video/" + account.getId();
-        final String accountLearningPath = rootPath +  "/src/main/resources/static/video/" + account.getId() + "/" + learning.getTitle();
+        final String accountPath = "C:/project/" + account.getId();
+        final String accountLearningPath = "C:/project/" + account.getId() + "/" + learning.getTitle();
 
         learning.setBannerServerPath(accountLearningPath + "/" + banner.getResource().getFilename());
 
@@ -196,8 +164,8 @@ public class LearningService {
         Optional<Account> byId = accountRepository.findById(account.getId());
         Account newAccount = byId.orElseThrow();
 
-        final String learningPathBefore = rootPath + "/src/main/resources/static/video/" + account.getId() + "/" + oldLearning.getTitle().trim();
-        final String learningPathAfter = rootPath +  "/src/main/resources/static/video/" + account.getId() + "/" + learningForm.getTitle().trim();
+        final String learningPathBefore = "C:/project/" + account.getId() + "/" + oldLearning.getTitle().trim();
+        final String learningPathAfter = "C:/project/" + account.getId() + "/" + learningForm.getTitle().trim();
 
         File removeDir = new File(learningPathBefore);
         String[] removeList = removeDir.list();
@@ -361,32 +329,28 @@ public class LearningService {
 
     public List<String> getContentsTitle(Learning learning) {
         List<String> contentTitle = new ArrayList<>();
-        String regExp = "[a-zA-Zㄱ-ㅎ가-힣ㅏ-ㅣ\\s_](.mp3|.mp4|mkv)";
-        String regExpNot = "[0-9]+(.)[0-9]+";
         learning.getVideos().stream().map(Video::getVideoTitle)
                 .forEach(s -> {
-                    String number = s.replaceAll(regExp, "").trim();
-                    String notNumber = s.replaceAll(regExpNot, "").trim();
-                    int i = number.indexOf("-");
-                    int strIndex = number.indexOf(notNumber.charAt(0));
+                    String s1 = s.replaceAll("[a-zA-Z가-힣ㄱ-ㅋㅏ-ㅣ]", "").trim();
+                    int i = s1.indexOf("-");
 
-                    String f = number.substring(0, i); //앞
-                    String e = number.substring(i+1, strIndex); //뒤
+                    String f = s1.substring(0, i); //앞
+                    String e = s1.substring(i+1); //뒤
                     String newf = "";
                     String newe = "";
 
-                    if(f.length() <= 1){
+                    if(f.length() != 2){
                         newf = 0 + f;
                     }else {
                         newf = f;
                     }
 
-                    if(e.length() <= 1){
+                    if(e.length() != 2){
                         newe = 0 + e;
                     }else {
                         newe = e;
                     }
-                    contentTitle.add(newf + "-" + newe + notNumber);
+                    contentTitle.add(newf + "-" + newe);
                 });
 
         return contentTitle;
