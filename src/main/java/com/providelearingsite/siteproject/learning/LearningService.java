@@ -97,7 +97,7 @@ public class LearningService {
                     BufferedInputStream inputStream = new BufferedInputStream(resource.getInputStream());
                     BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(
                             accountLearningPath + "/" + resource.getFilename()), 1024 * 500)
-                    ){
+            ){
                 Video video = new Video();
                 video.setVideoServerPath(accountLearningPath +"/" + resource.getFilename());
                 video.setVideoSize(file.getSize() > 0 ? file.getSize() : 0);
@@ -176,7 +176,7 @@ public class LearningService {
                 BufferedInputStream inputStream = new BufferedInputStream(resource.getInputStream());
                 BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(
                         accountLearningPath + "/" + resource.getFilename()), 1024 * 5)
-            ){ //save the banner img in server folder
+        ){ //save the banner img in server folder
             IOUtils.copy(inputStream, outputStream);
         } catch (IOException e) {
             throw new IOException(e);
@@ -253,7 +253,7 @@ public class LearningService {
         try (
                 BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
                 BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(learningPathAfter + "/" + s), 1024 * 500)
-             ){
+        ){
             IOUtils.copy(inputStream, outputStream);
             outputStream.flush();
         } catch (IOException e) {

@@ -12,6 +12,11 @@ public class LearningPredicates {
     public static Predicate findTop4ByTags(Set<Tag> tags){
         QLearning learning = QLearning.learning;
         List<String> tagList = tags.stream().map(Tag::getTitle).collect(Collectors.toList());
+
+        if (tagList.isEmpty()) {
+            return null;
+        }
+
         return learning.tags.any().in(tags)
                 .or(learning.title.containsIgnoreCase(tagList.get(0)))
                 .or(learning.title.containsIgnoreCase(tagList.get(tagList.size()-1)));

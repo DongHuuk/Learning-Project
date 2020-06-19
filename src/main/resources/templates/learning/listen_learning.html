@@ -10,28 +10,28 @@
 </head>
 
 <body class="container">
-    <div th:replace="fragment.html :: navbar"></div>
+<div th:replace="fragment.html :: navbar"></div>
 
-    <div class="d-flex mt-3">
-        <div class="col-3">
-            <ul class="list-group">
-                <li class="list-group-item p-1" th:each="content : ${contentsList}" th:classappend="${content.equals(now)}? active">
-                    <a href="#" th:href="@{'/learning/listen/' + ${learning.id} + '/' + ${content.substring(0, 5)}}">
-                        <p class="content-title" th:text="${content}"></p>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="row mt-md-5">
-            <video width="640" height="380">
-                <source src="" th:src="${videoPath}">
-            </video>
-        </div>
-        <!--대시보드 div-->
+<div class="d-flex mt-3">
+    <div class="col-3">
+        <ul class="list-group">
+            <li class="list-group-item p-1" th:each="content : ${contentsList}" th:classappend="${content.equals(now)}? active">
+                <a href="#" th:href="@{'/learning/listen/' + ${learning.id} + '/' + ${content.substring(0, 5)}}">
+                    <p class="content-title" th:text="${content}"></p>
+                </a>
+            </li>
+        </ul>
     </div>
-    <!--list & 대시보드-->
 
-    <div class="mt-5" th:replace="fragment.html :: footer"></div>
+    <div class="row mt-md-5">
+        <video width="640" height="380">
+            <source src="" th:src="${videoPath}">
+        </video>
+    </div>
+    <!--대시보드 div-->
+</div>
+<!--list & 대시보드-->
+
+<div class="mt-5" th:replace="fragment.html :: footer"></div>
 </body>
 </html>

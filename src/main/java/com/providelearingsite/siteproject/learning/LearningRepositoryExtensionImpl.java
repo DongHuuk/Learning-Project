@@ -2,6 +2,7 @@ package com.providelearingsite.siteproject.learning;
 
 import com.providelearingsite.siteproject.tag.Tag;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -73,12 +74,20 @@ public class LearningRepositoryExtensionImpl extends QuerydslRepositorySupport i
 
     @Override
     public List<Learning> findTop4ByTagsOrderByRatingDesc(Set<Tag> tags) {
+        Predicate top4ByTags = LearningPredicates.findTop4ByTags(tags);
         QLearning learning = QLearning.learning;
-        JPQLQuery<Learning> distinct = from(learning).where(learning.startingLearning.isTrue()
-                .and(learning.closedLearning.isFalse())
-                .and(LearningPredicates.findTop4ByTags(tags)))
-                .limit(4)
-                .distinct();
+        JPQLQuery<Learning> distinct;
+
+        if (top4ByTags == null) {
+            distinct = from(learning).where(learning.startingLearning.isTrue()
+                    .and(learning.closedLearning.isFalse())).limit(4).distinct();
+        }else {
+            distinct = from(learning).where(learning.startingLearning.isTrue()
+                    .and(learning.closedLearning.isFalse())
+                    .and(LearningPredicates.findTop4ByTags(tags)))
+                    .limit(4)
+                    .distinct();
+        }
 
         return distinct.fetch();
     }
