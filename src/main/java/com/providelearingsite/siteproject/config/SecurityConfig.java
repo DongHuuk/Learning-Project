@@ -75,6 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .mvcMatchers("/node_modules/**")
+                .mvcMatchers("/static/video/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }
