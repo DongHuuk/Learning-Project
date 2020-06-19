@@ -7,8 +7,6 @@
     <title>Title</title>
     <div th:replace="fragment.html :: links"></div>
     <link rel="stylesheet" href="/css/listen_learning.css"/>
-    <script src="//fast.wistia.com/embed/medias/j38ihh83m5.jsonp" async></script>
-    <script src="//fast.wistia.com/assets/external/E-v1.js" async></script>
 </head>
 
 <body class="container">
@@ -17,8 +15,8 @@
     <div class="d-flex mt-3">
         <div class="col-3">
             <ul class="list-group">
-                <li class="list-group-item p-1" th:each="content : ${contentsList}">
-                    <a href="#" >
+                <li class="list-group-item p-1" th:each="content : ${contentsList}" th:classappend="${content.equals(now)}? active">
+                    <a href="#" th:href="@{'/learning/listen/' + ${learning.id} + '/' + ${content.substring(0, 5)}}">
                         <p class="content-title" th:text="${content}"></p>
                     </a>
                 </li>
@@ -26,7 +24,9 @@
         </div>
 
         <div class="row mt-md-5">
-
+            <video width="640" height="380">
+                <source src="" th:src="${videoPath}">
+            </video>
         </div>
         <!--대시보드 div-->
     </div>

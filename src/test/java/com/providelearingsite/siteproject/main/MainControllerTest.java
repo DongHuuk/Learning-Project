@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,32 +25,52 @@ class MainControllerTest {
 
     @Test
     public void test(){
-        List<String> list = Arrays.asList("1-1dsadwqtes", "1-2dsadwqtes","3-11fdsfaafeㅇ ㅈㅂㅇㅇwefw","3-21개씨발좆같은거존나안되네븅신같은거", "2-1dsadpojwoqdq", "3-1opqjpdowqdwq","11-1epowqjoepwq", "1-11dwqodjpdwq");
+        List<String> list = Arrays.asList("1-1_dsadwqtes.mp3", "1-2dsadwqtes.mp4","3-11fdsfaafeㅇ ㅈㅂㅇㅇwefw",
+                "3-21개씨발좆같은거존나안되네븅신같은거.mp3", "2-1dsadpojwoqdq",
+                "3-1opqjpdowqdwq","11-1epowqjoepwq", "1-11dwqodjpdwq");
         List<String> contentTitle = new ArrayList<>();
+        String regExp = "[a-zA-Zㄱ-ㅎ가-힣ㅏ-ㅣ\\s_](.mp3|.mp4|mkv)";
+        String regExpNot = "[0-9]+(.)[0-9]+";
         list.stream().map(String::toString).sorted()
                 .forEach(s -> {
-                    String s1 = s.replaceAll("[a-zA-Z가-힣ㄱ-ㅋㅏ-ㅣ]", "").trim();
-                    int i = s1.indexOf("-");
+                    String number = s.replaceAll(regExp, "").trim();
+                    String notNumber = s.replaceAll(regExpNot, "").trim();
+                    int i = number.indexOf("-");
+                    int strIndex = number.indexOf(notNumber.charAt(0));
 
-                    String f = s1.substring(0, i); //앞
-                    String e = s1.substring(i+1); //뒤
+                    String f = number.substring(0, i); //앞
+                    String e = number.substring(i+1, strIndex); //뒤
                     String newf = "";
                     String newe = "";
 
-                    if(f.length() != 2){
+                    if(f.length() <= 1){
                         newf = 0 + f;
                     }else {
                         newf = f;
                     }
 
-                    if(e.length() != 2){
+                    if(e.length() <= 1){
                         newe = 0 + e;
                     }else {
                         newe = e;
                     }
-                    contentTitle.add(newf + "-" + newe);
+
+                    String newStr = newf + "-" + newe;
+
+                    System.out.println("=======");
+                    System.out.println(s);
+                    System.out.println(newStr);
+                    System.out.println(newStr+notNumber);
                 });
+
         contentTitle.sort(null);
-        System.out.println(contentTitle.toString());
+
+    }
+
+    @Test
+    public void testFile(){
+        File file = new File("");
+        System.out.println(file.getAbsolutePath());
+        File newFile = new File(file.getAbsolutePath() + "/src/main/resources/static/video");
     }
 }
