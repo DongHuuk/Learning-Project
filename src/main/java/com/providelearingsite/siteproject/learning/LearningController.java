@@ -296,12 +296,10 @@ public class LearningController {
             return "redirect:/learning/" + learning.getId() + "/listen";
         }
 
-
-
         model.addAttribute("account", newAccount);
         model.addAttribute("learning", learning);
         model.addAttribute("contentsList", contentsTitle);
-        model.addAttribute("now", videos.get(0));
+        model.addAttribute("now", videos.get(0).getVideoTitle());
         model.addAttribute("videoPath", videoPath);
 
         return "learning/listen_learning";
