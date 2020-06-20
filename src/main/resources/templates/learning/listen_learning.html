@@ -23,9 +23,10 @@
         </ul>
     </div>
 
-    <div class="row mt-md-5 col-9 ml-2">
-        <video autoplay controls width="1280" height="720">
-            <source src="" th:src="${videoPath}">
+    <div class="row mt-3 col-9 ml-2">
+        <label class="video-title" for="movie" th:text="${learning.title} + '/' + ${now}"></label>
+        <video class="video-body" controls width="1280" height="720" id="movie" controlsList="nodownload">
+            <source th:src="${videoPath}">
         </video>
     </div>
     <!--대시보드 div-->
@@ -33,5 +34,10 @@
 <!--list & 대시보드-->
 
 <div class="mt-5" th:replace="fragment.html :: footer"></div>
+<script type="application/javascript">
+    $(document).ready(function(){
+        $('.video-body').bind('contextmenu',function() { return false; });
+    });
+</script>
 </body>
 </html>

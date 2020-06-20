@@ -156,8 +156,19 @@
     <div style="height: 100px"></div>
     <footer class="footer_custom">
         <link rel="stylesheet" href="/css/footer.css"/>
-        <div class="footer_custom_bg bg-dark text-white">
-            <span> Test </span>
+        <div class="footer_custom_bg bg-dark text-white d-flex">
+            <div class="footer-logo pl-5 col-4 text-white d-flex align-items-center">
+                <a class="navbar-brand" href="#" th:href="@{/}">
+                    <img src="/images/rogo.png" width="75" height="75" class="d-inline-block align-top" alt="">
+                </a>
+            </div>
+            <div class="footer-name col-4 footer-email-body d-flex align-items-center justify-content-center">
+                &copy; Learning Site By Choi.
+            </div>
+            <div class="footer-email pr-5 col-4 footer-email-body d-flex flex-column justify-content-center align-items-end">
+                <p>이메일: drivespublic@gmail.com</p>
+                <p>연락처: 010-9960-3956</p>
+            </div>
         </div>
     </footer>
 </div>
