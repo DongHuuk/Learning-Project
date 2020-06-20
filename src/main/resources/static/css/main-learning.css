@@ -92,3 +92,8 @@ p{
     width: 60px;
     height: 60px;
 }
+
+.learning-comment-nickname{
+    font-size: 1rem;
+    font-weight: 500;
+}

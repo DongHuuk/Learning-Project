@@ -6,6 +6,7 @@ import com.providelearingsite.siteproject.learning.event.LearningClosedEvent;
 import com.providelearingsite.siteproject.learning.event.LearningUpdateEvent;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
 import com.providelearingsite.siteproject.learning.event.LearningCreateEvent;
+import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -398,5 +400,12 @@ public class LearningService {
         newAccount.getListenLearning().add(learning);
 
         return newAccount;
+    }
+
+    public void setReview(Review review, Learning learning) {
+        learning.setReviews(review);
+        double sum = learning.getReviews().stream().mapToDouble(Review::getRating).sum();
+        int ratingLength = learning.getReviews().size();
+        learning.setRating((float) (sum / ratingLength));
     }
 }

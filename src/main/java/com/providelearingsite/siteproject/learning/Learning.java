@@ -94,6 +94,13 @@ public class Learning {
         }
     }
 
+    public void setReviews(Review review) {
+        this.reviews.add(review);
+        if(review.getLearning() != this){
+            review.setLearning(this);
+        }
+    }
+
     public void setAccount(Account account) {
         this.account = account;
         if(!account.getLearnings().contains(this)){

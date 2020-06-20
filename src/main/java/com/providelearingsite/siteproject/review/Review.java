@@ -5,6 +5,7 @@ import com.providelearingsite.siteproject.learning.Learning;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @EqualsAndHashCode(of = "id")
@@ -20,6 +21,7 @@ public class Review {
 
     private float rating;
     private String description;
+    private LocalDateTime createTime;
 
     @ManyToOne
     @JoinColumn(name = "account_id")

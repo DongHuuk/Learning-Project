@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountRepository;
+import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
 import com.providelearingsite.siteproject.learning.validator.LearningValidator;
+import com.providelearingsite.siteproject.review.Review;
+import com.providelearingsite.siteproject.review.ReviewForm;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
@@ -25,10 +28,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +47,7 @@ public class LearningController {
     @Autowired private ObjectMapper objectMapper;
     @Autowired private ModelMapper modelMapper;
     @Autowired private VideoRepository videoRepository;
+    @Autowired private AccountService accountService;
 
     @InitBinder("learningForm")
     private void initVideoForm(WebDataBinder webDataBinder) {
@@ -209,6 +210,7 @@ public class LearningController {
         model.addAttribute("canCloseTimer", learning.getCloseLearning() == null || learning.getCloseLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
         model.addAttribute("canOpenTimer", learning.getOpenLearning() == null || learning.getOpenLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
         model.addAttribute("contentsTitle", contentsTitle);
+        model.addAttribute("reviews", learning.getReviews());
 
         return "learning/main_learning";
     }
@@ -305,6 +307,35 @@ public class LearningController {
         return "learning/listen_learning";
     }
 
+    @GetMapping("/review/{id}")
+    public String showReviewPopup(@CurrentAccount Account account, Model model, @PathVariable Long id){
+        Learning learning = learningRepository.findById(id).orElseThrow();
+
+        model.addAttribute("learning", learning);
+        model.addAttribute("account", account);
+        model.addAttribute(new ReviewForm());
+
+        return "review";
+    }
+
+    @PostMapping("/review/{id}")
+    public String saveReview(@CurrentAccount Account account, @PathVariable Long id, Model model,
+                             @Valid ReviewForm reviewForm, Errors errors, RedirectAttributes attributes) {
+
+        if (errors.hasErrors()) {
+            model.addAttribute("message", "잘못입력하셨습니다!");
+            return "review";
+        }
+
+        Learning learning = learningRepository.findById(id).orElseThrow();
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+        Review review = accountService.saveReview(newAccount, modelMapper.map(reviewForm, Review.class));
+        learningService.setReview(review, learning);
+
+        attributes.addFlashAttribute("account", newAccount);
+
+        return "redirect:/learning/" + learning.getId();
+    }
 
     //TODO TestCode 지우기
     @GetMapping("/create/test")

@@ -10,6 +10,7 @@
     <script src="/node_modules/@editorjs/editorjs/dist/editor.js"></script>
     <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
 </head>
 
 <body class="container">
@@ -149,11 +150,22 @@
 
     <div class="mt-md-5 learning-comment mt-lg-5 ml-md-5 pl-md-3">
         <p class="learning-comment-title">강의 후기</p>
-        <div th:each="review : ${learning.reviews}">
-            <img src="images/rogo.png" class="review-image">
-            <div>
-                <p><span>rating</span> <span th:text="${}"></span></p>
+        <div class="d-flex mt-3" th:each="review : ${reviews}">
+            <div class="col-1">
+                <svg th:data-jdenticon-value="${review.account.nickname}" width="75" height="75" class="rounded border bg-light"></svg>
             </div>
+            <div class="col-7">
+                <div class="d-flex justify-content-between">
+                    <span class="learning-comment-nickname" th:text="${review.account.nickname}"></span>
+                    <span class="date-time" th:text="${review.createTime}"></span>
+                </div>
+                <p>
+                    평점 : <span th:text="${review.rating}"></span>
+                </p>
+                <div hidden="hidden" id="comment" th:text="${review.description}"></div>
+                <p id="commentValue"></p>
+            </div>
+            <div class="col-4"></div>
         </div>
     </div>
 
@@ -172,6 +184,10 @@
         var value = document.getElementById('value').textContent;
         value = $.parseHTML(value);
         $('#textValue').append(value);
+
+        var comment = document.getElementById('comment').textContent;
+        comment = $.parseHTML(comment);
+        $('#commentValue').append(comment);
 
         var lectureValue = document.getElementById('lectureDescription').textContent;
         lectureValue = $.parseHTML(lectureValue);

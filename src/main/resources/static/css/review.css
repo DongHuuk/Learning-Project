@@ -1,0 +1,12 @@
+.review-title{
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+.rating-selecter{
+    max-width: 30%;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+.card-body{
+    padding: 0;
+}

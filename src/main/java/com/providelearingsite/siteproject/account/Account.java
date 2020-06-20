@@ -75,6 +75,13 @@ public class Account {
         }
     }
 
+    public void setReviews(Review review) {
+        this.reviews.add(review);
+        if(review.getAccount() != this){
+            review.setAccount(this);
+        }
+    }
+
     public void createEmailCheckToken(){
         this.emailCheckToken = UUID.randomUUID().toString();
         this.createEmailToken = LocalDateTime.now();

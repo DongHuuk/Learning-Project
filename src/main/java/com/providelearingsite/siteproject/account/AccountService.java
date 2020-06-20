@@ -6,6 +6,8 @@ import com.providelearingsite.siteproject.mail.EmailService;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
 import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
+import com.providelearingsite.siteproject.review.Review;
+import com.providelearingsite.siteproject.review.ReviewRepository;
 import com.providelearingsite.siteproject.tag.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -41,6 +43,7 @@ public class AccountService implements UserDetailsService {
     @Autowired private ModelMapper modelMapper;
     @Autowired private TemplateEngine templateEngine;
     @Autowired private AppProperties appProperties;
+    @Autowired private ReviewRepository reviewRepository;
 
     public void login(Account account){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -143,5 +146,12 @@ public class AccountService implements UserDetailsService {
     public void deleteTag(Account account, Tag tag) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.orElseThrow().getTags().remove(tag);
+    }
+
+    public Review saveReview(Account account, Review review) {
+        review.setCreateTime(LocalDateTime.now());
+        Review newReview = reviewRepository.save(review);
+        account.setReviews(review);
+        return newReview;
     }
 }

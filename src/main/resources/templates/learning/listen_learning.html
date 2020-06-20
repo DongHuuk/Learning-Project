@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>listen</title>
     <div th:replace="fragment.html :: links"></div>
     <link rel="stylesheet" href="/css/listen_learning.css"/>
 </head>
@@ -21,6 +21,9 @@
                 </a>
             </li>
         </ul>
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-success pl-4 pr-4 pt-2 pb-2" type="button" onclick="showPopup()">강의 평가 작성하기</button>
+        </div>
     </div>
 
     <div class="row mt-3 col-9 ml-2">
@@ -35,9 +38,17 @@
 
 <div class="mt-5" th:replace="fragment.html :: footer"></div>
 <script type="application/javascript">
+    window.name = "listenPage";
+
     $(document).ready(function(){
         $('.video-body').bind('contextmenu',function() { return false; });
     });
+    
+    function showPopup() {
+        var popupX = (window.screen.width / 2) - (400 / 2);
+        var popupY= (window.screen.height /2) - (500 / 2);
+        window.open("/review/" + [[${learning.id}]], "review", `width=1100, height=700, left=${popupX},screenX=${popupX}, top=${popupX}, screenY=${popupY} `);
+    }
 </script>
 </body>
 </html>

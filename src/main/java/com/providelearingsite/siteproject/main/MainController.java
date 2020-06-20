@@ -5,15 +5,13 @@ import com.providelearingsite.siteproject.account.CurrentAccount;
 import com.providelearingsite.siteproject.learning.Learning;
 import com.providelearingsite.siteproject.learning.LearningRepository;
 import com.providelearingsite.siteproject.learning.LearningService;
+import com.providelearingsite.siteproject.review.ReviewForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -35,7 +33,7 @@ public class MainController {
             learningList = learningRepository.findTop4ByTagsOrderByRatingDesc(account.getTags());
             model.addAttribute(account);
             model.addAttribute("learningList", learningList);
-        }else{
+        } else {
             learningList = mainService.learningOrderByRating();
             model.addAttribute("learningList", learningList);
         }
@@ -71,5 +69,6 @@ public class MainController {
     public String logout() {
         return "index";
     }
+
 
 }
