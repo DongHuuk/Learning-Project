@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/buy.css"/>
+</head>
+<body class="container">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="alert alert-info alert-dismissible fade show mt-3 alert-custom" role="alert" th:if="${success}">
+        <p th:text="${success}">success message</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div style="height: 100px"></div>
+
+    <main class="row p-4">
+
+        <div class="col-8">
+            <div class="pl-5">
+                <p class="buy-title">
+                    구매하기
+                </p>
+            </div>
+
+            <div class="pl-5">
+                <div class="mt-2 p-2 learning-list d-flex" th:each="learning : ${learningList}">
+                    <a class="d-flex buy-learning-link" href="#" th:href="@{'/learning/' + ${learning.id}}">
+                        <div>
+                            <img class="buy-learning-banner" th:src="|data:image/*;base64,${learning.bannerBytes}|"
+                                 th:if="${learning.bannerBytes} != null"/>
+                            <img class="buy-learning-banner" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+                        </div>
+                        <div class="ml-3 d-flex flex-column justify-content-between buy-learning-body">
+                            <p class="buy-learning-title">
+                                강의: <span th:text="${learning.title}"></span>
+                            </p>
+                            <p class="buy-learning-lecturer">
+                                작성자: <span th:text="${learning.lecturerName}"></span>
+                            </p>
+                            <p class="buy-learning-price" th:if="${!learning.price_comma().equals('free')}">
+                                가격: <span th:text="${learning.price_comma()}"></span>원
+                            </p>
+                            <p class="buy-learning-price" th:if="${learning.price_comma().equals('free')}">
+                                가격: 무료 강의
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--강의 항목들-->
+
+        <div class="col-4">
+            <div>
+                <p class="buy-title">
+                    결제
+                </p>
+            </div>
+
+            <div class="mt-2">
+                <div class="buy-pay p-2">
+                    <p>총 갯수 : <span th:text="${learningList.size()}"></span>개</p>
+                    <p>총 가격 : <span th:text="${totalPrice}"></span>원</p>
+                </div>
+            </div>
+
+            <div class="mt-2 d-flex justify-content-center">
+                <button class="buy-btn-kakao_pay">
+                    <img src="/images/kakao_pay.png" alt="kakao_pay">
+                </button>
+
+            </div>
+        </div>
+        <!--가격 및 구매하기 버튼-->
+
+    </main>
+
+
+    <div style="height: 500px"></div>
+    <div th:replace="fragment.html :: footer"></div>
+    <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
+    <script type="application/javascript">
+        moment.locale('ko');
+        $(".date-time").text(function (index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LL");
+        })
+    </script>
+<!--    <script type="application/javascript">-->
+<!--        $('.btn').on('click', function(){-->
+<!--            let attr = $(this).parent().attr('id');-->
+<!--            let parentDiv = $('#'+attr).parent().attr('id');-->
+<!--            $('#'+parentDiv).remove();-->
+<!--        })-->
+    </script>
+</body>
+</html>

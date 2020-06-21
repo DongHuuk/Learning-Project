@@ -72,11 +72,12 @@
             110,000원
         </div>
         <form class="banner-form mt-md-2" action="#" th:action="@{'/learning/' + ${learning.id} + '/buy'}" method="get">
-            <button class="banner-form-btn btn-success btn" type="button">구매하기</button>
+            <button class="banner-form-btn btn-success btn" type="submit">구매하기</button>
         </form>
-        <form class="banner-form mt-md-2 mb-md-2" action="#" th:action="@{'/learning/' + ${learning.id} + '/cart'}" method="get">
-            <button class="banner-form-btn btn-info btn" type="button">장바구니</button>
-        </form>
+        <button type="button" class="mt-md-2 banner-form-btn btn-info btn cart-btn" data-container="body" data-toggle="popover"
+                data-placement="bottom" data-content="장바구니에 추가되었습니다!">
+            장바구니
+        </button>
         <div class="mt-md-4 mb-md-4">
             <p><i class="far fa-id-badge"></i>  교육자 : <span th:text="${learning.lecturerName}">default lecturerName</span></p>
 <!--            <p><i class="fas fa-align-left"></i>  강의 레벨 : <span th:text="${learning.lecturerName}">default lecturerName</span></p>-->
@@ -192,6 +193,20 @@
         var lectureValue = document.getElementById('lectureDescription').textContent;
         lectureValue = $.parseHTML(lectureValue);
         $('#lectureDescriptionValue').append(lectureValue);
+    </script>
+    <!--장바구니-->
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+
+        $('.cart-btn').on('click', function() {
+            $.ajax({
+                url: '/learning/[[${learning.id}]]/cart/add',
+                dataType: 'JSON'
+            });
+        })
+
     </script>
 </body>
 

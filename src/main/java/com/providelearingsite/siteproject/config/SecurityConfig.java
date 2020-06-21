@@ -40,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .mvcMatchers("/", "/login", "/create", "/check-token", "/recheck-token", "/imgTest", "/search/learning",
-                        "/all", "/web/all", "/web/java", "/web/javascript", "/web/html", "/algorithm/all", "/algorithm/gof", "/algorithm/algorithm", "/testcode")
+                        "/all", "/web/all", "/web/java", "/web/javascript", "/web/html", "/algorithm/all", "/algorithm/gof",
+                        "/algorithm/algorithm", "/testcode")
                 .permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/**").permitAll()
                 .anyRequest().authenticated();

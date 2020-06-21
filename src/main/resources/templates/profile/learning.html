@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/profile-bar.css"/>
+    <link rel="stylesheet" href="/css/profile-settings.css"/>
+    <link rel="stylesheet" href="/css/notification.css"/>
+    <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
+</head>
+
+<body class="container">
+    <header th:replace="fragment.html :: navbar"></header>
+
+    <main class="d-flex">
+        <div th:replace="fragment.html :: profile-bar"></div>
+        <!--list group-->
+
+        <div class="col-sm-11 mt-md-5">
+            <header>
+                <div class="alert alert-info alert-dismissible fade show mt-3 alert-custom" role="alert" th:if="${message}">
+                    <p th:text="${message}">flush message</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </header>
+
+            <main class="row mt-md-3">
+                <div class="col-md-12 mb-2">
+                    <div style="opacity: 0.7; font-size: 13px">설정/내 학습</div>
+                    <span style="font-size: 17px; font-weight: bold">설정/내 학습</span>
+                </div>
+
+                <div class="" th:if="${learningList.size() > 0}">
+                    <div class="col-md-3 roof-start" th:each="learning : ${learningList}">
+                        <a href="#" th:href="@{'/learning/' + ${learning.id}}">
+                            <div class="card mb-4 shadow-sm card-view">
+                                <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
+                                     th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+                                <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+                                <div class="card-body">
+                                    <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
+                                    <p class="card-text card-tags">
+                                        <i class="fas fa-tasks"></i>
+                                        <span class="card-tag-box" th:each="tag : ${learning.tags}">
+                                <span th:text="${tag.getTitle()}"></span>
+                            </span>
+                                    </p>
+                                    <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
+                                    <p class="mb-1">
+                                        <span class="full-star star" th:each="num : ${#numbers.sequence(0, learning.getRating_int() - 1)}" th:if="${learning.getRating_int() > 0}"><i class="fas fa-star"></i></span><span class="half-star star" th:if="${learning.checkRating_boolean()}"><i class="fas fa-star-half-alt"></i></span><span class="empty-star star" th:each="num : ${#numbers.sequence(1, learning.emptyRating())}" th:if="${learning.emptyRating() > 0}"><i class="far fa-star"></i></span>
+                                        (<span th:text="${learning.rating}"></span>)
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
+                                        <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
+                                        <div class="date-time" th:text="${learning.openLearning}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!--강의가 존재할 경우-->
+
+                <div class="d-flex justify-content-start" th:if="${learningList.size() <= 0}">
+                    <div class="roof-start">
+                        <div class="card mb-4 shadow-sm card-view">
+                            <img class="banner-image card-img" src="/images/rogo.png"/>
+                            <div class="card-body">
+                                <p class="card-text card-title">강의가 존재하지 않습니다.</p>
+                                <p class="card-text card-tags">
+                                    <i class="fas fa-tasks"></i>
+                                    <span class="card-tag-box">
+                            <span>태그가 존재하지 않습니다.</span>
+                        </span>
+                                </p>
+                                <span class="card-text card-learning-rating" hidden="hidden">Default Ratings hidden</span>
+                                <p class="mb-1">
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><span class="card-price"></span>강의가 존재하지 않습니다.</div>
+                                    <div class="date-time"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--강의가 존재하지 않을 경우-->
+
+            </main>
+        </div>
+    </main>
+    <!--page body-->
+
+    <div th:replace="fragment.html :: footer"></div>
+    <script type="application/javascript">
+        moment.locale('ko');
+        $(".date-time").text(function (index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LL");
+        })
+    </script>
+</body>
+
+</html>

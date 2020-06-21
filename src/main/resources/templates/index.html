@@ -79,30 +79,32 @@
         </label>
         <div class="d-flex justify-content-start" th:if="${learningList.size() > 0}">
             <div class="col-md-3 roof-start" th:each="learning : ${learningList}" id="tagsCards">
-                <div class="card mb-4 shadow-sm card-view">
-                    <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
-                         th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
-                    <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
-                    <div class="card-body">
-                        <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
-                        <p class="card-text card-tags">
-                            <i class="fas fa-tasks"></i>
-                            <span class="card-tag-box" th:each="tag : ${learning.tags}">
-                                <span th:text="${tag.getTitle()}"></span>
-                            </span>
-                        </p>
-                        <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
-                        <p class="mb-1">
-                            <span class="full-star star" th:each="num : ${#numbers.sequence(0, learning.getRating_int() - 1)}" th:if="${learning.getRating_int() > 0}"><i class="fas fa-star"></i></span><span class="half-star star" th:if="${learning.checkRating_boolean()}"><i class="fas fa-star-half-alt"></i></span><span class="empty-star star" th:each="num : ${#numbers.sequence(1, learning.emptyRating())}" th:if="${learning.emptyRating() > 0}"><i class="far fa-star"></i></span>
-                            (<span th:text="${learning.rating}"></span>)
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
-                            <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
-                            <div class="date-time" th:text="${learning.openLearning}"></div>
+                <a href="#" th:href="@{'/learning/' + ${learning.id}}">
+                    <div class="card mb-4 shadow-sm card-view">
+                        <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
+                             th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+                        <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+                        <div class="card-body">
+                            <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
+                            <p class="card-text card-tags">
+                                <i class="fas fa-tasks"></i>
+                                <span class="card-tag-box" th:each="tag : ${learning.tags}">
+                                    <span th:text="${tag.getTitle()}"></span>
+                                </span>
+                            </p>
+                            <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
+                            <p class="mb-1">
+                                <span class="full-star star" th:each="num : ${#numbers.sequence(0, learning.getRating_int() - 1)}" th:if="${learning.getRating_int() > 0}"><i class="fas fa-star"></i></span><span class="half-star star" th:if="${learning.checkRating_boolean()}"><i class="fas fa-star-half-alt"></i></span><span class="empty-star star" th:each="num : ${#numbers.sequence(1, learning.emptyRating())}" th:if="${learning.emptyRating() > 0}"><i class="far fa-star"></i></span>
+                                (<span th:text="${learning.rating}"></span>)
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
+                                <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
+                                <div class="date-time" th:text="${learning.openLearning}"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <!--강의가 존재할 경우-->
@@ -136,30 +138,32 @@
         <label for="newCards" class="ml-3 tagsCards-label">신규 강의!</label>
         <div class="d-flex justify-content-start" th:if="${learningOrderByDatetime.size() > 0}">
             <div class="col-md-3 roof-start" th:each="learning : ${learningOrderByDatetime}" id="newCards">
-                <div class="card mb-4 shadow-sm card-view">
-                    <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
-                         th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
-                    <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
-                    <div class="card-body">
-                        <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
-                        <p class="card-text card-tags">
-                            <i class="fas fa-tasks"></i>
-                            <span class="card-tag-box" th:each="tag : ${learning.tags}">
-                                <span th:text="${tag.getTitle()}"></span>
-                            </span>
-                        </p>
-                        <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
-                        <p class="mb-1">
-                            <span class="full-star star" th:each="num : ${#numbers.sequence(0, learning.getRating_int() - 1)}" th:if="${learning.getRating_int() > 0}"><i class="fas fa-star"></i></span><span class="half-star star" th:if="${learning.checkRating_boolean()}"><i class="fas fa-star-half-alt"></i></span><span class="empty-star star" th:each="num : ${#numbers.sequence(1, learning.emptyRating())}" th:if="${learning.emptyRating() > 0}"><i class="far fa-star"></i></span>
-                            (<span th:text="${learning.rating}"></span>)
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
-                            <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
-                            <div class="date-time" th:text="${learning.openLearning}"></div>
+                <a href="#" th:href="@{'/learning/' + ${learning.id}}">
+                    <div class="card mb-4 shadow-sm card-view">
+                        <img class="bd-placeholder-img card-img-top card-img" role="img" aria-label="Placeholder: Thumbnail"
+                             th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+                        <img class="banner-image card-img" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+                        <div class="card-body">
+                            <p class="card-text card-title" th:text="${learning.title}">Default Title</p>
+                            <p class="card-text card-tags">
+                                <i class="fas fa-tasks"></i>
+                                <span class="card-tag-box" th:each="tag : ${learning.tags}">
+                                    <span th:text="${tag.getTitle()}"></span>
+                                </span>
+                            </p>
+                            <span class="card-text card-learning-rating" th:text="${learning.rating}" hidden="hidden">Default Ratings hidden</span>
+                            <p class="mb-1">
+                                <span class="full-star star" th:each="num : ${#numbers.sequence(0, learning.getRating_int() - 1)}" th:if="${learning.getRating_int() > 0}"><i class="fas fa-star"></i></span><span class="half-star star" th:if="${learning.checkRating_boolean()}"><i class="fas fa-star-half-alt"></i></span><span class="empty-star star" th:each="num : ${#numbers.sequence(1, learning.emptyRating())}" th:if="${learning.emptyRating() > 0}"><i class="far fa-star"></i></span>
+                                (<span th:text="${learning.rating}"></span>)
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div th:if="${!learning.price_comma().equals('free')}"><span class="card-price" th:text="${learning.price_comma()}"></span>원</div>
+                                <div th:if="${learning.price_comma().equals('free')}"><span class="card-price"></span>무료 강의</div>
+                                <div class="date-time" th:text="${learning.openLearning}"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <!--신규 강의가 존재할 경우-->

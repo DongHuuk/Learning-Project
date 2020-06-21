@@ -3,8 +3,10 @@ package com.providelearingsite.siteproject.profile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.providelearingsite.siteproject.account.Account;
+import com.providelearingsite.siteproject.account.AccountRepository;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
+import com.providelearingsite.siteproject.learning.Learning;
 import com.providelearingsite.siteproject.learning.validator.LearningValidator;
 import com.providelearingsite.siteproject.notification.Notification;
 import com.providelearingsite.siteproject.notification.NotificationRepository;
@@ -39,11 +41,11 @@ public class ProfileController {
     @Autowired private AccountService accountService;
     @Autowired private ModelMapper modelMapper;
     @Autowired private ProfilePasswordValidator profilePasswordValidator;
-    @Autowired private LearningValidator learningValidator;
     @Autowired private TagRepository tagRepository;
     @Autowired private ObjectMapper objectMapper;
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private NotificationService notificationService;
+    @Autowired private AccountRepository accountRepository;
 
     public final static String CUSTOM_PROFILE = "profile/custom_profile";
 
@@ -176,5 +178,16 @@ public class ProfileController {
 
         attributes.addFlashAttribute("message", "알림이 삭제되었습니다.");
         return "redirect:/profile/notification";
+    }
+
+    @GetMapping("/profile/learning")
+    public String viewLearning(@CurrentAccount Account account, Model model) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+        Set<Learning> listenLearning = newAccount.getListenLearning();
+
+        model.addAttribute("account", account);
+        model.addAttribute("learningList", listenLearning);
+
+        return "profile/learning";
     }
 }

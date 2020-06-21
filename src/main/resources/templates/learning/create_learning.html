@@ -47,8 +47,8 @@
 
                                 <div class="card-body form-group mt-lg-4">
                                     <label for="price">가격</label>
-                                    <input type="text" class="form-control" id="price" required minlength="2" maxlength="20" th:field="*{price}" >
-                                    <small class="invalid-feedback">0원으로 설정하시면 무료 강의로 설정됩니다.</small>
+                                    <input type="text" class="form-control" id="price" required minlength="0" maxlength="20" th:field="*{price}" >
+                                    <small class="priceHelp">0원으로 설정하시면 무료 강의로 설정됩니다.</small>
                                 </div>
 
                                 <div class="card-body form-group mt-lg-4">

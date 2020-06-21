@@ -1,6 +1,7 @@
 package com.providelearingsite.siteproject.account;
 
 import com.providelearingsite.siteproject.config.AppProperties;
+import com.providelearingsite.siteproject.learning.Learning;
 import com.providelearingsite.siteproject.mail.EmailMessage;
 import com.providelearingsite.siteproject.mail.EmailService;
 import com.providelearingsite.siteproject.profile.form.NotificationUpdateForm;
@@ -153,5 +154,11 @@ public class AccountService implements UserDetailsService {
         Review newReview = reviewRepository.save(review);
         account.setReviews(review);
         return newReview;
+    }
+
+    public void addLearningInCart(Account newAccount, Learning learning) {
+        if (!newAccount.getCartList().contains(learning)) {
+            newAccount.getCartList().add(learning);
+        }
     }
 }

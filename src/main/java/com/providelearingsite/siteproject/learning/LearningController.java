@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -268,6 +269,7 @@ public class LearningController {
         return "redirect:/learning/" + id;
     }
 
+    //학습하기 버튼
     @GetMapping("/learning/{id}/listen")
     public String listenLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
 
@@ -335,6 +337,39 @@ public class LearningController {
         attributes.addFlashAttribute("account", newAccount);
 
         return "redirect:/learning/" + learning.getId();
+    }
+
+    @GetMapping("/learning/{learningId}/buy")
+    public String viewBuyLearning(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+        accountService.addLearningInCart(newAccount, learningRepository.findById(id).orElseThrow());
+        Set<Learning> cartList = newAccount.getCartList();
+
+        model.addAttribute("account", newAccount);
+        model.addAttribute("learningList", cartList);
+        model.addAttribute("totalPrice", cartList.stream().mapToInt(Learning::getPrice).sum());
+
+        return "shop/buy";
+    }
+
+    @GetMapping("/learning/cart")
+    public String viewCartLearning(@CurrentAccount Account account, Model model) {
+
+        
+
+        return "shop/cart";
+    }
+
+    @GetMapping("/learning/{learningId}/cart/add")
+    @ResponseBody
+    public ResponseEntity cartLearning(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+        Learning learning = learningRepository.findById(id).orElseThrow();
+
+        accountService.addLearningInCart(newAccount, learning);
+
+        //TODO navbar의 장바구니 이펙트 변화를 시키고 싶으면 여기서 EventListener 및 Interceptor 추가
+        return ResponseEntity.ok().build();
     }
 
     //TODO TestCode 지우기

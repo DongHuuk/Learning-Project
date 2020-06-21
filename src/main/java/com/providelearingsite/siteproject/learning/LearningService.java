@@ -397,6 +397,7 @@ public class LearningService {
     public Account listenLearning(Account account, Learning learning) {
         Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
 
+        //TODO 구매하기 버튼 누르면 추가되도록 수정 지금은 임시 허용
         newAccount.getListenLearning().add(learning);
 
         return newAccount;
