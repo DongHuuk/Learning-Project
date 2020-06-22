@@ -30,7 +30,7 @@
         <label class="video-title" for="movie" th:text="${learning.title} + '/' + ${now}"></label>
 
         <video class="video-body" controls width="720" height="480" id="movie" controlsList="nodownload">
-            <source th:src="${videoPath}">
+            <source th:src="${videoPath}" src="#">
         </video>
 
     </div>

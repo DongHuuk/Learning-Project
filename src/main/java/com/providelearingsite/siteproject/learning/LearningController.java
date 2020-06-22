@@ -6,6 +6,8 @@ import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountRepository;
 import com.providelearingsite.siteproject.account.AccountService;
 import com.providelearingsite.siteproject.account.CurrentAccount;
+import com.providelearingsite.siteproject.kakao.KakaoPay;
+import com.providelearingsite.siteproject.kakao.KakaoPayForm;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
 import com.providelearingsite.siteproject.learning.validator.LearningValidator;
 import com.providelearingsite.siteproject.review.Review;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class LearningController {
@@ -275,7 +278,7 @@ public class LearningController {
 
         Learning learning = learningRepository.findById(id).orElseThrow();
         Account newAccount = learningService.listenLearning(account, learning);
-        List<String> contentsTitle = learningService.getContentsTitle(learning);
+        List<String> contentsTitle = learningService.getContentsTitle(learning).stream().sorted().collect(Collectors.toList());
 
         model.addAttribute("account", newAccount);
         model.addAttribute("learning", learning);
@@ -291,7 +294,7 @@ public class LearningController {
 
         Learning learning = learningRepository.findById(id).orElseThrow();
         Account newAccount = learningService.listenLearning(account, learning);
-        List<String> contentsTitle = learningService.getContentsTitle(learning);
+        List<String> contentsTitle = learningService.getContentsTitle(learning).stream().sorted().collect(Collectors.toList());
         List<Video> videos = videoRepository.findByTitleAndLearning(title, learning);
         final String videoPath = "/video/" + account.getId() + "/" + learning.getTitle() + "/" + videos.get(0).getVideoTitle();
 
@@ -348,6 +351,7 @@ public class LearningController {
         model.addAttribute("account", newAccount);
         model.addAttribute("learningList", cartList);
         model.addAttribute("totalPrice", cartList.stream().mapToInt(Learning::getPrice).sum());
+        model.addAttribute(new KakaoPayForm());
 
         return "shop/buy";
     }

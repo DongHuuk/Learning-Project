@@ -25,7 +25,7 @@
         <div class="col-8">
             <div class="pl-5">
                 <p class="buy-title">
-                    구매하기
+                    구매완료!
                 </p>
             </div>
 
@@ -44,12 +44,6 @@
                             <p class="buy-learning-lecturer">
                                 작성자: <span th:text="${learning.lecturerName}"></span>
                             </p>
-                            <p class="buy-learning-price" th:if="${!learning.price_comma().equals('free')}">
-                                가격: <span th:text="${learning.price_comma()}"></span>원
-                            </p>
-                            <p class="buy-learning-price" th:if="${learning.price_comma().equals('free')}">
-                                가격: 무료 강의
-                            </p>
                         </div>
                     </a>
                 </div>
@@ -64,20 +58,13 @@
                 </p>
             </div>
 
-            <div class="mt-2">
-                <div class="buy-pay p-2">
-                    <p>총 갯수 : <span th:text="${learningList.size()}"></span>개</p>
-                    <p>총 가격 : <span th:text="${totalPrice}"></span>원</p>
-                </div>
-            </div>
-
             <div class="mt-2 d-flex justify-content-center">
-                <form action="#" th:action="@{/kakaoPay}"  method="post" th:object="${kakaoPayForm}">
-                    <button class="buy-btn-kakao_pay" type="submit" id="kakao-btn">
-                        <img src="/images/kakao_pay.png" alt="kakao_pay">
-                    </button>
-                    <div hidden th:field="*{learningList}"></div>
-                </form>
+                결제일시:     [[${info.approved_at}]]<br/>
+                주문번호:    [[${info.partner_order_id}]]<br/>
+                상품명:    [[${info.item_name}]]<br/>
+                상품수량:    [[${info.quantity}]]<br/>
+                결제금액:    [[${info.amount.total}]]<br/>
+                결제방법:    [[${info.payment_method_type}]]<br/>
             </div>
         </div>
         <!--가격 및 구매하기 버튼-->
@@ -94,7 +81,6 @@
             return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LL");
         })
     </script>
-
 <!--    <script type="application/javascript">-->
 <!--        $('.btn').on('click', function(){-->
 <!--            let attr = $(this).parent().attr('id');-->

@@ -61,6 +61,7 @@ public class Learning {
 
     private String comment; // 후기
     private float rating = 0;
+    private Integer totalPrice;
 
     @ManyToMany
     @JoinTable(
