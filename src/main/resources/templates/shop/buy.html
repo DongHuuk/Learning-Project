@@ -38,7 +38,9 @@
                             <img class="buy-learning-banner" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
                         </div>
                         <div class="ml-3 d-flex flex-column justify-content-between buy-learning-body">
-                            <p class="buy-learning-title">
+                            <p class="hidden-p-id" hidden th:text="${learning.id + ','}"></p>
+                            <p class="hidden-p-lecture" hidden th:text="${learning.lecturerName + ','}"></p>
+                            <p class="buy-learning-title learning-title">
                                 강의: <span th:text="${learning.title}"></span>
                             </p>
                             <p class="buy-learning-lecturer">
@@ -72,11 +74,12 @@
             </div>
 
             <div class="mt-2 d-flex justify-content-center">
-                <form action="#" th:action="@{/kakaoPay}"  method="post" th:object="${kakaoPayForm}">
+                <form class="learning-form" action="#" th:action="@{/kakaoPay}"  method="post" th:object="${kakaoPayForm}">
+                    <input type="text" class="hidden-value-id" th:field="*{id}" hidden/>
+                    <input type="text" class="hidden-value-lecture" th:field="*{lecture}" hidden/>
                     <button class="buy-btn-kakao_pay" type="submit" id="kakao-btn">
                         <img src="/images/kakao_pay.png" alt="kakao_pay">
                     </button>
-                    <div hidden th:field="*{learningList}"></div>
                 </form>
             </div>
         </div>
@@ -94,6 +97,24 @@
             return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LL");
         })
     </script>
+    <script type="application/javascript">
+
+        $('.learning-list').ready(function() {
+            let lecture = $('.hidden-p-lecture').text().toString();
+            let id = $('.hidden-p-id').text().toString();
+
+            let $id = $('.hidden-value-id');
+            let $lecture = $('.hidden-value-lecture');
+            $id.val(id)
+            $lecture.val(lecture)
+            // $hidden.text(title)
+
+            // console.log($id.val())
+            // console.log($lecture.val())
+        })
+    </script>
+
+
 
 <!--    <script type="application/javascript">-->
 <!--        $('.btn').on('click', function(){-->

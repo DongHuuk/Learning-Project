@@ -73,4 +73,12 @@ class MainControllerTest {
         System.out.println(file.getAbsolutePath());
         File newFile = new File(file.getAbsolutePath() + "/src/main/resources/static/video");
     }
+
+    @Test
+    public void testString(){
+        String[] str1 = {"흑우냥이", "흑우냥이_2", "흑우냥이", "흑우냥이"};
+
+        System.out.println(Arrays.toString(str1));
+    }
+
 }

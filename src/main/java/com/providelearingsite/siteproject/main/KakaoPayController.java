@@ -10,9 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.thymeleaf.model.IModel;
-import org.thymeleaf.model.IModelFactory;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -26,10 +28,14 @@ public class KakaoPayController {
     }
 
     @PostMapping("/kakaoPay")
-    public String kakaoPay_Post(RedirectAttributes attributes, KakaoPayForm kakaoPayForm){
+    public String kakaoPay_Post(KakaoPayForm kakaoPayForm, RedirectAttributes attributes){
         log.info("kakaoPay Post --------------");
+        log.info("====title====");
+        List<String> id_split = List.of(kakaoPayForm.getId().split(","));
+        List<String> lecture_split = List.of(kakaoPayForm.getLecture().split(","));
 
-        //TODO Form이 Set을 못받아옴 얘를 ajax로 보내던가 해야함
+        attributes.addFlashAttribute("idList", id_split);
+        attributes.addFlashAttribute("lectureList", lecture_split);
 
         return "redirect:" + kakaoPay.kakaoPayReady();
     }
