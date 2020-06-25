@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -187,6 +188,7 @@ public class ProfileController {
 
         model.addAttribute("account", account);
         model.addAttribute("learningList", listenLearning);
+        model.addAttribute("now", LocalDateTime.now().minusDays(3));
 
         return "profile/learning";
     }

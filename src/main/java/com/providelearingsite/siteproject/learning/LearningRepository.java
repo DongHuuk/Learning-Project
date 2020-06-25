@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
@@ -18,4 +19,6 @@ public interface LearningRepository extends JpaRepository<Learning, Long>, Query
     List<Learning> findTop4ByStartingLearningOrderByRatingDesc(boolean b);
 
     List<Learning> findAllByAccountOrderByCreateLearningDesc(Account account);
+
+    Learning findByIdAndLecturerName(Long id, @NotNull String lecturerName);
 }

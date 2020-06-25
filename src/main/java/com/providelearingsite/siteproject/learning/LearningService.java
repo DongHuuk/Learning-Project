@@ -6,6 +6,9 @@ import com.providelearingsite.siteproject.learning.event.LearningClosedEvent;
 import com.providelearingsite.siteproject.learning.event.LearningUpdateEvent;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
 import com.providelearingsite.siteproject.learning.event.LearningCreateEvent;
+import com.providelearingsite.siteproject.question.Question;
+import com.providelearingsite.siteproject.question.QuestionForm;
+import com.providelearingsite.siteproject.question.QuestionRepository;
 import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -45,8 +49,8 @@ public class LearningService {
     @Autowired private AccountRepository accountRepository;
     @Autowired private TagRepository tagRepository;
     @Autowired private VideoRepository videoRepository;
-    @Autowired private ModelMapper modelMapper;
     @Autowired private ApplicationEventPublisher applicationEventPublisher;
+    @Autowired private QuestionRepository questionRepository;
 
     final File absoluteFile = new File("");
     final String rootPath = absoluteFile.getAbsolutePath();
@@ -79,8 +83,9 @@ public class LearningService {
     }
 
     public void saveVideo(List<MultipartFile> videoFileList, Account account, Learning learning) throws IOException{
+        @NotNull final String title = learning.getTitle().replaceAll(" ", "_");
         final String accountPath = rootPath + "/src/main/resources/static/video/" + account.getId();
-        final String accountLearningPath = rootPath + "/src/main/resources/static/video/" + account.getId() + "/" + learning.getTitle().trim();
+        final String accountLearningPath = rootPath + "/src/main/resources/static/video/" + account.getId() + "/" + title;
         learning.setVideoCount(learning.getVideoCount() + videoFileList.size());
 
         //directory checking
@@ -408,5 +413,31 @@ public class LearningService {
         double sum = learning.getReviews().stream().mapToDouble(Review::getRating).sum();
         int ratingLength = learning.getReviews().size();
         learning.setRating((float) (sum / ratingLength));
+    }
+
+    public List<Learning> findLearningByIdAndLecture(List<String> id_split, List<String> lecture_split) {
+        List<Learning> learningList = new ArrayList<>();
+
+        for (int i = 0; i < id_split.size(); i++) {
+            learningList.add(learningRepository.findByIdAndLecturerName(Long.valueOf(id_split.get(i)), lecture_split.get(i)));
+        }
+
+        return learningList;
+    }
+
+    public Account saveQuestion(Question question, Account account, Learning learning) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+
+        question.setS_name(newAccount.getNickname());
+        question.setTime_questionTime(LocalDateTime.now());
+
+        Question newQuestion = questionRepository.save(question);
+
+        newQuestion.setAccount(account);
+        newQuestion.setLearning(learning);
+        account.getQuestions().add(newQuestion);
+        learning.getQuestions().add(newQuestion);
+
+        return newAccount;
     }
 }

@@ -3,6 +3,7 @@ package com.providelearingsite.siteproject.account;
 import com.providelearingsite.siteproject.account.form.AccountForm;
 import com.providelearingsite.siteproject.account.form.EmailToken;
 import com.providelearingsite.siteproject.account.validator.AccountValidator;
+import com.providelearingsite.siteproject.learning.Learning;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Request;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.http.HttpRequest;
+import java.util.Set;
 
 @Controller
 @Slf4j
@@ -27,6 +29,7 @@ public class AccountController {
     @Autowired private AccountValidator accountValidator;
     @Autowired private AccountService accountService;
     @Autowired private ModelMapper modelMapper;
+    @Autowired private AccountRepository accountRepository;
 
     @InitBinder("accountForm")
     private void accoutnFormValidator(WebDataBinder webDataBinder){
@@ -89,4 +92,17 @@ public class AccountController {
         model.addAttribute(new EmailToken());
         return "navbar/token_validation";
     }
+
+    @GetMapping("/learning/cart")
+    public String viewCartLearning(@CurrentAccount Account account, Model model) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+        Set<Learning> cartList = newAccount.getCartList();
+
+        model.addAttribute("account", newAccount);
+        model.addAttribute("cartList", cartList);
+        model.addAttribute("totalPrice", cartList.stream().mapToInt(Learning::getPrice).sum());
+
+        return "profile/cart";
+    }
+
 }

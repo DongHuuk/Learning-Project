@@ -2,6 +2,7 @@ package com.providelearingsite.siteproject.kakao;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /*
@@ -31,6 +32,6 @@ public class KakaoPayApprovalVO {
     private CardVO card_info;
     private String item_name, item_code, payload;
     private Integer quantity, tax_free_amount, vat_amount;
-    private Date created_at, approved_at;
+    private LocalDateTime created_at, approved_at;
 
 }

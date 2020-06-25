@@ -1,0 +1,51 @@
+p{
+    margin-bottom: 3px;
+}
+.buy-btn-kakao_pay {
+    all: unset;
+}
+
+.buy-title{
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.buy-learning-banner{
+    width: 120px;
+    height: 120px;
+}
+
+.buy-learning-lecturer,
+.buy-learning-title,
+.buy-learning-price,
+.buy-pay{
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.buy-learning-link,
+.buy-learning-body{
+    width: 100%;
+}
+
+.buy-learning-lecturer,
+.buy-learning-title,
+.buy-learning-price{
+    display: inline-block;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.learning-list,
+.buy-pay{
+    border: 1.5px solid #d9d9d9;
+}
+.buy-learning-banner{
+    border-radius: 15%;
+}
+.buy-btn,
+.buy-btn-delete{
+    width: 100%;
+}

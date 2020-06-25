@@ -54,6 +54,8 @@ public class Learning {
     @Nullable
     private LocalDateTime updateLearning = null;
 
+    private LocalDateTime buyLearning;
+
     private boolean startingLearning = false;
     private boolean closedLearning = true;
 
@@ -82,7 +84,7 @@ public class Learning {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "learning")
+    @OneToMany(mappedBy = "learning", fetch = FetchType.EAGER)
     private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "learning")

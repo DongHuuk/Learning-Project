@@ -22,7 +22,10 @@
             </li>
         </ul>
         <div class="d-flex justify-content-center mt-4">
-            <button class="btn btn-success pl-4 pr-4 pt-2 pb-2" type="button" onclick="showPopup()">강의 평가 작성하기</button>
+            <button class="btn btn-success pl-4 pr-4 pt-2 pb-2" type="button" onclick="showPopupQuestion()">강의 질문하기</button>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-success pl-4 pr-4 pt-2 pb-2" type="button" onclick="showPopupReview()">강의 평가 작성하기</button>
         </div>
     </div>
 
@@ -46,10 +49,16 @@
         $('.video-body').bind('contextmenu',function() { return false; });
     });
     
-    function showPopup() {
+    function showPopupReview() {
         var popupX = (window.screen.width / 2) - (400 / 2);
         var popupY= (window.screen.height /2) - (500 / 2);
         window.open("/review/" + [[${learning.id}]], "review", `width=1100, height=700, left=${popupX},screenX=${popupX}, top=${popupX}, screenY=${popupY} `);
+    }
+
+    function showPopupQuestion() {
+        var popupX = (window.screen.width / 2) - (400 / 2);
+        var popupY= (window.screen.height /2) - (500 / 2);
+        window.open("/question/" + [[${learning.id}]], "question", `width=1100, height=700, left=${popupX},screenX=${popupX}, top=${popupX}, screenY=${popupY} `);
     }
 </script>
 </body>

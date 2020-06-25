@@ -16,6 +16,7 @@ public class Question {
     @Id @Column(name = "question_id")
     @GeneratedValue
     private Long id;
+    private String s_name;
     private String s_title;
     @Lob
     private String s_description;

@@ -161,4 +161,30 @@ public class AccountService implements UserDetailsService {
             newAccount.getCartList().add(learning);
         }
     }
+
+    public Account setListenLearningAndRemoveCartList(Account account, List<Learning> learningList) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+
+        for (Learning learning :
+                learningList) {
+            newAccount.getListenLearning().add(learning);
+            learning.getAccounts().add(account);
+            learning.setBuyLearning(LocalDateTime.now());
+            newAccount.getCartList().remove(learning);
+        }
+
+        return newAccount;
+    }
+
+    public Account removeListenLearning(Account account, List<Learning> learningList) {
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+
+        for (Learning learning :
+                learningList) {
+            newAccount.getListenLearning().remove(learning);
+            learning.getAccounts().remove(newAccount);
+        }
+
+        return newAccount;
+    }
 }

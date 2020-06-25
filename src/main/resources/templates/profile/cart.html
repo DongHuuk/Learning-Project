@@ -18,12 +18,12 @@
         <div class="col-8">
             <div class="pl-5">
                 <p class="buy-title">
-                    구매하기
+                    장바구니
                 </p>
             </div>
 
             <div class="pl-5">
-                <div class="mt-2 p-2 learning-list d-flex" th:each="learning : ${learningList}">
+                <div class="mt-2 p-2 learning-list d-flex" th:each="learning : ${cartList}">
                     <a class="d-flex buy-learning-link" href="#" th:href="@{'/learning/' + ${learning.id}}">
                         <div>
                             <img class="buy-learning-banner" th:src="|data:image/*;base64,${learning.bannerBytes}|"
@@ -55,29 +55,24 @@
         <div class="col-4">
             <div>
                 <p class="buy-title">
-                    결제
+                    총 가격
                 </p>
             </div>
 
             <div class="mt-2">
                 <div class="buy-pay p-2">
-                    <p>총 갯수 : <span th:text="${learningList.size()}"></span>개</p>
+                    <p>총 갯수 : <span th:text="${cartList.size()}"></span>개</p>
                     <p>총 가격 : <span th:text="${totalPrice}"></span>원</p>
                 </div>
             </div>
 
             <div class="mt-2 d-flex justify-content-center">
-                <form class="learning-form" action="#" th:action="@{/kakaoPay}"  method="post" th:object="${kakaoPayForm}">
-                    <input type="text" class="hidden-value-id" th:field="*{id}" hidden/>
-                    <input type="text" class="hidden-value-lecture" th:field="*{lecture}" hidden/>
-                    <button class="buy-btn-kakao_pay" type="submit" id="kakao-btn">
-                        <img src="/images/kakao_pay.png" alt="kakao_pay">
-                    </button>
+                <form class="learning-form" action="#" th:action="@{/learning/buy}"  method="get">
+                    <button class="btn" type="submit">구매하기</button>
                 </form>
             </div>
         </div>
         <!--가격 및 구매하기 버튼-->
-
     </main>
 
 

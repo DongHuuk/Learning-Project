@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/question.css"/>
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
+</head>
+<body class="pl-4 pt-3">
+    <form name="popupForm" class="needs-validation form-group" th:action="@{'/question/' + ${learning.id}}"
+          th:object="${questionForm}" method="post">
+        <div>
+            <p class="review-title">
+                '<span th:text="${learning.title}"></span>' 질문
+            </p>
+        </div>
+
+        <div class="card-body form-group card-title">
+            <label for="question-title">제목</label>
+            <input type="text" class="form-control-custom form-control" id="question-title" required minlength="2" maxlength="50" th:field="*{s_title}">
+            <small class="invalid-feedback">닉네임을 다시 입력해주세요</small>
+            <small class="form-text text-danger" th:if="${#fields.hasErrors('s_title')}" th:errors="*{s_title}">nickname duplication Exception</small>
+        </div>
+
+        <div>
+            <div class="card-body form-group mt-lg-4">
+                <label for="summernote">질문 내용</label>
+                <textarea id="summernote" class="summernote" type="textarea" required th:field="*{s_description}"> </textarea>
+            </div>
+        </div>
+        <button type="button" onclick="selfCloseSubmit()" class="btn btn-success">제출하기!</button>
+    </form>
+
+    <!--description summernote-->
+    <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+    <script type="application/javascript">
+        $("#summernote").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
+            placeholder: '질문에 대한 내용을 적어주세요!',
+            tabSize: 2,
+            lang: "ko-KR",
+            height: 100,
+            minHeight: 200,
+            maxHeight: 250,
+            width: 800,
+            maxWidth: 800,
+            focus: true
+        });
+    </script>
+    <script>
+        function selfCloseSubmit(){
+            document.popupForm.target = "listenPage";
+            document.popupForm.submit();
+            self.close();
+        }
+
+    </script>
+    <div th:replace="fragment.html::form-validation"></div>
+</body>
+</html>

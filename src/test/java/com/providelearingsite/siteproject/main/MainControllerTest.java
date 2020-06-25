@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@SpringBootTest
+@WebMvcTest
 @AutoConfigureMockMvc
 class MainControllerTest {
 
@@ -76,9 +78,8 @@ class MainControllerTest {
 
     @Test
     public void testString(){
-        String[] str1 = {"흑우냥이", "흑우냥이_2", "흑우냥이", "흑우냥이"};
-
-        System.out.println(Arrays.toString(str1));
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(4);
+        System.out.println(dateTime);
     }
 
 }

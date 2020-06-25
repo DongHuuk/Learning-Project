@@ -9,6 +9,8 @@ import com.providelearingsite.siteproject.account.CurrentAccount;
 import com.providelearingsite.siteproject.kakao.KakaoPayForm;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
 import com.providelearingsite.siteproject.learning.validator.LearningValidator;
+import com.providelearingsite.siteproject.question.Question;
+import com.providelearingsite.siteproject.question.QuestionForm;
 import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.review.ReviewForm;
 import com.providelearingsite.siteproject.tag.Tag;
@@ -90,6 +92,7 @@ public class LearningController {
 
         model.addAttribute("account", newAccount);
         model.addAttribute("learningList", learningList);
+        
         return "learning/learning_list";
     }
 
@@ -213,6 +216,7 @@ public class LearningController {
         model.addAttribute("canOpenTimer", learning.getOpenLearning() == null || learning.getOpenLearning().isBefore(LocalDateTime.now().minusMinutes(30)));
         model.addAttribute("contentsTitle", contentsTitle);
         model.addAttribute("reviews", learning.getReviews());
+        model.addAttribute("questions", learning.getQuestions());
 
         return "learning/main_learning";
     }
@@ -283,6 +287,8 @@ public class LearningController {
         model.addAttribute("contentsList", contentsTitle);
         model.addAttribute("now", contentsTitle.get(0));
 
+        //TODO 영상 파일이 없을경우 에러페이지 발생!
+
         return "learning/listen_learning";
     }
 
@@ -308,6 +314,28 @@ public class LearningController {
         model.addAttribute("videoPath", videoPath);
 
         return "learning/listen_learning";
+    }
+
+    @GetMapping("/question/{id}")
+    public String showQuestionPopup(@CurrentAccount Account account, Model model, @PathVariable Long id){
+        Learning learning = learningRepository.findById(id).orElseThrow();
+
+        model.addAttribute("learning", learning);
+        model.addAttribute("account", account);
+        model.addAttribute(new QuestionForm());
+
+        return "question";
+    }
+
+    @PostMapping("/question/{id}")
+    public String saveQuestionPopup(@CurrentAccount Account account, RedirectAttributes attributes, @PathVariable Long id, QuestionForm questionForm){
+        Learning learning = learningRepository.findById(id).orElseThrow();
+
+        Account newAccount = learningService.saveQuestion(modelMapper.map(questionForm, Question.class), account, learning);
+
+        attributes.addFlashAttribute("account", newAccount);
+
+        return "redirect:/learning/" + learning.getId();
     }
 
     @GetMapping("/review/{id}")
@@ -354,12 +382,16 @@ public class LearningController {
         return "shop/buy";
     }
 
-    @GetMapping("/learning/cart")
-    public String viewCartLearning(@CurrentAccount Account account, Model model) {
+    @GetMapping("/learning/buy")
+    public String viewBuyCartList(@CurrentAccount Account account, Model model) {
+        Set<Learning> cartList = accountRepository.findById(account.getId()).orElseThrow().getCartList();
 
-        
+        model.addAttribute("account", account);
+        model.addAttribute("learningList", cartList);
+        model.addAttribute("totalPrice", cartList.stream().mapToInt(Learning::getPrice).sum());
+        model.addAttribute(new KakaoPayForm());
 
-        return "shop/cart";
+        return "shop/buy";
     }
 
     @GetMapping("/learning/{learningId}/cart/add")
@@ -370,7 +402,6 @@ public class LearningController {
 
         accountService.addLearningInCart(newAccount, learning);
 
-        //TODO navbar의 장바구니 이펙트 변화를 시키고 싶으면 여기서 EventListener 및 Interceptor 추가
         return ResponseEntity.ok().build();
     }
 

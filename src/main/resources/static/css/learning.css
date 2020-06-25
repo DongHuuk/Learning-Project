@@ -1,6 +1,9 @@
 li{
     all:unset;
 }
+.card-title{
+    margin-bottom: 6px;
+}
 .upload-list{
     width: 750px;
     padding-left: 0;
@@ -20,4 +23,21 @@ li{
 }
 .input-tagify-lengh{
     max-width: 60%;
+}
+.card-view{
+    width: 280px;
+    height: 315px;
+    background-color: whitesmoke;
+}
+.card-img{
+    position: relative;
+    max-width: 100%;
+    height: 192px;
+}
+.roof-start{
+    padding-right: 0px;
+}
+.card-title-non{
+    font-weight: 600;
+    font-size: 1.25rem;
 }

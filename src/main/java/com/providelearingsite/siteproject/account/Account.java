@@ -61,7 +61,7 @@ public class Account {
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Learning> learnings = new HashSet<>();
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "account")
