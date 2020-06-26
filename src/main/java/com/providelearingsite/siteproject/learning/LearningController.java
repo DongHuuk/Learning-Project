@@ -33,6 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -403,6 +404,25 @@ public class LearningController {
         accountService.addLearningInCart(newAccount, learning);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/learning/question/{learningId}")
+    public String viewLearningQuestion(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id){
+        Learning learning = learningRepository.findById(id).orElseThrow();
+        List<String> contentsTitle = learningService.getContentsTitle(learning);
+
+        model.addAttribute(account);
+        model.addAttribute("countVideo", learning.getVideoCount());
+        model.addAttribute("learning", learning);
+        model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
+        model.addAttribute("ratings", learning.getRating_int());
+        model.addAttribute("halfrating", learning.checkRating_boolean());
+        model.addAttribute("rating", learning.emptyRating());
+        model.addAttribute("learningRating", learning.getRating());
+        model.addAttribute("questions", new ArrayList<>(learning.getQuestions()));
+        model.addAttribute("idList", learning.getQuestions().stream().map(Question::getId).collect(Collectors.toList()));
+
+        return "learning/question";
     }
 
     //TODO TestCode 지우기

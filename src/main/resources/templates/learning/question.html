@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/css/main-learning.css">
+    <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
+    <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
+</head>
+
+<body class="container">
+<div th:replace="fragment.html :: navbar"></div>
+    <div class="jumbotron p-4 text-white rounded bg-dark mt-md-1 d-flex">
+        <div class="px-0 d-flex pr-lg-4 pl-lg-4 col-md-9 inner-box">
+            <img class="banner-image" th:src="|data:image/*;base64,${learning.bannerBytes}|" th:if="${learning.bannerBytes} != null"/>
+            <img class="banner-image" src="/images/rogo.png" th:if="${learning.bannerBytes} == null"/>
+            <div class="ml-md-5 banner-box">
+                <p class="font-italic banner-title" th:text="${learning.title}">default Title</p>
+                <div class="d-flex rating-star">
+                    <span th:each="num : ${#numbers.sequence(1, ratings)}" th:if="${ratings} != 0"><i class="fas fa-star"></i></span>
+                    <span th:if="${halfrating}"><i class="fas fa-star-half-alt"></i></span>
+                    <span th:each="num : ${#numbers.sequence(1, rating)}"><i class="far fa-star"></i></span>
+                    (<span th:text="${learningRating}"></span>)
+                </div>
+                <p class="lead banner-tags mt-md-2 mb-md-3" th:text="${#strings.listJoin(tags, ', ')}">default tags</p>
+                <p class="lead banner-count mt-md-4 mb-md-1">
+                    총 강의 수: <span th:text="${countVideo}">default count</span>
+<!--                    | 시간: <span th:text="${countVideoTime}">default time</span>-->
+                <!--TODO 영상의 시간값을 구해서 대입-->
+                </p>
+                <p class="lead">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="35"
+                             aria-valuemin="0" aria-valuemax="100">default 100%</div>
+                    </div>
+                <!--TODO 현재 진행률을 구해서 대입-->
+                </p>
+            </div>
+        </div>
+    </div>
+    <!--banner-->
+
+    <div class="col-md-10 ml-md-5">
+        <p class="learning-update-info-title">질문 내용</p>
+
+        <div id="parent-div">
+            <div class="mt-2 main-learning-question" th:each="question: ${questions}">
+                <div class="d-flex flex-column justify-content-between main-learning-question-body">
+                    <p class="main-learning-question-name">
+                        질의자: <span th:text="${question.s_name}"></span>
+                    </p>
+                    <p class="main-learning-question-title">
+                        제목: <span th:text="${question.s_title}"></span>
+                    </p>
+                    <p class="main-learning-question-description">
+                        <div th:id="${question.id + '-hidden-div'}" hidden th:text="${question.s_description}"></div>
+                        질문 내용: <span class="" th:id="${question.id + '-textValue'}"></span>
+                    </p>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        답변
+                    </button>
+                </div>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <label for="summernote">답변</label>
+                        <textarea id="summernote" class="summernote" type="textarea" required th:text="${question.answer}"> </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--강의에 대한 질문글-->
+
+    <div style="height: 500px"></div>
+    <div th:replace="fragment.html :: footer"></div>
+    <script type="application/javascript">
+        moment.locale('ko');
+        $(".date-time").text(function (index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LLL");
+        })
+    </script>
+    <script type="application/javascript">
+
+        $('.main-learning-question-description').ready(decodeHTML())
+
+        function decodeHTML(){
+            [[${idList}]].forEach(function(id){
+                const hiddenDiv = id + '-hidden-div';
+                const spanValue = id + '-textValue';
+                console.log(hiddenDiv)
+                console.log(spanValue)
+                var value = document.getElementById(hiddenDiv).textContent;
+                value = $.parseHTML(value);
+                $('#'+spanValue).append(value)
+            })
+        }
+    </script>
+</body>
+
+</html>

@@ -113,3 +113,6 @@ p{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.main-learning-review-image{
+    padding-left: 0;
+}

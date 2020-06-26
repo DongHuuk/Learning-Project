@@ -20,6 +20,8 @@ public class Question {
     private String s_title;
     @Lob
     private String s_description;
+    @Lob
+    private String answer;
     private LocalDateTime time_questionTime;
     private LocalDateTime time_answerTime;
 
