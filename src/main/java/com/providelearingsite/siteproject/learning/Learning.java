@@ -81,10 +81,10 @@ public class Learning {
     @OneToMany(mappedBy = "learning", fetch = FetchType.LAZY)
     private Set<Video> videos = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "learning", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "learning")
     private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "learning")

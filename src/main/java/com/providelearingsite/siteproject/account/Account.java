@@ -28,8 +28,6 @@ public class Account {
     private String email;
 
     @Lob
-    private String profileImage;
-    @Lob
     private String description;
 
     private LocalDateTime createAccount;
@@ -58,10 +56,10 @@ public class Account {
     @ManyToMany(mappedBy = "accounts")
     private Set<Learning> listenLearning = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "account")
     private Set<Learning> learnings = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "account")
     private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "account")

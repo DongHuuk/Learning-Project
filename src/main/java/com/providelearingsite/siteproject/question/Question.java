@@ -21,11 +21,11 @@ public class Question {
     @Lob
     private String s_description;
     @Lob
-    private String answer;
+    private String s_answer;
     private LocalDateTime time_questionTime;
     private LocalDateTime time_answerTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "learning_id")
     private Learning learning;
 

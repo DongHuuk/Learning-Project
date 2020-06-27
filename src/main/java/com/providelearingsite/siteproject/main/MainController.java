@@ -1,6 +1,7 @@
 package com.providelearingsite.siteproject.main;
 
 import com.providelearingsite.siteproject.account.Account;
+import com.providelearingsite.siteproject.account.AccountRepository;
 import com.providelearingsite.siteproject.account.CurrentAccount;
 import com.providelearingsite.siteproject.learning.Learning;
 import com.providelearingsite.siteproject.learning.LearningRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -25,10 +27,12 @@ public class MainController {
     private MainService mainService;
     @Autowired
     private LearningRepository learningRepository;
+    @Autowired private AccountRepository accountRepository;
 
     @GetMapping("/")
     public String indexGet(@CurrentAccount Account account, Model model) {
-        List<Learning> learningList = null;
+        List<Learning> learningList = new ArrayList<>();
+
         if (account != null) {
             learningList = learningRepository.findTop4ByTagsOrderByRatingDesc(account.getTags());
             model.addAttribute(account);

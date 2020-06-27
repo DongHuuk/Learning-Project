@@ -6,13 +6,15 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <div th:replace="fragment.html :: links"></div>
-    <link rel="stylesheet" href="/css/main-learning.css">
+    <link rel="stylesheet" href="/css/learning-question.css">
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote.min.css"/>
     <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
     <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
 </head>
 
 <body class="container">
+
 <div th:replace="fragment.html :: navbar"></div>
     <div class="jumbotron p-4 text-white rounded bg-dark mt-md-1 d-flex">
         <div class="px-0 d-flex pr-lg-4 pl-lg-4 col-md-9 inner-box">
@@ -43,12 +45,17 @@
         </div>
     </div>
     <!--banner-->
-
+    <div class="alert alert-danger alert-dismissible fade show alert-custom col-lg-6 mb-md-4" role="alert" th:if="${message}">
+        <p>잘못된요청입니다..</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     <div class="col-md-10 ml-md-5">
         <p class="learning-update-info-title">질문 내용</p>
 
         <div id="parent-div">
-            <div class="mt-2 main-learning-question" th:each="question: ${questions}">
+            <div class="mt-2 pl-2 main-learning-question" th:each="question: ${questions}">
                 <div class="d-flex flex-column justify-content-between main-learning-question-body">
                     <p class="main-learning-question-name">
                         질의자: <span th:text="${question.s_name}"></span>
@@ -60,15 +67,53 @@
                         <div th:id="${question.id + '-hidden-div'}" hidden th:text="${question.s_description}"></div>
                         질문 내용: <span class="" th:id="${question.id + '-textValue'}"></span>
                     </p>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        답변
-                    </button>
-                </div>
-                <div class="collapse" id="collapseExample">
-                    <div class="card card-body">
-                        <label for="summernote">답변</label>
-                        <textarea id="summernote" class="summernote" type="textarea" required th:text="${question.answer}"> </textarea>
+
+                    <div class="d-flex justify-content-end">
+                        <form class="mr-2 mb-2" th:if="${question.account == account}" th:action="@{'/learning/question/' + ${question.id} + '/delete'}" method="get">
+                            <button class="btn btn-danger">삭제</button>
+                        </form>
+                        <button class="btn btn-primary question-btn mb-2 mr-2" type="button" data-toggle="collapse" th:data-target="${'#answer' + question.id}"
+                                aria-expanded="false" th:aria-controls="${'answer' + question.id}">
+                            답변
+                        </button>
+                        <button class="btn btn-primary question-btn mb-2 mr-2" type="button" data-toggle="collapse" th:data-target="${'#updateAnswer' + question.id}"
+                                aria-expanded="false" th:aria-controls="${'updateAnswer' + question.id}" th:if="${learning.account == account}">
+                            답변 수정
+                        </button>
+                        <button class="btn btn-primary question-btn mb-2" type="button" data-toggle="collapse" th:data-target="${'#createAnswer' + question.id}"
+                                aria-expanded="false" th:aria-controls="${'createAnswer' + question.id}" th:if="${learning.account == account}">
+                            답변하기
+                        </button>
                     </div>
+
+                </div>
+
+                <div class="collapse mr-2 mb-2" th:id="${'answer' + question.id}">
+                    <div class="card card-body">
+                        <label th:for="${question.id + '-textValue-answer'}">답변</label>
+                        <div hidden th:id="${question.id + '-hidden-div-answer'}" th:text="${question.s_answer}"></div>
+                        <div th:id="${question.id + '-textValue-answer'}" type="textarea" required></div>
+                    </div>
+                </div>
+
+                <div class="collapse mr-2 mb-2" th:id="${'updateAnswer' + question.id}">
+                    <form class="card card-body" action="#" th:action="@{'/learning/question/' + ${question.id} + '/update'}" method="post" th:object="${questionForm}">
+                        <label th:for="${question.id + '-textValue-updateAnswer'}">답변 수정</label>
+                        <div hidden th:id="${question.id + '-hidden-div-updateAnswer'}" th:text="${question.s_answer}"></div>
+                        <textarea type="textarea" class="summernote" th:id="${question.id + '-textValue-updateAnswer'}" th:field="*{s_answer}" required></textarea>
+                        <div class="d-flex justify-content-end mt-2">
+                            <button class="btn btn-success mr-2 inner-btn" type="submit">수정하기</button>
+                            <button class="btn btn-success inner-btn" type="reset">취소</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="collapse mr-2 mb-2" th:id="${'createAnswer' + question.id}">
+                    <form class="card card-body" action="#" th:action="@{'/learning/question/' + ${question.id} + '/create'}" method="post" th:object="${questionForm}">
+                        <label th:for="${question.id + '-textValue-createAnswer'}">답변하기</label>
+                        <textarea type="textarea" class="summernote" th:id="${question.id + '-textValue-createAnswer'}" th:field="*{s_answer}" required></textarea>
+                        <button class="btn btn-success inner-btn" type="submit">등록하기</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -83,21 +128,46 @@
             return moment(dateTime, "YYYY-MM-DD'T'hh:mm").format("LLL");
         })
     </script>
-    <script type="application/javascript">
 
+    <script type="application/javascript">
         $('.main-learning-question-description').ready(decodeHTML())
 
         function decodeHTML(){
             [[${idList}]].forEach(function(id){
                 const hiddenDiv = id + '-hidden-div';
+                const hiddenAnswer = id + '-hidden-div-answer';
+                const hiddenAnswerUpdate = id + '-hidden-div-updateAnswer';
                 const spanValue = id + '-textValue';
-                console.log(hiddenDiv)
-                console.log(spanValue)
+                const answerValue = id + '-textValue-answer';
+                const answerValueUpdate = id + '-textValue-updateAnswer';
+
                 var value = document.getElementById(hiddenDiv).textContent;
                 value = $.parseHTML(value);
-                $('#'+spanValue).append(value)
+                $('#' + spanValue).append(value);
+
+                var answer = document.getElementById(hiddenAnswer).textContent;
+                answer = $.parseHTML(answer);
+                $('#' + answerValue).append(answer);
+
+                var answerUpdate = document.getElementById(hiddenAnswerUpdate).textContent;
+                answerUpdate = $.parseHTML(answerUpdate);
+                $('#' + answerValueUpdate).append(answerUpdate);
             })
         }
+    </script>
+    <!--답변 달기 & 수정 summernote-->
+    <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+    <script type="application/javascript">
+        $(".summernote").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
+            placeholder: '답변 입력창!',
+            tabSize: 2,
+            lang: "ko-KR",
+            height: 220,
+            minHeight: 220,
+            maxHeight: 220,
+            focus: true
+        });
     </script>
 </body>
 

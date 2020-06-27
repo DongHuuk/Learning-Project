@@ -6,4 +6,5 @@ import lombok.Data;
 public class QuestionForm {
     private String s_title;
     private String s_description;
+    private String s_answer;
 }

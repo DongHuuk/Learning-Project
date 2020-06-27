@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -27,11 +26,9 @@
                     <div class="row card-body">
                         <div class="card-body-image">
                             <a href="#" th:href="@{'/profile/' + ${account.id} + '/custom'}" class="nav-link">
-                                <svg th:data-jdenticon-value="${#authentication.name}" th:if="${#strings.isEmpty(account?.profileImage)}"
+                                <svg th:data-jdenticon-value="${#authentication.name}"
                                      width="100" height="100" class="rounded border bg-light" preserveAspectRatio="xMidYMid slice"
                                      focusable="false" role="img" aria-label="account_profile"></svg>
-                                <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
-                                     width="100" height="100" class="rounded border"/>
                             </a>
                         </div>
                         <div class="card-body card-body-profile-inner">

@@ -1,5 +1,6 @@
 package com.providelearingsite.siteproject.learning;
 
+import com.providelearingsite.siteproject.tag.QTag;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
@@ -85,6 +86,7 @@ public class LearningRepositoryExtensionImpl extends QuerydslRepositorySupport i
             distinct = from(learning).where(learning.startingLearning.isTrue()
                     .and(learning.closedLearning.isFalse())
                     .and(LearningPredicates.findTop4ByTags(tags)))
+                    .leftJoin(learning.tags, QTag.tag).fetchJoin()
                     .limit(4)
                     .distinct();
         }

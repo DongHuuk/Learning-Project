@@ -11,6 +11,8 @@ import com.providelearingsite.siteproject.learning.form.LearningForm;
 import com.providelearingsite.siteproject.learning.validator.LearningValidator;
 import com.providelearingsite.siteproject.question.Question;
 import com.providelearingsite.siteproject.question.QuestionForm;
+import com.providelearingsite.siteproject.question.QuestionRepository;
+import com.providelearingsite.siteproject.question.QuestionService;
 import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.review.ReviewForm;
 import com.providelearingsite.siteproject.tag.Tag;
@@ -53,6 +55,8 @@ public class LearningController {
     @Autowired private ModelMapper modelMapper;
     @Autowired private VideoRepository videoRepository;
     @Autowired private AccountService accountService;
+    @Autowired private QuestionService questionService;
+    @Autowired private QuestionRepository questionRepository;
 
     @InitBinder("learningForm")
     private void initVideoForm(WebDataBinder webDataBinder) {
@@ -409,9 +413,10 @@ public class LearningController {
     @GetMapping("/learning/question/{learningId}")
     public String viewLearningQuestion(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id){
         Learning learning = learningRepository.findById(id).orElseThrow();
-        List<String> contentsTitle = learningService.getContentsTitle(learning);
+        ArrayList<Question> questions = new ArrayList<>(learning.getQuestions());
 
         model.addAttribute(account);
+        model.addAttribute(new QuestionForm());
         model.addAttribute("countVideo", learning.getVideoCount());
         model.addAttribute("learning", learning);
         model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
@@ -419,10 +424,49 @@ public class LearningController {
         model.addAttribute("halfrating", learning.checkRating_boolean());
         model.addAttribute("rating", learning.emptyRating());
         model.addAttribute("learningRating", learning.getRating());
-        model.addAttribute("questions", new ArrayList<>(learning.getQuestions()));
-        model.addAttribute("idList", learning.getQuestions().stream().map(Question::getId).collect(Collectors.toList()));
+        model.addAttribute("questions", questions);
+        model.addAttribute("idList", questions.stream().map(Question::getId).collect(Collectors.toList()));
 
         return "learning/question";
+    }
+
+    @PostMapping("/learning/question/{questionId}/update")
+    public String updateQuestionAnswer(@CurrentAccount Account account, RedirectAttributes attributes,
+                                 @PathVariable("questionId") Long id ,QuestionForm questionForm) {
+
+        Question question = questionService.updateQuestion(questionForm, id);
+        attributes.addFlashAttribute("account", account);
+        Learning learning = question.getLearning();
+
+        return "redirect:/learning/question/" + learning.getId();
+    }
+
+    @PostMapping("/learning/question/{questionId}/create")
+    public String createQuestionAnswer(@CurrentAccount Account account, RedirectAttributes attributes,
+                                 @PathVariable("questionId") Long id ,QuestionForm questionForm) {
+
+        Question question = questionService.updateQuestion(questionForm, id);
+        attributes.addFlashAttribute("account", account);
+        Learning learning = question.getLearning();
+
+        return "redirect:/learning/question/" + learning.getId();
+    }
+
+    @GetMapping("/learning/question/{questionId}/delete")
+    public String deleteQuestionAnswer(@CurrentAccount Account account, RedirectAttributes attributes,
+                                       @PathVariable("questionId") Long id) {
+        Question question = questionRepository.findById(id).orElseThrow();
+
+        if (!question.getAccount().getId().equals(account.getId())) {
+            attributes.addFlashAttribute("message", "잘못된 요청입니다");
+
+            return "redirect:/learning/question/" + question.getLearning().getId();
+        }
+
+        questionService.deleteQuestion(question);
+        attributes.addFlashAttribute("account", account);
+
+        return "redirect:/learning/question/" + question.getLearning().getId();
     }
 
     //TODO TestCode 지우기
