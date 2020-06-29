@@ -44,11 +44,21 @@ a:hover{
 .card-body-profile-inner-name{
     margin-top: 7px;
     font-size: 18px;
+    max-width: 950%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
 }
 
 .card-body-profile-inner > p{
     margin-left: 16px;
     margin-bottom: 9px;
+    max-width: 95%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
 }
 
 .card-body-learning-inner{
@@ -88,4 +98,14 @@ a:hover{
 
 .list-daytime{
     margin-right: 5px !important;
+}
+
+.profile-listenLearning-non{
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.tagFont{
+    font-size: 1.1rem;
+    font-weight: 500;
 }

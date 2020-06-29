@@ -140,8 +140,8 @@ public class AccountService implements UserDetailsService {
     }
 
     public Set<Tag> getTags(Account account) {
-        Optional<Account> byId = accountRepository.findById(account.getId());
-        return byId.orElseThrow().getTags();
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+        return newAccount.getTags();
     }
 
     public void deleteTag(Account account, Tag tag) {

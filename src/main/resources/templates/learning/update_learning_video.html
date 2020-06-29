@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="fragment.html :: links"></div>
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
+    <link rel="stylesheet" href="/css/profile-bar.css"/>
+    <link rel="stylesheet" href="/css/profile-settings.css"/>
+    <link rel="stylesheet" href="/css/create-learning.css"/>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body class="container">
+    <div th:replace="fragment.html :: navbar"></div>
+
+    <div class="d-flex">
+        <div th:replace="fragment.html :: profile-bar"></div>
+
+        <div class="col-md-10 mt-md-5">
+            <div class="col alert alert-info alert-dismissible fade show mt-3 alert-custom message-content" role="alert" th:if="${message}">
+                <p th:text="${message}">flush message</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <div style="opacity: 0.7; font-size: 13px">업로더/강의 편집/비디오 삭제</div>
+                <span style="font-size: 17px; font-weight: bold">업로더/강의 편집/비디오 삭제</span>
+            </div>
+
+            <div class="col d-flex justify-content-start">
+                <div class="tab-content d-flex justify-content-start">
+                    <div class="profile-body tab-pane active profile-content-body" id="videos" role="tabpanel">
+                        <div class="align-items-center profile-content ">
+                            <div class="mb-4" th:each="video : ${videoList}">
+                                <p class="video-p">영상 제목: <span th:text="${video.videoTitle}"></span></p>
+                                <p class="video-p">영상 크기: <span th:text="${video.videoSize}"></span></p>
+                                <form action="#" th:action="@{'/profile/video/'+ ${learning.id} +'/remove/' + ${video.id}}" method="post">
+                                    <button class="btn btn-danger video-btn" type="submit">삭제</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--profile main data - body-->
+            </div>
+            <!--profile video and banner data-->
+        </div>
+        <!--profile body-->
+    </div>
+    <!--page body-->
+
+    <div th:replace="fragment.html :: footer"></div>
+    <script th:replace="fragment.html :: csrf-code"></script>
+
+</body>
+
+</html>

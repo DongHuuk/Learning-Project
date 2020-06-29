@@ -46,10 +46,8 @@
                     <div class="profile-body tab-pane active profile-content-body" id="profile" role="tabpanel">
                         <div class="d-flex justify-content-center">
                             <div id="current-profile-image" class="mt-3">
-                                <svg th:data-jdenticon-value="${#authentication.name}" th:if="${#strings.isEmpty(account?.profileImage)}"
+                                <svg th:data-jdenticon-value="${#authentication.name}"
                                      width="200" height="200" class="rounded border bg-light"></svg>
-                                <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
-                                         width="200" height="200" class="rounded border"/>
                             </div>
                         </div>
 

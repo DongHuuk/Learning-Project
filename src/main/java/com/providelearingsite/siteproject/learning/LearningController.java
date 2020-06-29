@@ -200,16 +200,16 @@ public class LearningController {
 
     @GetMapping("/learning/{id}")
     public String viewMainLearning(@CurrentAccount Account account, Model model, @PathVariable Long id){
-        Optional<Learning> learningById = learningRepository.findById(id);
-        Learning learning = learningById.orElseThrow();
-        boolean contains = account.getLearnings().contains(learning);
+        Account newAccount = accountRepository.findAccountWithLearningsById(account.getId()); //account 조회
+        Learning learning = learningRepository.findLearningWithVideosAndTagsAndReviewsAndQuestionsById(id).orElseThrow(); //learning 조회 tags, reviews, questions, videos
+        boolean contains = newAccount.getLearnings().contains(learning);
         List<String> contentsTitle = learningService.getContentsTitle(learning);
 
-        model.addAttribute(account);
-        model.addAttribute("listenLearning", learningService.canListenLearning(account, learning));
-        model.addAttribute("learnings", contains);
-        model.addAttribute("countVideo", learning.getVideoCount());
+        model.addAttribute("account", newAccount);
         model.addAttribute("learning", learning);
+        model.addAttribute("learnings", contains);
+        model.addAttribute("listenLearning", newAccount.getListenLearning().contains(learning));
+        model.addAttribute("countVideo", learning.getVideoCount());
         model.addAttribute("tags", learning.getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
         model.addAttribute("ratings", learning.getRating_int());
         model.addAttribute("halfrating", learning.checkRating_boolean());
@@ -248,6 +248,32 @@ public class LearningController {
         return "learning/update_learning";
     }
 
+    @GetMapping("/profile/learning/video/update/{learningId}")
+    public String updateVideoLearning(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id) {
+        Learning learning = learningRepository.findLearningWithVideosById(id).orElseThrow();
+        Set<Video> videos = learning.getVideos();
+
+        model.addAttribute("account", account);
+        model.addAttribute("learning", learning);
+        model.addAttribute("videoList", videos);
+
+        return "learning/update_learning_video";
+    }
+
+    @PostMapping("/profile/video/{learningId}/remove/{videoId}")
+    public String removeVideo(@CurrentAccount Account account, RedirectAttributes attributes,
+                              @PathVariable("learningId") Long learningId, @PathVariable("videoId") Long videoId) {
+
+        Learning learning = learningRepository.findLearningWithVideosById(learningId).orElseThrow();
+        Video video = videoRepository.findById(videoId).orElseThrow();
+
+        Learning newLearning = learningService.removeVideo(learning, video, account);
+
+        attributes.addFlashAttribute("account", account);
+
+        return "redirect:/profile/learning/video/update/" + newLearning.getId();
+    }
+
     @PostMapping("/profile/learning/update/{id}/script")
     public String updateLearningScript(@CurrentAccount Account account, Model model, @PathVariable Long id,
                                        @Valid LearningForm learningForm, Errors errors,
@@ -283,16 +309,13 @@ public class LearningController {
     @GetMapping("/learning/{id}/listen")
     public String listenLearning(@CurrentAccount Account account, Model model, @PathVariable Long id) {
 
-        Learning learning = learningRepository.findById(id).orElseThrow();
-        Account newAccount = learningService.listenLearning(account, learning);
+        Learning learning = learningRepository.findLearningWithVideosById(id).orElseThrow(); //videos
         List<String> contentsTitle = learningService.getContentsTitle(learning).stream().sorted().collect(Collectors.toList());
 
-        model.addAttribute("account", newAccount);
+        model.addAttribute("account", account);
         model.addAttribute("learning", learning);
         model.addAttribute("contentsList", contentsTitle);
         model.addAttribute("now", contentsTitle.get(0));
-
-        //TODO 영상 파일이 없을경우 에러페이지 발생!
 
         return "learning/listen_learning";
     }
@@ -301,18 +324,17 @@ public class LearningController {
     public String listenLearningPlayVideo(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id,
                                           @PathVariable("title") String title, RedirectAttributes attributes) {
 
-        Learning learning = learningRepository.findById(id).orElseThrow();
-        Account newAccount = learningService.listenLearning(account, learning);
+        Learning learning = learningRepository.findLearningWithVideosById(id).orElseThrow(); //videos
         List<String> contentsTitle = learningService.getContentsTitle(learning).stream().sorted().collect(Collectors.toList());
         List<Video> videos = videoRepository.findByTitleAndLearning(title, learning);
-        final String videoPath = "/video/" + account.getId() + "/" + learning.getTitle() + "/" + videos.get(0).getVideoTitle();
+        final String videoPath = "/video/" + account.getId() + "/" + learning.getId() + "/" + videos.get(0).getVideoTitle();
 
         if(videos.size() >= 2){
             attributes.addFlashAttribute("message", "잘못된 요청입니다.");
             return "redirect:/learning/" + learning.getId() + "/listen";
         }
 
-        model.addAttribute("account", newAccount);
+        model.addAttribute("account", account);
         model.addAttribute("learning", learning);
         model.addAttribute("contentsList", contentsTitle);
         model.addAttribute("now", videos.get(0).getVideoTitle());
@@ -412,10 +434,11 @@ public class LearningController {
 
     @GetMapping("/learning/question/{learningId}")
     public String viewLearningQuestion(@CurrentAccount Account account, Model model, @PathVariable("learningId") Long id){
-        Learning learning = learningRepository.findById(id).orElseThrow();
+        Account newAccount = accountRepository.findAccountWithTagsById(account.getId()).orElseThrow();
+        Learning learning = learningRepository.findLearningWithQuestionsAndTagsById(id).orElseThrow(); //questions, tags
         ArrayList<Question> questions = new ArrayList<>(learning.getQuestions());
 
-        model.addAttribute(account);
+        model.addAttribute(newAccount);
         model.addAttribute(new QuestionForm());
         model.addAttribute("countVideo", learning.getVideoCount());
         model.addAttribute("learning", learning);

@@ -3,11 +3,10 @@ package com.providelearingsite.siteproject.learning;
 import com.providelearingsite.siteproject.account.Account;
 import com.providelearingsite.siteproject.account.AccountRepository;
 import com.providelearingsite.siteproject.learning.event.LearningClosedEvent;
+import com.providelearingsite.siteproject.learning.event.LearningCreateEvent;
 import com.providelearingsite.siteproject.learning.event.LearningUpdateEvent;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
-import com.providelearingsite.siteproject.learning.event.LearningCreateEvent;
 import com.providelearingsite.siteproject.question.Question;
-import com.providelearingsite.siteproject.question.QuestionForm;
 import com.providelearingsite.siteproject.question.QuestionRepository;
 import com.providelearingsite.siteproject.review.Review;
 import com.providelearingsite.siteproject.tag.Tag;
@@ -20,14 +19,12 @@ import net.bytebuddy.utility.RandomString;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
@@ -38,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,7 +49,7 @@ public class LearningService {
     @Autowired private QuestionRepository questionRepository;
 
     final File absoluteFile = new File("");
-    final String rootPath = absoluteFile.getAbsolutePath();
+    final String ROOT_PATH = absoluteFile.getAbsolutePath();
 
     public Learning saveLearning(LearningForm learningForm, Account account){
         Learning learning = new Learning();
@@ -84,8 +80,8 @@ public class LearningService {
 
     public void saveVideo(List<MultipartFile> videoFileList, Account account, Learning learning) throws IOException{
         @NotNull final String title = learning.getTitle().replaceAll(" ", "_");
-        final String accountPath = rootPath + "/src/main/resources/static/video/" + account.getId();
-        final String accountLearningPath = rootPath + "/src/main/resources/static/video/" + account.getId() + "/" + title;
+        final String accountPath = ROOT_PATH + "/src/main/resources/static/video/" + account.getId();
+        final String accountLearningPath = ROOT_PATH + "/src/main/resources/static/video/" + account.getId() + "/" + learning.getId();
         learning.setVideoCount(learning.getVideoCount() + videoFileList.size());
 
         //directory checking
@@ -154,8 +150,8 @@ public class LearningService {
     }
 
     public void saveBanner(MultipartFile banner, Account account, Learning learning) throws IOException{
-        final String accountPath = rootPath + "/src/main/resources/static/video/" + account.getId();
-        final String accountLearningPath = rootPath +  "/src/main/resources/static/video/" + account.getId() + "/" + learning.getTitle();
+        final String accountPath = ROOT_PATH + "/src/main/resources/static/video/" + account.getId();
+        final String accountLearningPath = ROOT_PATH +  "/src/main/resources/static/video/" + account.getId() + "/" + learning.getId();
 
         learning.setBannerServerPath(accountLearningPath + "/" + banner.getResource().getFilename());
 
@@ -192,66 +188,34 @@ public class LearningService {
         learningRepository.save(learning);
     }
 
-    public boolean canListenLearning(Account account, Learning learning) {
-        Optional<Account> byId = accountRepository.findById(account.getId());
-        return byId.orElseThrow().getListenLearning().contains(learning);
-    }
-
     public void updateLearningScript(LearningForm learningForm, Account account, Long id) {
-        Optional<Learning> learningById = learningRepository.findById(id);
-        Learning oldLearning = learningById.orElseThrow();
-        Optional<Account> byId = accountRepository.findById(account.getId());
-        Account newAccount = byId.orElseThrow();
+        Learning learning = learningRepository.findById(id).orElseThrow();
+        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
 
-        final String learningPathBefore = rootPath + "/src/main/resources/static/video/" + account.getId() + "/" + oldLearning.getTitle().trim();
-        final String learningPathAfter = rootPath +  "/src/main/resources/static/video/" + account.getId() + "/" + learningForm.getTitle().trim();
+        final String learningPathBefore = ROOT_PATH + "/src/main/resources/static/video/" + account.getId() + "/" + learning.getId();
 
-        File removeDir = new File(learningPathBefore);
-        String[] removeList = removeDir.list();
-        File newDir = new File(learningPathAfter);
-
-
-        if(!newDir.isDirectory()){
-            newDir.mkdir();
-        }
-
-        try {
-            if (removeList != null) {
-                for (String s : removeList) {
-                    File file = new File(learningPathBefore + "/" + s);
-                    inoutStream(file, learningPathAfter, s);
-                }
-            }
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if(newAccount.getLearnings().contains(oldLearning)){
-            newAccount.getLearnings().remove(oldLearning);
-        }
-
-        oldLearning.setTitle(learningForm.getTitle());
-        oldLearning.setSubscription(learningForm.getSubscription());
-        oldLearning.setLecturerName(learningForm.getLecturerName());
-        oldLearning.setLecturerDescription(learningForm.getLecturerDescription());
-        oldLearning.setPrice(learningForm.getPrice());
-        oldLearning.setKategorie(learningForm.getKategorie());
-        oldLearning.setSimplesubscription(learningForm.getSimplesubscription());
-        oldLearning.setUpdateLearning(LocalDateTime.now());
-        oldLearning.setAccount(newAccount);
+        learning.setTitle(learningForm.getTitle());
+        learning.setSubscription(learningForm.getSubscription());
+        learning.setLecturerName(learningForm.getLecturerName());
+        learning.setLecturerDescription(learningForm.getLecturerDescription());
+        learning.setPrice(learningForm.getPrice());
+        learning.setKategorie(learningForm.getKategorie());
+        learning.setSimplesubscription(learningForm.getSimplesubscription());
+        learning.setUpdateLearning(LocalDateTime.now());
+        learning.setAccount(newAccount);
 
         try {
             String accountIdStr = newAccount.getId() + "";
-            int i = oldLearning.getBannerServerPath().indexOf(accountIdStr);
-            String firstStr = oldLearning.getBannerServerPath().substring(0, i);
-            String secondStr = oldLearning.getBannerServerPath().substring(i + accountIdStr.length());
-            oldLearning.setBannerServerPath(firstStr + accountIdStr + secondStr);
+            int i = learning.getBannerServerPath().indexOf(accountIdStr);
+            String firstStr = learning.getBannerServerPath().substring(0, i);
+            String secondStr = learning.getBannerServerPath().substring(i + accountIdStr.length());
+            learning.setBannerServerPath(firstStr + accountIdStr + secondStr);
         }catch (NullPointerException e){
             log.info("banner image serverPath 미지정 = 기본 이미지 값 사용중");
         }
 
-        if(oldLearning.isStartingLearning()){
-            applicationEventPublisher.publishEvent(new LearningUpdateEvent(oldLearning));
+        if(learning.isStartingLearning()){
+            applicationEventPublisher.publishEvent(new LearningUpdateEvent(learning));
         }
     }
 
@@ -399,15 +363,6 @@ public class LearningService {
         return contentTitle;
     }
 
-    public Account listenLearning(Account account, Learning learning) {
-        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
-
-        //TODO 구매하기 버튼 누르면 추가되도록 수정 지금은 임시 허용
-        newAccount.getListenLearning().add(learning);
-
-        return newAccount;
-    }
-
     public void setReview(Review review, Learning learning) {
         learning.setReviews(review);
         double sum = learning.getReviews().stream().mapToDouble(Review::getRating).sum();
@@ -426,18 +381,32 @@ public class LearningService {
     }
 
     public Account saveQuestion(Question question, Account account, Learning learning) {
-        Account newAccount = accountRepository.findById(account.getId()).orElseThrow();
+        Account newAccount = accountRepository.findAccountWithQuestionById(account.getId()).orElseThrow();
 
         question.setS_name(newAccount.getNickname());
         question.setTime_questionTime(LocalDateTime.now());
 
         Question newQuestion = questionRepository.save(question);
 
-        newQuestion.setAccount(account);
+        newQuestion.setAccount(newAccount);
         newQuestion.setLearning(learning);
-        account.getQuestions().add(newQuestion);
+
+        newAccount.getQuestions().add(newQuestion);
         learning.getQuestions().add(newQuestion);
 
         return newAccount;
+    }
+
+    public Learning removeVideo(Learning learning, Video video, Account account) {
+
+        final String learningPath = ROOT_PATH + "/src/main/resources/static/video/" + account.getId() + "/" + learning.getId();
+
+        File file = new File(learningPath + "/" + video.getVideoTitle());
+        file.delete();
+
+        learning.getVideos().remove(video);
+        videoRepository.deleteById(video.getId());
+
+        return learning;
     }
 }

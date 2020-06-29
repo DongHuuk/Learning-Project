@@ -16,6 +16,8 @@ import com.providelearingsite.siteproject.profile.form.ProfileUpdateForm;
 import com.providelearingsite.siteproject.profile.form.PasswordUpdateForm;
 import com.providelearingsite.siteproject.profile.validator.ProfileNicknameValidator;
 import com.providelearingsite.siteproject.profile.validator.ProfilePasswordValidator;
+import com.providelearingsite.siteproject.question.Question;
+import com.providelearingsite.siteproject.question.QuestionRepository;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
@@ -47,6 +49,7 @@ public class ProfileController {
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private NotificationService notificationService;
     @Autowired private AccountRepository accountRepository;
+    @Autowired private QuestionRepository questionRepository;
 
     public final static String CUSTOM_PROFILE = "profile/custom_profile";
 
@@ -66,7 +69,18 @@ public class ProfileController {
 
     @GetMapping("/profile/{id}")
     public String viewProfile(@CurrentAccount Account account, @PathVariable Long id, Model model) {
-        model.addAttribute(account);
+        Account newAccount = accountRepository.findAccountWithLearningsAndQuestionsAndListenLearningAndTagsById(id);
+        List<String> learningTitle = newAccount.getListenLearning().stream().map(Learning::getTitle).limit(3).collect(Collectors.toList());
+        List<Question> accountQuestion = newAccount.getQuestions().stream().limit(4).collect(Collectors.toList());
+        List<String> tagList = newAccount.getTags().stream().map(Tag::getTitle).collect(Collectors.toList());
+        List<Learning> learnings = newAccount.getLearnings().stream().limit(4).collect(Collectors.toList());
+
+        model.addAttribute("account", newAccount);
+        model.addAttribute("learningTitle", learningTitle);
+        model.addAttribute("accountQuestion", accountQuestion);
+        model.addAttribute("tagList", tagList);
+        model.addAttribute("learnings", learnings);
+
         return "profile/profile";
     }
 

@@ -65,12 +65,8 @@ public class Learning {
     private float rating = 0;
     private Integer totalPrice;
 
-    @ManyToMany
-    @JoinTable(
-            name = "LearningAndAccount",
-            joinColumns = @JoinColumn(name = "learning_id"),
-            inverseJoinColumns = @JoinColumn(name = "account_id")
-    )
+    //듣고 있는 account들
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Account> accounts = new HashSet<>();
 
     //업로더 (게시자)
