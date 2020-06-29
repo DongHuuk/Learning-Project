@@ -1,0 +1,22 @@
+{
+  "name": "static",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.1",
+    "@yaireo/tagify": "^3.11.3",
+    "bootstrap": "^4.5.0",
+    "jdenticon": "^2.2.0",
+    "jquery": "^3.5.1",
+    "jquery-form": "^4.3.0",
+    "moment": "^2.27.0",
+    "summernote": "^0.8.18",
+    "tooltipster": "^4.2.8"
+  }
+}
