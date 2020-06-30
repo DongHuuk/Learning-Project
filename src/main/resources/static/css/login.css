@@ -33,5 +33,12 @@
 }
 .alert-custom{
     max-height: 52px;
+}
+.login-btn{
+    max-width: 53%;
+}
 
+.login-btn-font{
+    font-size: 1.25rem;
+    font-weight: 500;
 }

@@ -59,7 +59,7 @@
                     <small class="invalid-feedback">비밀번호를 다시 입력해주세요.</small>
                     <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</small>
                 </div>
-                <button type="submit" class="btn btn-success btn-block mt-4" th:action="@{/}">회원가입</button>
+                <button type="submit" class="btn btn-success btn-block mt-4">회원가입</button>
                 <div class="form-group form-check mt-4 text-center">
                     <input type="checkbox" class="form-check-input position-static" id="exampleCheck1">
                     <label class="form-check-label" for="exampleCheck1">다양한 소식을 받아보시겠어요?</label>
@@ -69,16 +69,6 @@
                     © 2020-2021
                 </div>
             </form>
-            <div class="col-lg-3">
-                <div class="form-group form-check mt-4 text-center">
-                    <input type="checkbox" class="form-check-input position-static" id="exampleCheck2">
-                    <label class="form-check-label" for="exampleCheck2">github로 로그인 하기</label>
-                </div>
-                <div class="form-group form-check mt-4 text-center">
-                    <input type="checkbox" class="form-check-input position-static" id="exampleCheck3">
-                    <label class="form-check-label" for="exampleCheck3">Google로 로그인 하기</label>
-                </div>
-            </div>
             <div class="col-lg-2"></div>
 
 

@@ -166,7 +166,6 @@ public class SearchController {
         return "learning/program";
     }
 
-    //TODO 추후 수정
     @GetMapping("/search/learning")
     public String searchLearning(@CurrentAccount Account account, String keyword, Model model,
                                  @PageableDefault(size = 16, sort = "openLearning", direction = Sort.Direction.DESC) Pageable pageable){

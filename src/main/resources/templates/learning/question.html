@@ -31,15 +31,12 @@
                 <p class="lead banner-tags mt-md-2 mb-md-3" th:text="${#strings.listJoin(tags, ', ')}">default tags</p>
                 <p class="lead banner-count mt-md-4 mb-md-1">
                     총 강의 수: <span th:text="${countVideo}">default count</span>
-<!--                    | 시간: <span th:text="${countVideoTime}">default time</span>-->
-                <!--TODO 영상의 시간값을 구해서 대입-->
                 </p>
                 <p class="lead">
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="35"
                              aria-valuemin="0" aria-valuemax="100">default 100%</div>
                     </div>
-                <!--TODO 현재 진행률을 구해서 대입-->
                 </p>
             </div>
         </div>

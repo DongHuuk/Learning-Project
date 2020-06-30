@@ -55,7 +55,11 @@ class ProfileControllerTest {
 
         mockMvc.perform(get("/profile/" + account.getId()))
                 .andExpect(model().attributeExists("account"))
-                .andExpect(view().name("navbar/profile"))
+                .andExpect(model().attributeExists("learningTitle"))
+                .andExpect(model().attributeExists("accountQuestion"))
+                .andExpect(model().attributeExists("tagList"))
+                .andExpect(model().attributeExists("learnings"))
+                .andExpect(view().name("profile/profile"))
                 .andExpect(status().isOk());
 
     }
@@ -156,13 +160,13 @@ class ProfileControllerTest {
         AccountForm accountForm = new AccountForm();
         accountForm.setNickname("테스트냥이2");
         accountForm.setEmail("test2@naver.com");
-        accountForm.setPassword("12345678");
-        accountForm.setPasswordcheck("12345678");
+        accountForm.setPassword("1234567890");
+        accountForm.setPasswordcheck("1234567890");
         Account account_2 = accountService.createAccount(modelMapper.map(accountForm, Account.class));
         account_2.setTokenChecked(true);
 
         mockMvc.perform(post("/update/nickname/" + account_1.getId())
-                .param("nickname", "테스트냥이2")
+                .param("nickname", "테스트냥이")
                 .param("description", "테스트 코드에용")
                 .with(csrf()))
                 .andExpect(model().hasErrors())

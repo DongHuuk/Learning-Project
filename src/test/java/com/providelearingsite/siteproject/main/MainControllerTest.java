@@ -1,6 +1,7 @@
 package com.providelearingsite.siteproject.main;
 
 import com.providelearingsite.siteproject.learning.Learning;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,15 +21,15 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @Transactional
-@WebMvcTest
-@AutoConfigureMockMvc
+@SpringBootTest
 class MainControllerTest {
 
     @Test
     public void test(){
-        List<String> list = Arrays.asList("1-1_dsadwqtes.mp3", "1-2dsadwqtes.mp4","3-11fdsfaafeㅇ ㅈㅂㅇㅇwefw",
-                "3-21개씨발좆같은거존나안되네븅신같은거.mp3", "2-1dsadpojwoqdq",
+        List<String> list = Arrays.asList("1-1_dsadwqtes.mp3", "1-2dsadwqtes.mp4","3-11fdsfaafeㅇ_ㅈㅂㅇㅇwefw",
+                "3-2fdsaffewfqf.mp3", "2-1dsadpojwoqdq",
                 "3-1opqjpdowqdwq","11-1epowqjoepwq", "1-11dwqodjpdwq");
         List<String> contentTitle = new ArrayList<>();
         String regExp = "[a-zA-Zㄱ-ㅎ가-힣ㅏ-ㅣ\\s_](.mp3|.mp4|mkv)";
@@ -37,8 +38,12 @@ class MainControllerTest {
                 .forEach(s -> {
                     String number = s.replaceAll(regExp, "").trim();
                     String notNumber = s.replaceAll(regExpNot, "").trim();
+
                     int i = number.indexOf("-");
-                    int strIndex = number.indexOf(notNumber.charAt(0));
+                    int strIndex = number.indexOf(notNumber.charAt(1));
+
+                    log.info(notNumber);
+                    log.info(strIndex + "");
 
                     String f = number.substring(0, i); //앞
                     String e = number.substring(i+1, strIndex); //뒤

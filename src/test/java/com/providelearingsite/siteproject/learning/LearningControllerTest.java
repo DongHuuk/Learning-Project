@@ -1,44 +1,37 @@
 package com.providelearingsite.siteproject.learning;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.providelearingsite.siteproject.account.*;
+import com.providelearingsite.siteproject.account.Account;
+import com.providelearingsite.siteproject.account.AccountRepository;
+import com.providelearingsite.siteproject.account.AccountService;
+import com.providelearingsite.siteproject.account.WithAccount;
 import com.providelearingsite.siteproject.learning.form.LearningForm;
 import com.providelearingsite.siteproject.tag.Tag;
 import com.providelearingsite.siteproject.tag.TagForm;
 import com.providelearingsite.siteproject.tag.TagRepository;
 import com.providelearingsite.siteproject.video.Video;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -62,18 +55,16 @@ class LearningControllerTest {
     private AccountService accountService;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @Test
     @DisplayName("강의 만들기 뷰")
     @WithAccount("test@naver.com")
-    public void viewUpload() throws Exception {
+    public void viewUploader() throws Exception {
         mockMvc.perform(get("/profile/learning/create"))
                 .andExpect(model().hasNoErrors())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("learningForm"))
-                .andExpect(view().name("profile/create_learning"))
+                .andExpect(view().name(LearningController.CREATE_LEARNING))
                 .andExpect(status().isOk());
     }
 
@@ -86,9 +77,15 @@ class LearningControllerTest {
         String subscription = "테스트 설명입니다.";
         String lecturerName = "흑우냥이";
         String lectureSubscription = "게시자에 대한 설명입니다.";
+        String simpleSubscription = "간단 설명입니다.";
+        int price = 100000;
+        String kategorie = "1"; // 1 - web, 2 - 알고리즘
 
         mockMvc.perform(post("/profile/learning/create")
                 .param("title", title)
+                .param("simplesubscription", simpleSubscription)
+                .param("price", price + "")
+                .param("kategorie", "1")
                 .param("subscription", subscription)
                 .param("lecturerName", lecturerName)
                 .param("lecturerDescription", lectureSubscription)
@@ -223,15 +220,18 @@ class LearningControllerTest {
         mockMvc.perform(get("/profile/learning/list"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
-                .andExpect(view().name("profile/learning_list"));
+                .andExpect(view().name("learning/learning_list"));
     }
 
     private Learning createLearning(Account account) {
         LearningForm learningForm = new LearningForm();
         learningForm.setTitle("테스트_1");
         learningForm.setSubscription("테스트_1 설명입니다.");
+        learningForm.setSimplesubscription("테스트_ 심플 설명입니다.");
         learningForm.setLecturerName("흑우냥이");
         learningForm.setLecturerDescription("테스트 게시자 설명입니다.");
+        learningForm.setPrice(10000);
+        learningForm.setKategorie("1");
         return learningService.saveLearning(learningForm, account);
     }
 
@@ -260,7 +260,7 @@ class LearningControllerTest {
                 .andExpect(model().attributeExists("tags"))
                 .andExpect(model().attributeExists("whiteList"))
                 .andExpect(model().hasNoErrors())
-                .andExpect(view().name("profile/learning"))
+                .andExpect(view().name("learning/learning_upload"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -345,10 +345,9 @@ class LearningControllerTest {
         Account account = accountRepository.findByEmailAndTokenChecked("test@naver.com", true);
         Learning learning = createLearning(account);
 
-        MockMultipartFile file_1 = new MockMultipartFile("videofile", "test_movie_1.mkv", "text/plain", "movie1 data".getBytes());
-        MockMultipartFile file_2 = new MockMultipartFile("videofile", "test_movie_2.mp3", "text/plain", "movie2 data".getBytes());
-        MockMultipartFile file_3 = new MockMultipartFile("videofile", "test_movie_3.mp4", "text/plain", "movie3 data".getBytes());
-
+        MockMultipartFile file_1 = new MockMultipartFile("videofile", "01-10test_movie_1.mp4", "text/plain", "movie1 data".getBytes());
+        MockMultipartFile file_2 = new MockMultipartFile("videofile", "01-11test_movie_2.mp4", "text/plain", "movie2 data".getBytes());
+        MockMultipartFile file_3 = new MockMultipartFile("videofile", "01-12test_movie_3.mp4", "text/plain", "movie3 data".getBytes());
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/profile/learning/upload/" + learning.getId() + "/video")
                 .file(file_1)
@@ -459,15 +458,22 @@ class LearningControllerTest {
 
         mockMvc.perform(get("/learning/" + learning.getId()))
                 .andExpect(model().attributeExists("account"))
-                .andExpect(model().attributeExists("listenLearning"))
-                .andExpect(model().attributeExists("learningSet"))
-                .andExpect(model().attributeExists("countVideo"))
                 .andExpect(model().attributeExists("learning"))
+                .andExpect(model().attributeExists("learnings"))
+                .andExpect(model().attributeExists("listenLearning"))
+                .andExpect(model().attributeExists("countVideo"))
                 .andExpect(model().attributeExists("tags"))
                 .andExpect(model().attributeExists("ratings"))
                 .andExpect(model().attributeExists("halfrating"))
                 .andExpect(model().attributeExists("rating"))
                 .andExpect(model().attributeExists("learningRating"))
+                .andExpect(model().attributeExists("canOpen"))
+                .andExpect(model().attributeExists("canClose"))
+                .andExpect(model().attributeExists("canCloseTimer"))
+                .andExpect(model().attributeExists("canOpenTimer"))
+                .andExpect(model().attributeExists("contentsTitle"))
+                .andExpect(model().attributeExists("reviews"))
+                .andExpect(model().attributeExists("questions"))
                 .andExpect(view().name("learning/main_learning"))
                 .andExpect(status().isOk());
     }
@@ -486,7 +492,7 @@ class LearningControllerTest {
                 .andExpect(model().attributeExists("tags"))
                 .andExpect(model().attributeExists("whiteList"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("profile/update_learning"));
+                .andExpect(view().name("learning/update_learning"));
 
     }
 
@@ -500,17 +506,22 @@ class LearningControllerTest {
 
         mockMvc.perform(post("/profile/learning/update/" + learning.getId() + "/script")
                 .param("title", learning.getTitle())
+                .param("simplesubscription", learning.getSimplesubscription())
                 .param("subscription", "테스트_1 수정 설명입니다.")
                 .param("lecturerName", "mark.2_흑우냥이")
                 .param("lecturerDescription", "테스트_게시자_수정_입니다.")
+                .param("price", "1202139421")
+                .param("kategorie", "1")
                 .with(csrf()))
                 .andExpect(flash().attributeExists("message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile/learning/update/" + learning.getId()));
 
-        assertEquals(learning.getSubscription(), "테스트_1 수정 설명입니다.");
-        assertEquals(learning.getLecturerName(), "mark.2_흑우냥이");
-        assertEquals(learning.getLecturerDescription(), "테스트_게시자_수정_입니다.");
+        Learning newLearning = learningRepository.findById(learning.getId()).orElseThrow();
+
+        assertEquals(newLearning.getSubscription(), "테스트_1 수정 설명입니다.");
+        assertEquals(newLearning.getLecturerName(), "mark.2_흑우냥이");
+        assertEquals(newLearning.getLecturerDescription(), "테스트_게시자_수정_입니다.");
     }
 
     @Test
@@ -632,9 +643,4 @@ class LearningControllerTest {
         assertFalse(learning.isStartingLearning());
         assertTrue(learning.isClosedLearning());
     }
-    /*
-    TODO File Mokito 파일이 생성됬는지 확인하는 방법?
-      있으면? 확인해봣었는데 없었음..
-      그냥 then이나 return값 받아오는건 있고 값이 있는지 확인하는건 없었음
-    */
 }

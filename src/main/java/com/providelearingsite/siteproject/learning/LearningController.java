@@ -106,7 +106,7 @@ public class LearningController {
         Optional<Learning> learning = learningRepository.findById(id);
         List<String> tagList = tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
 
-        model.addAttribute(account);
+        model.addAttribute("account", account);
         model.addAttribute("learning", learning.orElseThrow());
         model.addAttribute("tags", learning.orElseThrow().getTags().stream().map(Tag::getTitle).collect(Collectors.toList()));
         model.addAttribute("whiteList", objectMapper.writeValueAsString(tagList));
@@ -491,13 +491,4 @@ public class LearningController {
 
         return "redirect:/learning/question/" + question.getLearning().getId();
     }
-
-    //TODO TestCode 지우기
-    @GetMapping("/create/test")
-    public String testCode(@CurrentAccount Account account){
-        learningService.testLearning(account);
-
-        return "index";
-    }
-
 }
