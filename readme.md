@@ -47,4 +47,6 @@ JPA Projection 미도입(Query 최적화의 단순화 추후 프로젝트에서�
 _NPM 미포함 예정이었지만 배포를 위해 포함시킴_
 
 실행방법<br>
+코드를 IDEA에 import 시켜서 실행시켜도 상관없습니다.
+maven에서 pacake를 이용해 jar로 만든 후 실행시켜도 동작합니다.
 <pre><code>java -jar choi-0.0.1-SNAPSHOT.jar</code></pre>
