@@ -51,4 +51,5 @@ _NPM 미포함 예정이었지만 배포를 위해 포함시킴_
 maven에서 pacake를 이용해 jar로 만든 후 실행시켜도 동작합니다.<br>
 local로 동작시킬 경우(그냥 실행) SMTP 시스템은 동작하지 않으며 cmd line로 값이 보내집니다.
 <pre><code>java -jar choi-0.0.1-SNAPSHOT.jar</code></pre>
+본인 PC 환경에서는 동작하는 코드
 <pre><code>java -jar choi-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev</code></pre>
