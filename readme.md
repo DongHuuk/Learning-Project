@@ -21,6 +21,9 @@ git에는 npm으로 추가한 라이브러리가 첨부되지 않게 했습니�
 3. Spring Data API(JPA)
 4. Spring Security
 
+DB 
+postgreSQL (dev)<br>
+embeded (local)
 
 
 Video 영상 데이터들은 프로젝트 내 /static/video에 위치하게 작성하였습니다.
@@ -42,3 +45,6 @@ JPA Projection 미도입(Query 최적화의 단순화 추후 프로젝트에서�
 모바일 및 일정 해상도 이하에서 UI 일그러짐 발생
 
 _NPM 미포함 예정이었지만 배포를 위해 포함시킴_
+
+실행방법<br>
+<pre><code>java -jar choi-0.0.1-SNAPSHOT.jar</code></pre>
