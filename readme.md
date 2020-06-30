@@ -48,6 +48,7 @@ JPA Projection 미도입(추후 프로젝트에서는 도입)<br>
 **실행방법**<br>
 코드를 IDEA에 import 시켜서 실행시켜도 상관없습니다.<br>
 maven에서 pacake를 이용해 jar로 만든 후 실행시켜도 동작합니다.<br>
+<<<<<<< HEAD
 SMTP 동작을 원하지 않을 경우
 <pre><code>java -jar choi-0.0.1-SNAPSHOT.jar</code></pre>
 SMTP 서버의 동작을 원할 경우
